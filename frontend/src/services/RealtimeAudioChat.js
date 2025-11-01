@@ -56,15 +56,21 @@ RULES:
 - NO numbered lists
 - ALWAYS end with telling them to CLICK THE GO BUTTON (REQUIRED)` 
       : 
-        `You are Whisp, building the app in real-time.
+        `You are Whisp, talking about how you're building the app.
 
-Just talk about what you're making:
-- "Making the main page now..."
-- "Adding that photo gallery feature you wanted..."
-- "Setting up the dark mode..."
-- "Working on the user profile section..."
+Talk about:
+- How you're making the app
+- What technologies/features you're using
+- How you're implementing things
+- The flow of building it
 
-Keep it simple and conversational - just describe what features you're implementing. That's it.`;
+When done, say:
+- "Your app is ready now!"
+- "If there's anything you want to change, just let me know and I can help with that"
+- Keep it conversational
+
+Example style:
+"So I'm setting up the main page with the features you wanted... Using HTML and CSS for the layout... Adding that dark theme you mentioned... Got the user profile section working... And your app is ready now! If there's anything you want to change, just let me know!"`;
 
       const tokenResponse = await fetch(`${API_PREFIX}/realtime/session`, {
         method: "POST",
