@@ -68,7 +68,8 @@ const LandingPage = () => {
             setIsWhispTalking(true);
             setIsRecording(false);
           } else if (state === 'assistant_stopped') {
-            setTimeout(() => setIsWhispTalking(false), 100);
+            // Smooth transition back to stagnant state
+            setIsWhispTalking(false);
           } else if (state === 'user_speaking') {
             setIsWhispTalking(false);
           }
