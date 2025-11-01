@@ -78,7 +78,7 @@
   justify-content: center;
 }
 
-/* Sphere - Perfect Circle with Shimmer */
+/* Sphere - Perfect Circle with Swirling Clouds */
 .sphere {
   width: 280px;
   height: 280px;
@@ -88,52 +88,70 @@
   background: linear-gradient(180deg, rgba(100, 170, 255, 0.4) 0%, rgba(40, 120, 220, 1) 100%);
 }
 
-/* Base cloud layer */
+/* Swirling cloud layer 1 - Main movement */
 .sphere::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -10%;
   border-radius: 50%;
   background: 
-    radial-gradient(ellipse at 50% 15%, rgba(255, 255, 255, 0.85) 0%, transparent 40%),
-    radial-gradient(ellipse at 30% 25%, rgba(180, 220, 255, 0.7) 0%, transparent 45%),
-    radial-gradient(ellipse at 70% 30%, rgba(120, 180, 255, 0.6) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 65%, rgba(60, 140, 255, 0.8) 0%, transparent 60%);
+    radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.5) 25%, transparent 45%),
+    radial-gradient(ellipse at 25% 35%, rgba(200, 230, 255, 0.8) 0%, rgba(180, 220, 255, 0.4) 30%, transparent 50%),
+    radial-gradient(ellipse at 75% 40%, rgba(220, 240, 255, 0.7) 0%, rgba(150, 200, 255, 0.3) 35%, transparent 55%),
+    radial-gradient(ellipse at 40% 65%, rgba(180, 220, 255, 0.8) 0%, rgba(120, 180, 255, 0.4) 30%, transparent 50%),
+    radial-gradient(ellipse at 60% 70%, rgba(140, 200, 255, 0.7) 0%, rgba(80, 150, 255, 0.3) 35%, transparent 55%);
+  animation: cloudSwirl 12s linear infinite;
 }
 
-/* Shimmer overlay - subtle wave effect */
+/* Swirling cloud layer 2 - Counter movement */
 .sphere::after {
   content: '';
   position: absolute;
-  inset: -20%;
+  inset: -15%;
   border-radius: 50%;
   background: 
-    radial-gradient(ellipse at 45% 35%, rgba(255, 255, 255, 0.5) 0%, transparent 30%),
-    radial-gradient(ellipse at 60% 50%, rgba(200, 230, 255, 0.4) 0%, transparent 35%);
-  animation: shimmerWave 4s ease-in-out infinite;
+    radial-gradient(ellipse at 60% 30%, rgba(255, 255, 255, 0.7) 0%, rgba(240, 250, 255, 0.4) 25%, transparent 40%),
+    radial-gradient(ellipse at 30% 50%, rgba(220, 240, 255, 0.6) 0%, rgba(180, 220, 255, 0.3) 30%, transparent 45%),
+    radial-gradient(ellipse at 70% 60%, rgba(200, 230, 255, 0.65) 0%, rgba(150, 200, 255, 0.3) 28%, transparent 48%);
+  animation: cloudSwirlReverse 15s linear infinite;
   mix-blend-mode: overlay;
 }
 
-/* Gentle shimmer wave animation */
-@keyframes shimmerWave {
-  0%, 100% {
-    transform: translate(0%, 0%) scale(1);
-    opacity: 0.6;
+/* Swirling animations */
+@keyframes cloudSwirl {
+  0% {
+    transform: rotate(0deg) scale(1.1);
   }
-  50% {
-    transform: translate(2%, -3%) scale(1.05);
-    opacity: 0.8;
+  100% {
+    transform: rotate(360deg) scale(1.1);
   }
 }
 
-/* Listening State - Subtle pulse */
+@keyframes cloudSwirlReverse {
+  0% {
+    transform: rotate(0deg) scale(1.15);
+  }
+  100% {
+    transform: rotate(-360deg) scale(1.15);
+  }
+}
+
+/* Listening State - Faster swirl */
+.sphere.listening::before {
+  animation: cloudSwirl 8s linear infinite;
+}
+
 .sphere.listening::after {
-  animation: shimmerWave 2.5s ease-in-out infinite;
+  animation: cloudSwirlReverse 10s linear infinite;
 }
 
-/* Talking State - Faster shimmer */
+/* Talking State - Even faster swirl */
+.sphere.talking::before {
+  animation: cloudSwirl 5s linear infinite;
+}
+
 .sphere.talking::after {
-  animation: shimmerWave 1.5s ease-in-out infinite;
+  animation: cloudSwirlReverse 6s linear infinite;
 }
 
 /* Glow Effect */
