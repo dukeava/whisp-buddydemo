@@ -66,16 +66,7 @@ const EditorPage = () => {
           }
         };
 
-        // Pass conversation history to continue the discussion
-        await realtimeChatRef.current.init('editor', conversationHistory);
-        
-        // Automatically start Whisp's summary after initialization
-        setTimeout(() => {
-          if (realtimeChatRef.current && conversationHistory.length > 0) {
-            // Trigger Whisp to start speaking
-            realtimeChatRef.current.startGreeting();
-          }
-        }, 1000);
+        await realtimeChatRef.current.init('editor');
       }
       setIsListening(true);
     } catch (error) {
