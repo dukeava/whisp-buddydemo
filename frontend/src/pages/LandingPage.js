@@ -77,14 +77,14 @@ const LandingPage = () => {
         await realtimeChatRef.current.init('landing');
         setIsConnected(true);
         
-        // Send greeting
+        // Trigger Whisp to speak based on its instructions
         if (!hasGreeted) {
           setTimeout(() => {
             if (realtimeChatRef.current) {
-              realtimeChatRef.current.sendMessage("What would you like to build today?");
+              realtimeChatRef.current.triggerResponse();
               setHasGreeted(true);
             }
-          }, 800);
+          }, 1000);
         }
       } catch (error) {
         console.error('Error starting voice chat:', error);
