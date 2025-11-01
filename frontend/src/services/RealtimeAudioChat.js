@@ -205,6 +205,13 @@ CRITICAL RULES:
     }
   }
 
+  startGreeting() {
+    // Trigger the assistant to speak first without user input
+    if (this.dataChannel && this.dataChannel.readyState === 'open') {
+      this.dataChannel.send(JSON.stringify({ type: 'response.create' }));
+    }
+  }
+
   disconnect() {
     if (this.dataChannel) {
       this.dataChannel.close();
