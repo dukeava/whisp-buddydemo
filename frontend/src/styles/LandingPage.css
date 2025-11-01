@@ -19,7 +19,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 1px solid var(--border-color);
+  border: none;
   background: var(--bg-secondary);
   color: var(--text-primary);
   display: flex;
@@ -27,6 +27,7 @@
   justify-content: center;
   cursor: pointer;
   z-index: 100;
+  border: 1px solid var(--border-color);
 }
 
 .theme-toggle:hover {
@@ -67,7 +68,7 @@
   z-index: 10;
 }
 
-/* Sphere Container - PERFECT CIRCLE */
+/* Sphere Container */
 .sphere-container {
   position: relative;
   width: 320px;
@@ -77,102 +78,62 @@
   justify-content: center;
 }
 
-/* Dynamic Fluid Sphere - SHARP CIRCLE */
+/* Sphere - Perfect Circle with Shimmer */
 .sphere {
   width: 280px;
   height: 280px;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s ease;
+  background: linear-gradient(180deg, rgba(100, 170, 255, 0.4) 0%, rgba(40, 120, 220, 1) 100%);
 }
 
+/* Base cloud layer */
 .sphere::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: 50%;
   background: 
-    radial-gradient(ellipse at 50% 10%, rgba(255, 255, 255, 0.9) 0%, transparent 40%),
-    radial-gradient(ellipse at 30% 20%, rgba(180, 220, 255, 0.8) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 30%, rgba(120, 180, 255, 0.7) 0%, transparent 60%),
-    radial-gradient(ellipse at 50% 70%, rgba(60, 140, 255, 0.9) 0%, transparent 70%),
-    linear-gradient(180deg, rgba(100, 170, 255, 0.4) 0%, rgba(40, 120, 220, 1) 100%);
-  animation: cloudFlow 8s ease-in-out infinite;
+    radial-gradient(ellipse at 50% 15%, rgba(255, 255, 255, 0.85) 0%, transparent 40%),
+    radial-gradient(ellipse at 30% 25%, rgba(180, 220, 255, 0.7) 0%, transparent 45%),
+    radial-gradient(ellipse at 70% 30%, rgba(120, 180, 255, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 65%, rgba(60, 140, 255, 0.8) 0%, transparent 60%);
 }
 
+/* Shimmer overlay - subtle wave effect */
 .sphere::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -20%;
   border-radius: 50%;
   background: 
-    radial-gradient(ellipse at 40% 40%, rgba(255, 255, 255, 0.6) 0%, transparent 35%),
-    radial-gradient(ellipse at 60% 60%, rgba(150, 200, 255, 0.5) 0%, transparent 45%);
-  animation: cloudFlow2 10s ease-in-out infinite reverse;
+    radial-gradient(ellipse at 45% 35%, rgba(255, 255, 255, 0.5) 0%, transparent 30%),
+    radial-gradient(ellipse at 60% 50%, rgba(200, 230, 255, 0.4) 0%, transparent 35%);
+  animation: shimmerWave 4s ease-in-out infinite;
   mix-blend-mode: overlay;
 }
 
-/* Breathing/Idle Animation */
-.sphere {
-  animation: breathe 4s ease-in-out infinite;
-}
-
-@keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-
-/* Cloud Flow Animations */
-@keyframes cloudFlow {
+/* Gentle shimmer wave animation */
+@keyframes shimmerWave {
   0%, 100% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-  }
-  25% {
-    transform: translate(5%, -3%) rotate(2deg) scale(1.02);
+    transform: translate(0%, 0%) scale(1);
+    opacity: 0.6;
   }
   50% {
-    transform: translate(-3%, 5%) rotate(-1deg) scale(0.98);
-  }
-  75% {
-    transform: translate(4%, 2%) rotate(1deg) scale(1.01);
+    transform: translate(2%, -3%) scale(1.05);
+    opacity: 0.8;
   }
 }
 
-@keyframes cloudFlow2 {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(-4%, 3%) scale(1.05);
-  }
-  66% {
-    transform: translate(3%, -4%) scale(0.95);
-  }
+/* Listening State - Subtle pulse */
+.sphere.listening::after {
+  animation: shimmerWave 2.5s ease-in-out infinite;
 }
 
-/* Listening State - More Active */
-.sphere.listening {
-  animation: listening 1.5s ease-in-out infinite, breathe 4s ease-in-out infinite;
-}
-
-@keyframes listening {
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.05) translateY(-2px); }
-  50% { transform: scale(0.98) translateY(2px); }
-  75% { transform: scale(1.03) translateY(-1px); }
-}
-
-/* Talking State - Bouncing */
-.sphere.talking {
-  animation: bounce 0.6s ease-in-out infinite, breathe 4s ease-in-out infinite;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: scale(1) translateY(0); }
-  25% { transform: scale(1.08, 0.95) translateY(-8px); }
-  50% { transform: scale(0.95, 1.05) translateY(3px); }
-  75% { transform: scale(1.02, 0.98) translateY(-4px); }
+/* Talking State - Faster shimmer */
+.sphere.talking::after {
+  animation: shimmerWave 1.5s ease-in-out infinite;
 }
 
 /* Glow Effect */
@@ -180,25 +141,25 @@
   position: absolute;
   inset: -30px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(100, 170, 255, 0.5) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(100, 170, 255, 0.4) 0%, transparent 70%);
   filter: blur(40px);
   animation: glowPulse 3s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes glowPulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.1); }
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.6; }
 }
 
 .sphere.listening .sphere-glow,
 .sphere.talking .sphere-glow {
-  animation: glowIntense 1.2s ease-in-out infinite;
+  animation: glowIntense 2s ease-in-out infinite;
 }
 
 @keyframes glowIntense {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.15); }
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.85; }
 }
 
 /* Text */

@@ -133,7 +133,7 @@
   position: relative;
 }
 
-/* Centered Sphere in Conversation */
+/* Centered Sphere */
 .conversation-sphere-container {
   flex: 1;
   display: flex;
@@ -144,64 +144,61 @@
   gap: 24px;
 }
 
-/* PERFECT CIRCLE - SHARP */
+/* Conversation Sphere - Perfect Circle with Shimmer */
 .conversation-sphere {
   width: 220px;
   height: 220px;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(180deg, rgba(100, 170, 255, 0.4) 0%, rgba(40, 120, 220, 1) 100%);
 }
 
+/* Base cloud layer */
 .conversation-sphere::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: 50%;
   background: 
-    radial-gradient(ellipse at 50% 10%, rgba(255, 255, 255, 0.9) 0%, transparent 40%),
-    radial-gradient(ellipse at 30% 20%, rgba(180, 220, 255, 0.8) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 30%, rgba(120, 180, 255, 0.7) 0%, transparent 60%),
-    radial-gradient(ellipse at 50% 70%, rgba(60, 140, 255, 0.9) 0%, transparent 70%),
-    linear-gradient(180deg, rgba(100, 170, 255, 0.4) 0%, rgba(40, 120, 220, 1) 100%);
-  animation: cloudFlow 8s ease-in-out infinite;
+    radial-gradient(ellipse at 50% 15%, rgba(255, 255, 255, 0.85) 0%, transparent 40%),
+    radial-gradient(ellipse at 30% 25%, rgba(180, 220, 255, 0.7) 0%, transparent 45%),
+    radial-gradient(ellipse at 70% 30%, rgba(120, 180, 255, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 65%, rgba(60, 140, 255, 0.8) 0%, transparent 60%);
 }
 
+/* Shimmer overlay */
 .conversation-sphere::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -20%;
   border-radius: 50%;
   background: 
-    radial-gradient(ellipse at 40% 40%, rgba(255, 255, 255, 0.6) 0%, transparent 35%),
-    radial-gradient(ellipse at 60% 60%, rgba(150, 200, 255, 0.5) 0%, transparent 45%);
-  animation: cloudFlow2 10s ease-in-out infinite reverse;
+    radial-gradient(ellipse at 45% 35%, rgba(255, 255, 255, 0.5) 0%, transparent 30%),
+    radial-gradient(ellipse at 60% 50%, rgba(200, 230, 255, 0.4) 0%, transparent 35%);
+  animation: shimmerWave 4s ease-in-out infinite;
   mix-blend-mode: overlay;
 }
 
-.conversation-sphere {
-  animation: breathe 4s ease-in-out infinite;
+@keyframes shimmerWave {
+  0%, 100% {
+    transform: translate(0%, 0%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(2%, -3%) scale(1.05);
+    opacity: 0.8;
+  }
 }
 
-/* Speaking Animation */
-.conversation-sphere.speaking {
-  animation: speakBounce 0.8s ease-in-out infinite;
+/* Speaking State - Faster shimmer */
+.conversation-sphere.speaking::after {
+  animation: shimmerWave 1.5s ease-in-out infinite;
 }
 
-@keyframes speakBounce {
-  0%, 100% { transform: scale(1) translateY(0); }
-  25% { transform: scale(1.1, 0.93) translateY(-10px); }
-  50% { transform: scale(0.93, 1.08) translateY(4px); }
-  75% { transform: scale(1.05, 0.96) translateY(-5px); }
-}
-
-.conversation-sphere.listening {
-  animation: listenPulse 2s ease-in-out infinite;
-}
-
-@keyframes listenPulse {
-  0%, 100% { transform: scale(1); filter: brightness(1); }
-  50% { transform: scale(1.04); filter: brightness(1.15); }
+/* Listening State - Moderate shimmer */
+.conversation-sphere.listening::after {
+  animation: shimmerWave 2.5s ease-in-out infinite;
 }
 
 /* Glow */
@@ -215,8 +212,18 @@
   pointer-events: none;
 }
 
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.6; }
+}
+
 .conversation-sphere.speaking .conversation-sphere-glow {
-  animation: glowIntense 0.8s ease-in-out infinite;
+  animation: glowIntense 1.5s ease-in-out infinite;
+}
+
+@keyframes glowIntense {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.85; }
 }
 
 /* Status Text */
@@ -443,46 +450,4 @@
 
 .code-display code {
   color: var(--text-primary);
-}
-
-@keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-
-@keyframes cloudFlow {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-  }
-  25% {
-    transform: translate(5%, -3%) rotate(2deg) scale(1.02);
-  }
-  50% {
-    transform: translate(-3%, 5%) rotate(-1deg) scale(0.98);
-  }
-  75% {
-    transform: translate(4%, 2%) rotate(1deg) scale(1.01);
-  }
-}
-
-@keyframes cloudFlow2 {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(-4%, 3%) scale(1.05);
-  }
-  66% {
-    transform: translate(3%, -4%) scale(0.95);
-  }
-}
-
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.1); }
-}
-
-@keyframes glowIntense {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.15); }
 }
