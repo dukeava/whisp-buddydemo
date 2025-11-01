@@ -67,20 +67,20 @@
   z-index: 10;
 }
 
-/* Sphere Container */
+/* Sphere Container - PERFECT CIRCLE */
 .sphere-container {
   position: relative;
   width: 320px;
-  height: 400px;
+  height: 320px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Dynamic Fluid Sphere */
+/* Dynamic Fluid Sphere - SHARP CIRCLE */
 .sphere {
-  width: 260px;
-  height: 340px;
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
@@ -99,7 +99,6 @@
     radial-gradient(ellipse at 50% 70%, rgba(60, 140, 255, 0.9) 0%, transparent 70%),
     linear-gradient(180deg, rgba(100, 170, 255, 0.4) 0%, rgba(40, 120, 220, 1) 100%);
   animation: cloudFlow 8s ease-in-out infinite;
-  filter: blur(2px);
 }
 
 .sphere::after {
@@ -111,7 +110,6 @@
     radial-gradient(ellipse at 40% 40%, rgba(255, 255, 255, 0.6) 0%, transparent 35%),
     radial-gradient(ellipse at 60% 60%, rgba(150, 200, 255, 0.5) 0%, transparent 45%);
   animation: cloudFlow2 10s ease-in-out infinite reverse;
-  filter: blur(3px);
   mix-blend-mode: overlay;
 }
 
