@@ -64,15 +64,11 @@ const LandingPage = () => {
         };
 
         realtimeChatRef.current.onSpeakingStateChange = (state) => {
-          console.log('🎤 Speaking state:', state);
           if (state === 'assistant_speaking') {
-            console.log('🔵 Whisp is TALKING - sphere should be bouncing');
             setIsWhispTalking(true);
             setIsRecording(false);
           } else if (state === 'assistant_stopped') {
-            console.log('⚪ Whisp STOPPED talking - sphere should smoothly return');
-            // Smooth transition back to stagnant state
-            setIsWhispTalking(false);
+            setTimeout(() => setIsWhispTalking(false), 100);
           } else if (state === 'user_speaking') {
             setIsWhispTalking(false);
           }
