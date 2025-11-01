@@ -189,17 +189,17 @@
   100% { transform: rotate(-360deg) scale(1.15); }
 }
 
-/* Speaking State - NO BOUNCE */
+/* Speaking State - NO CHANGES AT ALL */
 .conversation-sphere.speaking {
-  /* No animation when speaking */
+  /* Sphere looks exactly the same when speaking */
 }
 
 .conversation-sphere.speaking::before {
-  animation: cloudSwirl 5s linear infinite;
+  animation: cloudSwirl 12s linear infinite;
 }
 
 .conversation-sphere.speaking::after {
-  animation: cloudSwirlReverse 6s linear infinite;
+  animation: cloudSwirlReverse 15s linear infinite;
 }
 
 .conversation-sphere.listening::before {
