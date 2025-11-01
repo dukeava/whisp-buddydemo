@@ -10,7 +10,7 @@ class RealtimeAudioChat {
     this.onSpeakingStateChange = null;
   }
 
-  async init(context = 'landing') {
+  async init(context = 'landing', conversationHistory = []) {
     try {
       const instructions = context === 'landing' ? 
         `You are Whisp, helping someone build their app through natural conversation.
