@@ -38,8 +38,8 @@ const EditorPage = () => {
       }, 1500);
     }
     
-    // Initialize voice chat
-    initializeRealtimeChat();
+    // Voice disabled in editor for now
+    // initializeRealtimeChat();
   }, []);
 
   const initializeRealtimeChat = async () => {
