@@ -144,38 +144,38 @@
   gap: 24px;
 }
 
-/* Conversation Sphere - Perfect Circle with Subtle Swirling Clouds */
+/* Conversation Sphere - Bright Blue */
 .conversation-sphere {
   width: 220px;
   height: 220px;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(100, 170, 255, 0.5) 0%, rgba(40, 120, 220, 1) 100%);
+  background: linear-gradient(180deg, rgba(74, 158, 255, 0.6) 0%, rgba(10, 132, 255, 1) 100%);
 }
 
-/* Swirling cloud layer 1 - Subtle white */
+/* Swirling cloud layer 1 - More visible */
 .conversation-sphere::before {
   content: '';
   position: absolute;
   inset: -10%;
   border-radius: 50%;
   background: 
-    radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.15) 20%, transparent 38%),
-    radial-gradient(ellipse at 28% 38%, rgba(220, 240, 255, 0.25) 0%, rgba(180, 220, 255, 0.1) 25%, transparent 45%),
-    radial-gradient(ellipse at 72% 42%, rgba(230, 245, 255, 0.2) 0%, rgba(160, 210, 255, 0.08) 28%, transparent 48%);
+    radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.22) 20%, transparent 38%),
+    radial-gradient(ellipse at 28% 38%, rgba(220, 240, 255, 0.4) 0%, rgba(180, 220, 255, 0.18) 25%, transparent 45%),
+    radial-gradient(ellipse at 72% 42%, rgba(230, 245, 255, 0.38) 0%, rgba(160, 210, 255, 0.15) 28%, transparent 48%);
   animation: cloudSwirl 12s linear infinite;
 }
 
-/* Swirling cloud layer 2 - More subtle */
+/* Swirling cloud layer 2 */
 .conversation-sphere::after {
   content: '';
   position: absolute;
   inset: -15%;
   border-radius: 50%;
   background: 
-    radial-gradient(ellipse at 62% 32%, rgba(255, 255, 255, 0.28) 0%, rgba(245, 250, 255, 0.12) 22%, transparent 38%),
-    radial-gradient(ellipse at 32% 55%, rgba(225, 242, 255, 0.2) 0%, rgba(190, 225, 255, 0.08) 26%, transparent 42%);
+    radial-gradient(ellipse at 62% 32%, rgba(255, 255, 255, 0.42) 0%, rgba(245, 250, 255, 0.2) 22%, transparent 38%),
+    radial-gradient(ellipse at 32% 55%, rgba(225, 242, 255, 0.35) 0%, rgba(190, 225, 255, 0.15) 26%, transparent 42%);
   animation: cloudSwirlReverse 15s linear infinite;
   mix-blend-mode: overlay;
 }
@@ -221,7 +221,7 @@
   position: absolute;
   inset: -20px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(100, 170, 255, 0.4) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(10, 132, 255, 0.5) 0%, transparent 70%);
   filter: blur(30px);
   animation: glowPulse 3s ease-in-out infinite;
   pointer-events: none;
@@ -295,12 +295,12 @@
   border: 1px solid var(--border-color);
 }
 
-/* Controls */
+/* Controls - Wider */
 .conversation-controls {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   padding: 20px;
   border-top: 1px solid var(--border-color);
 }
@@ -316,6 +316,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
 }
 
 .control-btn-editor:hover:not(:disabled) {
@@ -344,6 +345,11 @@
 @keyframes pulse-btn {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
+}
+
+/* File input hidden */
+.file-input {
+  display: none;
 }
 
 /* Preview Panel */

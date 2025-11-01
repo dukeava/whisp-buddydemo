@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Trash2, Code, Eye, Download } from 'lucide-react';
+import { Sun, Moon, Trash2, Code, Eye, Download, Plus } from 'lucide-react';
 import RealtimeAudioChat from '@/services/RealtimeAudioChat';
 import axios from 'axios';
 import '../styles/EditorPage.css';
@@ -11,6 +11,7 @@ const API = `${BACKEND_URL}/api`;
 
 const EditorPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -21,9 +22,11 @@ const EditorPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [projectName, setProjectName] = useState('Untitled Project');
   const [showCode, setShowCode] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState(location.state?.attachedFiles || []);
   const realtimeChatRef = useRef(null);
   const iframeRef = useRef(null);
   const conversationRef = useRef([]);
+  const fileInputRef = useRef(null);
 
   // Conversational AI responses
   const conversationalResponses = [
@@ -91,6 +94,13 @@ const EditorPage = () => {
     }
     setIsListening(false);
     setStatusText("Paused. Hit the mic when you're ready!");
+  };
+
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files);
+    setAttachedFiles(prev => [...prev, ...files]);
+    setStatusText(`Got it! ${files.length} file${files.length > 1 ? 's' : ''} added. What should I do with ${files.length > 1 ? 'them' : 'it'}?`);
+    console.log('Files attached in editor:', files);
   };
 
   const handleGenerateCode = async () => {
@@ -222,6 +232,12 @@ const EditorPage = () => {
             <p className="conversation-status" data-testid="conversation-status">
               {statusText}
             </p>
+
+            {attachedFiles.length > 0 && (
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                📎 {attachedFiles.length} file{attachedFiles.length > 1 ? 's' : ''} attached
+              </p>
+            )}
           </div>
 
           {/* Transcript (appears at bottom) */}
@@ -241,6 +257,23 @@ const EditorPage = () => {
           </div>
 
           <div className="conversation-controls">
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              className="file-input"
+              onChange={handleFileUpload}
+              accept="image/*,.pdf,.doc,.docx,.txt"
+            />
+
+            <button 
+              className="control-btn-editor"
+              onClick={() => fileInputRef.current?.click()}
+              data-testid="attach-file-editor-btn"
+            >
+              <Plus size={18} />
+            </button>
+
             <button 
               className="control-btn-editor"
               onClick={handleClearChat}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Mic, MicOff, ArrowUp } from 'lucide-react';
+import { Sun, Moon, Mic, MicOff, ArrowUp, Plus } from 'lucide-react';
 import '../styles/LandingPage.css';
 
 const LandingPage = () => {
@@ -10,9 +10,11 @@ const LandingPage = () => {
   const [isListening, setIsListening] = useState(false);
   const [isTalking, setIsTalking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState([]);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const animateSphere = () => {
     if (!analyserRef.current) return;
@@ -58,9 +60,15 @@ const LandingPage = () => {
     setIsTalking(false);
   };
 
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files);
+    setAttachedFiles(prev => [...prev, ...files]);
+    console.log('Files attached:', files);
+  };
+
   const handleTransitionToEditor = () => {
     stopListening();
-    navigate('/editor');
+    navigate('/editor', { state: { attachedFiles } });
   };
 
   useEffect(() => {
@@ -114,6 +122,24 @@ const LandingPage = () => {
 
         {/* Controls */}
         <div className="controls">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            className="file-input"
+            onChange={handleFileUpload}
+            accept="image/*,.pdf,.doc,.docx,.txt"
+          />
+          
+          <button 
+            className="control-btn"
+            onClick={() => fileInputRef.current?.click()}
+            data-testid="attach-file-btn"
+            aria-label="Attach files"
+          >
+            <Plus size={20} />
+          </button>
+
           <button 
             className="control-btn"
             onClick={() => setIsMuted(!isMuted)}
@@ -141,6 +167,13 @@ const LandingPage = () => {
             <ArrowUp size={20} />
           </button>
         </div>
+
+        {/* File count indicator */}
+        {attachedFiles.length > 0 && (
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+            {attachedFiles.length} file{attachedFiles.length > 1 ? 's' : ''} attached
+          </p>
+        )}
       </div>
 
       {/* Background effects */}
