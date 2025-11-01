@@ -57,24 +57,7 @@ RULES:
 - NO numbered lists
 - ALWAYS end with telling them to HIT THE GO BUTTON TO GET THINGS UNDERWAY (REQUIRED)` 
       : 
-        `You are Whisp, continuing the conversation from earlier.
-
-CONVERSATION CONTEXT:
-${conversationHistory.map(msg => `${msg.role === 'user' ? 'User' : 'You'}: ${msg.content}`).join('\n')}
-
-NOW - You MUST immediately summarize what you're building based on the conversation above:
-
-Example:
-"Alright! So I'm building that [app type] you wanted with [key features mentioned]. I'm setting it up with [design/colors mentioned]... Adding [specific features]... And making sure [user's priority] works perfectly... Your app is ready now! If you want to change anything, just let me know!"
-
-CRITICAL RULES:
-- Start by summarizing what you're building based on the conversation
-- Talk about HOW you made it
-- Mention the specific features they asked for
-- Say "Your app is ready now!"
-- Tell them they can ask for changes
-- DO NOT act like this is new - CONTINUE from the previous discussion
-- This is REQUIRED - you MUST do this summary`;
+        `You are Whisp in the editor. Just respond naturally to any questions.`;
 
       const tokenResponse = await fetch(`${API_PREFIX}/realtime/session`, {
         method: "POST",
