@@ -78,7 +78,7 @@
   justify-content: center;
 }
 
-/* Sphere - Vibrant Blue */
+/* Sphere - Vibrant Blue with smooth transitions */
 .sphere {
   width: 280px;
   height: 280px;
@@ -86,10 +86,10 @@
   position: relative;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(50, 150, 255, 0.7) 0%, rgba(0, 122, 255, 1) 100%);
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Swirling cloud layer 1 - Much more visible white */
+/* Swirling cloud layer 1 */
 .sphere::before {
   content: '';
   position: absolute;
@@ -102,7 +102,7 @@
   animation: cloudSwirl 12s linear infinite;
 }
 
-/* Swirling cloud layer 2 - More visible */
+/* Swirling cloud layer 2 */
 .sphere::after {
   content: '';
   position: absolute;
@@ -115,26 +115,17 @@
   mix-blend-mode: overlay;
 }
 
-/* Swirling animations */
 @keyframes cloudSwirl {
-  0% {
-    transform: rotate(0deg) scale(1.1);
-  }
-  100% {
-    transform: rotate(360deg) scale(1.1);
-  }
+  0% { transform: rotate(0deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1.1); }
 }
 
 @keyframes cloudSwirlReverse {
-  0% {
-    transform: rotate(0deg) scale(1.15);
-  }
-  100% {
-    transform: rotate(-360deg) scale(1.15);
-  }
+  0% { transform: rotate(0deg) scale(1.15); }
+  100% { transform: rotate(-360deg) scale(1.15); }
 }
 
-/* Listening State - Faster swirl */
+/* Listening State */
 .sphere.listening::before {
   animation: cloudSwirl 8s linear infinite;
 }
@@ -143,7 +134,7 @@
   animation: cloudSwirlReverse 10s linear infinite;
 }
 
-/* Talking State - Smooth bounce */
+/* Talking State - Smooth continuous bounce */
 .sphere.talking {
   animation: smoothBounce 0.8s ease-in-out infinite;
 }
@@ -157,12 +148,8 @@
 }
 
 @keyframes smoothBounce {
-  0%, 100% { 
-    transform: translateY(0); 
-  }
-  50% { 
-    transform: translateY(-12px); 
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
 
 /* Glow Effect */
@@ -191,7 +178,7 @@
   50% { opacity: 0.85; }
 }
 
-/* Typing Text */
+/* Typing Text - Always visible */
 .main-text {
   font-size: 18px;
   font-weight: 400;
@@ -210,7 +197,7 @@
   51%, 100% { opacity: 0; }
 }
 
-/* Controls - Much Wider pill bar */
+/* Controls */
 .controls {
   display: flex;
   align-items: center;
@@ -249,7 +236,7 @@
   height: 24px;
 }
 
-/* Hidden file input */
+/* File input */
 .file-input {
   display: none;
 }

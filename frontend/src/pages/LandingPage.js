@@ -8,13 +8,15 @@ import '../styles/LandingPage.css';
 const LandingPage = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const [isListening, setIsListening] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [isWhispTalking, setIsWhispTalking] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [typedText, setTypedText] = useState('');
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [conversationHistory, setConversationHistory] = useState([]);
+  const [hasGreeted, setHasGreeted] = useState(false);
   const fileInputRef = useRef(null);
   const realtimeChatRef = useRef(null);
 
@@ -24,10 +26,8 @@ const LandingPage = () => {
     'Start speaking to wonder'
   ];
 
-  // Typing effect
+  // Typing effect - Always runs
   useEffect(() => {
-    if (isListening) return;
-    
     const currentPhrase = phrases[phraseIndex];
     const typingSpeed = isDeleting ? 50 : 100;
     const pauseTime = 2000;
@@ -50,11 +50,12 @@ const LandingPage = () => {
     }, typingSpeed);
 
     return () => clearTimeout(timer);
-  }, [typedText, isDeleting, phraseIndex, isListening]);
+  }, [typedText, isDeleting, phraseIndex]);
 
-  const startListening = async () => {
-    try {
-      if (!realtimeChatRef.current) {
+  const toggleMic = async () => {
+    if (!isConnected) {
+      // First click - connect and greet
+      try {
         realtimeChatRef.current = new RealtimeAudioChat();
         
         realtimeChatRef.current.onTranscript = (text, isUser) => {
@@ -66,6 +67,7 @@ const LandingPage = () => {
           console.log('Speaking state:', state);
           if (state === 'assistant_speaking') {
             setIsWhispTalking(true);
+            setIsRecording(false);
           } else if (state === 'assistant_stopped') {
             setIsWhispTalking(false);
           } else if (state === 'user_speaking') {
@@ -74,32 +76,36 @@ const LandingPage = () => {
         };
 
         await realtimeChatRef.current.init();
+        setIsConnected(true);
         
-        // Send greeting after connection
-        setTimeout(() => {
-          if (realtimeChatRef.current) {
-            realtimeChatRef.current.sendMessage("Hey! So what kind of app are you thinking of building? I'm super excited to hear your ideas!");
-            setIsWhispTalking(true);
-          }
-        }, 1000);
+        // Send greeting
+        if (!hasGreeted) {
+          setTimeout(() => {
+            if (realtimeChatRef.current) {
+              realtimeChatRef.current.sendMessage("Hey there! What would you like to build today? I'm happy to help bring your ideas to life!");
+              setHasGreeted(true);
+            }
+          }, 800);
+        }
+      } catch (error) {
+        console.error('Error starting voice chat:', error);
+        alert('Could not start voice chat. Please check microphone permissions.');
       }
-      
-      setIsListening(true);
-      setTypedText('Listening...');
-    } catch (error) {
-      console.error('Error starting voice chat:', error);
-      alert('Could not start voice chat. Please check microphone permissions.');
+    } else {
+      // Toggle recording
+      if (isRecording) {
+        // Stop recording - let Whisp respond
+        setIsRecording(false);
+        if (realtimeChatRef.current) {
+          // Signal that user stopped speaking - Whisp will respond
+          console.log('User stopped speaking, waiting for Whisp response...');
+        }
+      } else {
+        // Start recording
+        setIsRecording(true);
+        setIsWhispTalking(false);
+      }
     }
-  };
-
-  const stopListening = () => {
-    if (realtimeChatRef.current) {
-      realtimeChatRef.current.disconnect();
-      realtimeChatRef.current = null;
-    }
-    setIsListening(false);
-    setIsWhispTalking(false);
-    setTypedText('');
   };
 
   const handleFileUpload = (event) => {
@@ -118,7 +124,9 @@ const LandingPage = () => {
 
   useEffect(() => {
     return () => {
-      stopListening();
+      if (realtimeChatRef.current) {
+        realtimeChatRef.current.disconnect();
+      }
     };
   }, []);
 
@@ -146,7 +154,7 @@ const LandingPage = () => {
           <div 
             className={`sphere ${
               isWhispTalking ? 'talking' : 
-              isListening ? 'listening' : ''
+              isRecording ? 'listening' : ''
             }`}
             data-testid="voice-sphere"
           >
@@ -155,9 +163,7 @@ const LandingPage = () => {
         </div>
 
         <p className="main-text" data-testid="landing-text">
-          {isListening ? typedText : (
-            <>{typedText}<span className="cursor">|</span></>
-          )}
+          {typedText}<span className="cursor">|</span>
         </p>
 
         <div className="controls">
@@ -181,11 +187,11 @@ const LandingPage = () => {
 
           <button 
             className="control-btn"
-            onClick={isListening ? stopListening : startListening}
+            onClick={toggleMic}
             data-testid="mic-control-btn"
-            aria-label={isListening ? 'Stop listening' : 'Start listening'}
+            aria-label={isRecording ? 'Stop recording' : 'Start recording'}
           >
-            {isListening ? <MicOff size={24} /> : <Mic size={24} />}
+            {isRecording ? <MicOff size={24} /> : <Mic size={24} />}
           </button>
 
           <button 

@@ -12,7 +12,6 @@ class RealtimeAudioChat {
 
   async init(initialMessage = null) {
     try {
-      // Get session from backend with instructions
       const tokenResponse = await fetch(`${API_PREFIX}/realtime/session`, {
         method: "POST",
         headers: {
@@ -21,24 +20,26 @@ class RealtimeAudioChat {
         body: JSON.stringify({
           model: "gpt-4o-realtime-preview",
           voice: "alloy",
+          turn_detection: null,
           instructions: `You are Whisp, an enthusiastic and conversational AI buddy who helps people build apps through voice.
 
 Your personality:
 - Super friendly and excited ("Ooh that's cool!", "I love it!", "This is gonna be awesome!")
 - Talk like a buddy, not a robot (use "you", "we", "gonna", "wanna")
-- Ask clarifying questions naturally ("Quick question - do you want...", "Just to make sure...")
-- Confirm understanding ("So if I'm hearing you right...", "Got it, so we're building...")
-- Guide the conversation ("When you're ready, just hit that go button and we'll make it happen!")
-- Celebrate progress ("This is turning out really cool!", "Almost there!")
-- Be specific about what you're building and why it's cool
+- ALWAYS respond adaptively to what the user just said
+- Ask clarifying questions based on what they told you ("So you mentioned X - do you want it to do Y?", "I'm curious about the Z part - how should that work?")
+- Build on their ideas ("Oh so it's like [their idea] but with [enhancement]?")
+- Confirm understanding ("Got it, so we're building...", "Let me make sure I understand...")
+- Once you have enough details, say: "Alright! I think we have a good grasp on what we want to build. Click that go button and let's make this happen!"
 
-Important:
-- Keep responses conversational and natural, like you're talking to a friend
-- Don't be too formal or robotic
-- Show excitement about what they want to build
-- When they describe what they want, ask follow-up questions to understand better
-- Once you have enough info, tell them to "hit the go button" or "click go"
-- NEVER generate code in this conversation - just discuss and clarify the idea`
+Important conversation flow:
+1. Listen to what the user describes
+2. Respond SPECIFICALLY to what they just said
+3. Ask 1-2 clarifying questions about their idea
+4. Build on their answers and ask follow-ups
+5. After 2-3 exchanges with good details, suggest they "hit the go button"
+
+NEVER generate code - just discuss and understand the idea deeply.`
         })
       });
       
@@ -47,17 +48,14 @@ Important:
         throw new Error("Failed to get session token");
       }
 
-      // Create and set up WebRTC peer connection
       this.peerConnection = new RTCPeerConnection();
       this.setupAudioElement();
       await this.setupLocalAudio();
       this.setupDataChannel();
 
-      // Create and send offer
       const offer = await this.peerConnection.createOffer();
       await this.peerConnection.setLocalDescription(offer);
 
-      // Send offer to backend and get answer
       const response = await fetch(`${API_PREFIX}/realtime/negotiate`, {
         method: "POST",
         body: offer.sdp,
@@ -74,7 +72,6 @@ Important:
 
       await this.peerConnection.setRemoteDescription(answer);
       
-      // Send initial message if provided
       if (initialMessage && this.dataChannel && this.dataChannel.readyState === 'open') {
         this.sendMessage(initialMessage);
       }
@@ -115,17 +112,14 @@ Important:
         const eventData = JSON.parse(event.data);
         console.log("Received event:", eventData);
         
-        // Handle transcript events
         if (eventData.type === 'conversation.item.input_audio_transcription.completed') {
           if (this.onTranscript) {
             this.onTranscript(eventData.transcript, true);
           }
-          // User stopped speaking
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('user_stopped');
           }
         } else if (eventData.type === 'response.audio_transcript.delta') {
-          // Whisp is speaking
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('assistant_speaking');
           }
@@ -134,12 +128,10 @@ Important:
             this.onTranscript(eventData.transcript, false);
           }
         } else if (eventData.type === 'response.done') {
-          // Response completed - Whisp stopped speaking
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('assistant_stopped');
           }
         } else if (eventData.type === 'input_audio_buffer.speech_started') {
-          // User started speaking
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('user_speaking');
           }
@@ -164,8 +156,6 @@ Important:
         }
       };
       this.dataChannel.send(JSON.stringify(message));
-      
-      // Trigger response
       this.dataChannel.send(JSON.stringify({ type: 'response.create' }));
     }
   }
