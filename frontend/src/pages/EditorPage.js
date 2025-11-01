@@ -72,8 +72,8 @@ const EditorPage = () => {
         // Automatically start Whisp's summary after initialization
         setTimeout(() => {
           if (realtimeChatRef.current && conversationHistory.length > 0) {
-            // Trigger Whisp to start speaking by sending a prompt
-            realtimeChatRef.current.sendMessage("Start building summary based on our discussion");
+            // Trigger Whisp to start speaking
+            realtimeChatRef.current.startGreeting();
           }
         }, 1000);
       }
