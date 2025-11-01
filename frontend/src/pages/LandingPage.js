@@ -81,7 +81,7 @@ const LandingPage = () => {
         if (!hasGreeted) {
           setTimeout(() => {
             if (realtimeChatRef.current) {
-              realtimeChatRef.current.sendMessage("Hey! What would you like to build today?");
+              realtimeChatRef.current.sendMessage("What would you like to build today?");
               setHasGreeted(true);
             }
           }, 800);
