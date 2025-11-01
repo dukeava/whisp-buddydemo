@@ -15,31 +15,38 @@ const EditorPage = () => {
   const { theme, toggleTheme } = useTheme();
   const [isListening, setIsListening] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [statusText, setStatusText] = useState('Alright! Let me understand what you\'re building here...');
+  const [statusText, setStatusText] = useState('Alright! Let me build this for you...');
   const [generatedCode, setGeneratedCode] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [projectName, setProjectName] = useState('Untitled Project');
   const [showCode, setShowCode] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState(location.state?.attachedFiles || []);
+  const [conversationHistory, setConversationHistory] = useState(location.state?.conversationHistory || []);
   const realtimeChatRef = useRef(null);
   const iframeRef = useRef(null);
-  const conversationRef = useRef([]);
   const fileInputRef = useRef(null);
+  const hasGeneratedRef = useRef(false);
 
   // Building phase messages
   const buildingMessages = [
-    "Okay so I'm putting together the structure now...",
-    "This is actually turning out really cool!",
-    "Adding some nice touches here...",
-    "Almost there, this is looking awesome!",
-    "Just polishing things up..."
+    "Okay so I'm setting up the foundation here...",
+    "Ooh, adding some really cool features now!",
+    "This is turning out awesome! Just polishing things up...",
+    "Almost done - making it look really slick...",
+    "Final touches... this is gonna be great!"
   ];
 
   useEffect(() => {
-    // Auto-start voice conversation
+    // Auto-start building if we have conversation history
+    if (conversationHistory.length > 0 && !hasGeneratedRef.current) {
+      hasGeneratedRef.current = true;
+      setTimeout(() => {
+        handleGenerateCode();
+      }, 1500);
+    }
+    
+    // Initialize voice chat
     initializeRealtimeChat();
-    setIsSpeaking(true);
-    setTimeout(() => setIsSpeaking(false), 3000);
   }, []);
 
   const initializeRealtimeChat = async () => {
@@ -48,17 +55,12 @@ const EditorPage = () => {
         realtimeChatRef.current = new RealtimeAudioChat();
         
         realtimeChatRef.current.onTranscript = (text, isUser) => {
-          conversationRef.current.push({ role: isUser ? 'user' : 'assistant', content: text });
+          console.log(isUser ? 'User:' : 'Whisp:', text);
           
           if (!isUser) {
             setStatusText(text);
             setIsSpeaking(true);
             setTimeout(() => setIsSpeaking(false), 2000);
-            
-            // Check if Whisp is asking to start building
-            if (text.toLowerCase().includes('hit go') || text.toLowerCase().includes('press go') || text.toLowerCase().includes('click go')) {
-              // User should click the generate button
-            }
           }
         };
 
@@ -67,7 +69,7 @@ const EditorPage = () => {
       setIsListening(true);
     } catch (error) {
       console.error('Failed to initialize realtime chat:', error);
-      setStatusText("Hmm, having trouble with the mic. Mind refreshing?");
+      setStatusText("Having some mic trouble. Try refreshing?");
     }
   };
 
@@ -82,10 +84,9 @@ const EditorPage = () => {
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
     setAttachedFiles(prev => [...prev, ...files]);
-    setStatusText(`Nice! Got ${files.length} more file${files.length > 1 ? 's' : ''}. What should I do with ${files.length > 1 ? 'these' : 'this'}?`);
+    setStatusText(`Sweet! Got ${files.length} more file${files.length > 1 ? 's' : ''}. Let me take a look...`);
     setIsSpeaking(true);
     setTimeout(() => setIsSpeaking(false), 2500);
-    console.log('Files attached in editor:', files);
   };
 
   const handleGenerateCode = async () => {
@@ -96,18 +97,21 @@ const EditorPage = () => {
     const messageInterval = setInterval(() => {
       if (messageIndex < buildingMessages.length) {
         setStatusText(buildingMessages[messageIndex]);
+        if (realtimeChatRef.current) {
+          realtimeChatRef.current.sendMessage(buildingMessages[messageIndex]);
+        }
         messageIndex++;
       }
-    }, 3000);
+    }, 4000);
     
     try {
-      const userRequirements = conversationRef.current
+      const userRequirements = conversationHistory
         .filter(m => m.role === 'user')
         .map(m => m.content)
         .join(' ');
 
       const response = await axios.post(`${API}/generate-code`, {
-        conversation_history: conversationRef.current,
+        conversation_history: conversationHistory,
         user_requirements: userRequirements
       });
 
@@ -115,8 +119,14 @@ const EditorPage = () => {
 
       if (response.data.success) {
         setGeneratedCode(response.data.code);
-        setStatusText("Boom! There it is. Check it out - pretty slick, right? What do you think?");
+        const completionMessage = "Boom! There it is. Check it out - I think you're really gonna like this! What do you think?";
+        setStatusText(completionMessage);
         
+        if (realtimeChatRef.current) {
+          realtimeChatRef.current.sendMessage(completionMessage);
+        }
+        
+        // Render in iframe
         if (iframeRef.current) {
           const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
           iframeDoc.open();
@@ -124,12 +134,16 @@ const EditorPage = () => {
           iframeDoc.close();
         }
         
-        setTimeout(() => setIsSpeaking(false), 4000);
+        setTimeout(() => setIsSpeaking(false), 5000);
       }
     } catch (error) {
       clearInterval(messageInterval);
       console.error('Code generation failed:', error);
-      setStatusText("Oof, hit a snag. Let's try that again - describe it one more time?");
+      const errorMessage = "Hmm, hit a snag there. Wanna describe what you want again?";
+      setStatusText(errorMessage);
+      if (realtimeChatRef.current) {
+        realtimeChatRef.current.sendMessage(errorMessage);
+      }
       setTimeout(() => setIsSpeaking(false), 3000);
     } finally {
       setIsGenerating(false);
@@ -137,9 +151,14 @@ const EditorPage = () => {
   };
 
   const handleClearChat = () => {
-    conversationRef.current = [];
+    setConversationHistory([]);
     setGeneratedCode('');
-    setStatusText("Fresh slate! What are we building now?");
+    hasGeneratedRef.current = false;
+    const clearMessage = "Fresh start! What do you wanna build?";
+    setStatusText(clearMessage);
+    if (realtimeChatRef.current) {
+      realtimeChatRef.current.sendMessage(clearMessage);
+    }
     setIsSpeaking(true);
     setTimeout(() => setIsSpeaking(false), 2000);
   };
@@ -155,14 +174,21 @@ const EditorPage = () => {
     a.click();
     URL.revokeObjectURL(url);
     
-    setStatusText("Downloaded! You can tweak it however you like now.");
+    const downloadMessage = "Downloaded! Feel free to customize it however you want.";
+    setStatusText(downloadMessage);
+    if (realtimeChatRef.current) {
+      realtimeChatRef.current.sendMessage(downloadMessage);
+    }
     setIsSpeaking(true);
     setTimeout(() => setIsSpeaking(false), 2500);
   };
 
+  const toggleCodePreview = () => {
+    setShowCode(!showCode);
+  };
+
   return (
     <div className={`editor-page ${theme}`}>
-      {/* Header */}
       <header className="editor-header">
         <div className="header-left">
           <button 
@@ -187,8 +213,9 @@ const EditorPage = () => {
         <div className="header-right">
           <button 
             className="header-btn"
-            onClick={() => setShowCode(!showCode)}
+            onClick={toggleCodePreview}
             data-testid="toggle-code-btn"
+            disabled={!generatedCode}
           >
             {showCode ? <Eye size={18} /> : <Code size={18} />}
             <span>{showCode ? 'Preview' : 'Code'}</span>
@@ -212,9 +239,7 @@ const EditorPage = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="editor-content">
-        {/* Left Panel - Voice Sphere */}
         <div className="conversation-panel">
           <div className="conversation-sphere-container">
             <div className="conversation-sphere-wrapper" style={{ position: 'relative' }}>
@@ -278,7 +303,7 @@ const EditorPage = () => {
             <button 
               className="control-btn-editor"
               onClick={handleGenerateCode}
-              disabled={isGenerating || conversationRef.current.length === 0}
+              disabled={isGenerating || conversationHistory.length === 0}
               data-testid="generate-code-btn"
               title="Generate Preview"
             >
@@ -289,13 +314,24 @@ const EditorPage = () => {
           </div>
         </div>
 
-        {/* Right Panel - Preview */}
         <div className="preview-panel">
           <div className="preview-header">
             <span>Preview</span>
             <div className="preview-tabs">
-              <button className="tab active" data-testid="preview-tab">Preview</button>
-              <button className="tab" data-testid="code-tab">Code</button>
+              <button 
+                className={`tab ${!showCode ? 'active' : ''}`}
+                onClick={() => setShowCode(false)}
+                data-testid="preview-tab"
+              >
+                Preview
+              </button>
+              <button 
+                className={`tab ${showCode ? 'active' : ''}`}
+                onClick={() => setShowCode(true)}
+                data-testid="code-tab"
+              >
+                Code
+              </button>
             </div>
           </div>
 
@@ -308,7 +344,7 @@ const EditorPage = () => {
                   </svg>
                 </div>
                 <h3>Spinning up preview...</h3>
-                <p>Stepping into the horizon</p>
+                <p>Building your vision</p>
               </div>
             ) : generatedCode ? (
               showCode ? (
@@ -329,7 +365,7 @@ const EditorPage = () => {
                 <svg width="64" height="64" viewBox="0 0 32 32" fill="none" opacity="0.3">
                   <path d="M16 4L20 12L28 16L20 20L16 28L12 20L4 16L12 12L16 4Z" fill="currentColor"/>
                 </svg>
-                <p>Start chatting with me to bring your ideas to life!</p>
+                <p>Building your app...</p>
               </div>
             )}
           </div>
