@@ -43,6 +43,9 @@ const EditorPage = () => {
   }, []);
 
   const initializeRealtimeChat = async () => {
+    // DISABLED - No voice in editor for now
+    return;
+    
     try {
       if (!realtimeChatRef.current) {
         realtimeChatRef.current = new RealtimeAudioChat();
