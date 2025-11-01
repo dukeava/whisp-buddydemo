@@ -177,12 +177,23 @@
   50% { opacity: 0.85; }
 }
 
-/* Text */
+/* Typing Text */
 .main-text {
   font-size: 18px;
   font-weight: 400;
   color: var(--text-secondary);
   letter-spacing: 0.5px;
+  min-height: 28px;
+}
+
+.main-text .cursor {
+  color: var(--accent-blue);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
 /* Controls - Wider pill bar */
@@ -212,16 +223,6 @@
 
 .control-btn:hover {
   background: var(--border-color);
-}
-
-.control-btn.primary {
-  background: var(--accent-blue);
-  color: white;
-}
-
-.control-btn.primary:hover {
-  opacity: 0.9;
-  transform: scale(1.05);
 }
 
 /* Hidden file input */

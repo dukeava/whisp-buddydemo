@@ -13,11 +13,9 @@ const EditorPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
-  const [isListening, setIsListening] = useState(false);
+  const [isListening, setIsListening] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [statusText, setStatusText] = useState('Hey! Tell me what you wanna build today. I\'m all ears!');
-  const [transcript, setTranscript] = useState([]);
-  const [showTranscript, setShowTranscript] = useState(false);
+  const [statusText, setStatusText] = useState('Alright! Let me understand what you\'re building here...');
   const [generatedCode, setGeneratedCode] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [projectName, setProjectName] = useState('Untitled Project');
@@ -28,36 +26,21 @@ const EditorPage = () => {
   const conversationRef = useRef([]);
   const fileInputRef = useRef(null);
 
-  // Conversational AI responses
-  const conversationalResponses = [
-    "Ooh, that sounds exciting! Tell me more about what you're envisioning.",
-    "I love where this is going! What features are you thinking?",
-    "Nice! So just to clarify - you want this to...",
-    "Got it! This is gonna be awesome. Let me ask you something...",
-    "That's a cool idea! Quick question though...",
-    "Okay okay, I'm seeing the vision! But help me understand...",
-    "Sweet! Before I start building, let me make sure I got this right...",
-    "Alright, so we're making something really cool here! One more thing...",
-    "This is gonna be fire! Just wanna double-check...",
-    "I'm pumped to build this with you! Let's nail down..."
+  // Building phase messages
+  const buildingMessages = [
+    "Okay so I'm putting together the structure now...",
+    "This is actually turning out really cool!",
+    "Adding some nice touches here...",
+    "Almost there, this is looking awesome!",
+    "Just polishing things up..."
   ];
 
   useEffect(() => {
-    // Simulate conversational status updates
-    const statusMessages = [
-      "Hey! Tell me what you wanna build today. I'm all ears!",
-      "Just listening... take your time!",
-      "Mhmm, I'm following...",
-      "Go on, I'm with you!"
-    ];
-
-    if (isListening && !isSpeaking) {
-      const interval = setInterval(() => {
-        setStatusText(statusMessages[Math.floor(Math.random() * statusMessages.length)]);
-      }, 4000);
-      return () => clearInterval(interval);
-    }
-  }, [isListening, isSpeaking]);
+    // Auto-start voice conversation
+    initializeRealtimeChat();
+    setIsSpeaking(true);
+    setTimeout(() => setIsSpeaking(false), 3000);
+  }, []);
 
   const initializeRealtimeChat = async () => {
     try {
@@ -65,25 +48,26 @@ const EditorPage = () => {
         realtimeChatRef.current = new RealtimeAudioChat();
         
         realtimeChatRef.current.onTranscript = (text, isUser) => {
-          setTranscript(prev => [...prev, { role: isUser ? 'user' : 'assistant', content: text }]);
           conversationRef.current.push({ role: isUser ? 'user' : 'assistant', content: text });
           
           if (!isUser) {
             setStatusText(text);
             setIsSpeaking(true);
             setTimeout(() => setIsSpeaking(false), 2000);
+            
+            // Check if Whisp is asking to start building
+            if (text.toLowerCase().includes('hit go') || text.toLowerCase().includes('press go') || text.toLowerCase().includes('click go')) {
+              // User should click the generate button
+            }
           }
-          
-          setShowTranscript(true);
         };
 
         await realtimeChatRef.current.init();
       }
       setIsListening(true);
-      setStatusText("I'm listening! What's on your mind?");
     } catch (error) {
       console.error('Failed to initialize realtime chat:', error);
-      setStatusText("Oops! Mic issue. Mind clicking the mic button again?");
+      setStatusText("Hmm, having trouble with the mic. Mind refreshing?");
     }
   };
 
@@ -93,20 +77,28 @@ const EditorPage = () => {
       realtimeChatRef.current = null;
     }
     setIsListening(false);
-    setStatusText("Paused. Hit the mic when you're ready!");
   };
 
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
     setAttachedFiles(prev => [...prev, ...files]);
-    setStatusText(`Got it! ${files.length} file${files.length > 1 ? 's' : ''} added. What should I do with ${files.length > 1 ? 'them' : 'it'}?`);
+    setStatusText(`Nice! Got ${files.length} more file${files.length > 1 ? 's' : ''}. What should I do with ${files.length > 1 ? 'these' : 'this'}?`);
+    setIsSpeaking(true);
+    setTimeout(() => setIsSpeaking(false), 2500);
     console.log('Files attached in editor:', files);
   };
 
   const handleGenerateCode = async () => {
     setIsGenerating(true);
-    setStatusText("Alright! Let me cook up something awesome for you...");
     setIsSpeaking(true);
+    
+    let messageIndex = 0;
+    const messageInterval = setInterval(() => {
+      if (messageIndex < buildingMessages.length) {
+        setStatusText(buildingMessages[messageIndex]);
+        messageIndex++;
+      }
+    }, 3000);
     
     try {
       const userRequirements = conversationRef.current
@@ -119,9 +111,11 @@ const EditorPage = () => {
         user_requirements: userRequirements
       });
 
+      clearInterval(messageInterval);
+
       if (response.data.success) {
         setGeneratedCode(response.data.code);
-        setStatusText("Ta-da! Check out what I made. Thoughts?");
+        setStatusText("Boom! There it is. Check it out - pretty slick, right? What do you think?");
         
         if (iframeRef.current) {
           const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
@@ -129,22 +123,25 @@ const EditorPage = () => {
           iframeDoc.write(response.data.code);
           iframeDoc.close();
         }
+        
+        setTimeout(() => setIsSpeaking(false), 4000);
       }
     } catch (error) {
+      clearInterval(messageInterval);
       console.error('Code generation failed:', error);
-      setStatusText("Hmm, hit a snag there. Wanna try describing it differently?");
+      setStatusText("Oof, hit a snag. Let's try that again - describe it one more time?");
+      setTimeout(() => setIsSpeaking(false), 3000);
     } finally {
       setIsGenerating(false);
-      setIsSpeaking(false);
     }
   };
 
   const handleClearChat = () => {
-    setTranscript([]);
     conversationRef.current = [];
     setGeneratedCode('');
-    setStatusText("Fresh start! What do you wanna build?");
-    setShowTranscript(false);
+    setStatusText("Fresh slate! What are we building now?");
+    setIsSpeaking(true);
+    setTimeout(() => setIsSpeaking(false), 2000);
   };
 
   const handleDownloadCode = () => {
@@ -157,6 +154,10 @@ const EditorPage = () => {
     a.download = `${projectName.replace(/\s+/g, '-').toLowerCase()}.html`;
     a.click();
     URL.revokeObjectURL(url);
+    
+    setStatusText("Downloaded! You can tweak it however you like now.");
+    setIsSpeaking(true);
+    setTimeout(() => setIsSpeaking(false), 2500);
   };
 
   return (
@@ -240,22 +241,6 @@ const EditorPage = () => {
             )}
           </div>
 
-          {/* Transcript (appears at bottom) */}
-          <div 
-            className={`transcript-container ${showTranscript ? 'visible' : ''}`}
-            data-testid="transcript-container"
-          >
-            {transcript.slice(-3).map((item, idx) => (
-              <div 
-                key={idx} 
-                className={`transcript-item ${item.role}`}
-                data-testid={`transcript-${item.role}`}
-              >
-                {item.content}
-              </div>
-            ))}
-          </div>
-
           <div className="conversation-controls">
             <input
               ref={fileInputRef}
@@ -281,25 +266,13 @@ const EditorPage = () => {
             >
               <Trash2 size={18} />
             </button>
-            
-            <button 
-              className={`control-btn-editor primary ${isListening ? 'active' : ''}`}
-              onClick={isListening ? stopRealtimeChat : initializeRealtimeChat}
-              data-testid="voice-toggle-btn"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <line x1="12" y1="19" x2="12" y2="23" strokeWidth="2" strokeLinecap="round"/>
-                <line x1="8" y1="23" x2="16" y2="23" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </button>
 
             <button 
               className="control-btn-editor"
               onClick={handleGenerateCode}
-              disabled={isGenerating || transcript.length === 0}
+              disabled={isGenerating || conversationRef.current.length === 0}
               data-testid="generate-code-btn"
+              title="Generate Preview"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <polygon points="5 3 19 12 5 21 5 3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="currentColor"/>

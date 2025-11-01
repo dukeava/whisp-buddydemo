@@ -9,12 +9,49 @@ const LandingPage = () => {
   const { theme, toggleTheme } = useTheme();
   const [isListening, setIsListening] = useState(false);
   const [isTalking, setIsTalking] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
+  const [typedText, setTypedText] = useState('');
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  const phrases = [
+    'Start speaking to build',
+    'Start speaking to imagine',
+    'Start speaking to wonder'
+  ];
+
+  // Typing effect
+  useEffect(() => {
+    const currentPhrase = phrases[phraseIndex];
+    const typingSpeed = isDeleting ? 50 : 100;
+    const pauseTime = 2000;
+
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        // Typing
+        if (typedText.length < currentPhrase.length) {
+          setTypedText(currentPhrase.substring(0, typedText.length + 1));
+        } else {
+          // Pause before deleting
+          setTimeout(() => setIsDeleting(true), pauseTime);
+        }
+      } else {
+        // Deleting
+        if (typedText.length > 0) {
+          setTypedText(typedText.substring(0, typedText.length - 1));
+        } else {
+          setIsDeleting(false);
+          setPhraseIndex((prev) => (prev + 1) % phrases.length);
+        }
+      }
+    }, typingSpeed);
+
+    return () => clearTimeout(timer);
+  }, [typedText, isDeleting, phraseIndex]);
 
   const animateSphere = () => {
     if (!analyserRef.current) return;
@@ -113,11 +150,9 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Text */}
+        {/* Typing Text */}
         <p className="main-text" data-testid="landing-text">
-          {isTalking ? 'I\'m listening...' : 
-           isListening ? 'Go ahead, I\'m all ears!' : 
-           'Start speaking to build'}
+          {typedText}<span className="cursor">|</span>
         </p>
 
         {/* Controls */}
@@ -142,15 +177,6 @@ const LandingPage = () => {
 
           <button 
             className="control-btn"
-            onClick={() => setIsMuted(!isMuted)}
-            data-testid="mute-toggle-btn"
-            aria-label="Toggle mute"
-          >
-            {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
-          </button>
-
-          <button 
-            className="control-btn primary"
             onClick={isListening ? stopListening : startListening}
             data-testid="mic-control-btn"
             aria-label={isListening ? 'Stop listening' : 'Start listening'}
