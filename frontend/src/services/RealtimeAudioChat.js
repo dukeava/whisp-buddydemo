@@ -122,7 +122,10 @@ Just keep them updated casually.`;
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('user_stopped');
           }
-        } else if (eventData.type === 'response.audio_transcript.delta') {
+        } else if (eventData.type === 'response.audio.delta' || 
+                   eventData.type === 'response.audio_transcript.delta' ||
+                   eventData.type === 'response.audio_transcript.started') {
+          // Keep signaling that assistant is speaking
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('assistant_speaking');
           }
@@ -130,7 +133,9 @@ Just keep them updated casually.`;
           if (this.onTranscript) {
             this.onTranscript(eventData.transcript, false);
           }
+          // Don't stop here - wait for response.done
         } else if (eventData.type === 'response.done') {
+          // Only now stop the animation
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('assistant_stopped');
           }
