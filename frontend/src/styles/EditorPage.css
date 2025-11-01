@@ -189,10 +189,9 @@
   100% { transform: rotate(-360deg) scale(1.15); }
 }
 
-/* Speaking State - Continuous bounce - NEVER STOPS while class is active */
+/* Speaking State - Continuous bounce */
 .conversation-sphere.speaking {
   animation: smoothBounce 0.8s ease-in-out infinite;
-  animation-play-state: running;
 }
 
 .conversation-sphere.speaking::before {
@@ -204,26 +203,14 @@
 }
 
 @keyframes smoothBounce {
-  0% { 
-    transform: translateY(0) scale(1); 
-  }
-  50% { 
-    transform: translateY(-18px) scale(1.03); 
-  }
-  100% {
-    transform: translateY(0) scale(1);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
 
 /* Smooth return when not talking */
 .conversation-sphere:not(.speaking):not(.listening) {
-  animation: returnToRest 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes returnToRest {
-  to { 
-    transform: translateY(0) scale(1); 
-  }
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateY(0);
 }
 
 .conversation-sphere.listening::before {
