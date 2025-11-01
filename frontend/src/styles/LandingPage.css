@@ -78,7 +78,7 @@
   justify-content: center;
 }
 
-/* Sphere - Vibrant Blue with smooth transitions */
+/* Sphere - Smooth transitions */
 .sphere {
   width: 280px;
   height: 280px;
@@ -86,10 +86,10 @@
   position: relative;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(50, 150, 255, 0.7) 0%, rgba(0, 122, 255, 1) 100%);
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
 }
 
-/* Swirling cloud layer 1 */
+/* Swirling clouds */
 .sphere::before {
   content: '';
   position: absolute;
@@ -102,7 +102,6 @@
   animation: cloudSwirl 12s linear infinite;
 }
 
-/* Swirling cloud layer 2 */
 .sphere::after {
   content: '';
   position: absolute;
@@ -134,7 +133,7 @@
   animation: cloudSwirlReverse 10s linear infinite;
 }
 
-/* Talking State - Smooth continuous bounce */
+/* Talking State - Continuous bounce while speaking */
 .sphere.talking {
   animation: smoothBounce 0.8s ease-in-out infinite;
 }
@@ -152,7 +151,13 @@
   50% { transform: translateY(-12px); }
 }
 
-/* Glow Effect */
+/* When transitioning from talking to not talking - smooth return */
+.sphere:not(.talking):not(.listening) {
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateY(0);
+}
+
+/* Glow */
 .sphere-glow {
   position: absolute;
   inset: -30px;
@@ -178,7 +183,7 @@
   50% { opacity: 0.85; }
 }
 
-/* Typing Text - Always visible */
+/* Typing Text */
 .main-text {
   font-size: 18px;
   font-weight: 400;
@@ -236,7 +241,6 @@
   height: 24px;
 }
 
-/* File input */
 .file-input {
   display: none;
 }
