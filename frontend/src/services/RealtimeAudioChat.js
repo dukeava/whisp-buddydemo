@@ -145,13 +145,12 @@ CRITICAL RULES:
     this.dataChannel = this.peerConnection.createDataChannel("oai-events");
     
     this.dataChannel.onopen = () => {
-      console.log("✅ Data channel opened - READY TO COMMUNICATE");
+      console.log("Data channel opened");
     };
     
     this.dataChannel.onmessage = (event) => {
       try {
         const eventData = JSON.parse(event.data);
-        console.log('📨 Received event:', eventData.type);
         
         if (eventData.type === 'conversation.item.input_audio_transcription.completed') {
           if (this.onTranscript) {
@@ -160,10 +159,7 @@ CRITICAL RULES:
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('user_stopped');
           }
-        } else if (eventData.type === 'response.audio.delta' || 
-                   eventData.type === 'response.audio_transcript.delta' ||
-                   eventData.type === 'response.audio_transcript.started') {
-          // Keep signaling that assistant is speaking
+        } else if (eventData.type === 'response.audio_transcript.delta') {
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('assistant_speaking');
           }
@@ -171,9 +167,7 @@ CRITICAL RULES:
           if (this.onTranscript) {
             this.onTranscript(eventData.transcript, false);
           }
-          // Don't stop here - wait for response.done
         } else if (eventData.type === 'response.done') {
-          // Only now stop the animation
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('assistant_stopped');
           }
