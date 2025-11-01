@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Mic, MicOff, Trash2, Code, Eye, Play, Download } from 'lucide-react';
+import { Sun, Moon, Trash2, Code, Eye, Download } from 'lucide-react';
 import RealtimeAudioChat from '@/services/RealtimeAudioChat';
 import axios from 'axios';
 import '../styles/EditorPage.css';
@@ -13,43 +13,74 @@ const EditorPage = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [isListening, setIsListening] = useState(false);
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hey! Tell me what you want to build today.' }
-  ]);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [statusText, setStatusText] = useState('Hey! Tell me what you wanna build today. I\'m all ears!');
+  const [transcript, setTranscript] = useState([]);
+  const [showTranscript, setShowTranscript] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [projectName, setProjectName] = useState('Untitled Project');
   const [showCode, setShowCode] = useState(false);
   const realtimeChatRef = useRef(null);
   const iframeRef = useRef(null);
-  const messagesEndRef = useRef(null);
+  const conversationRef = useRef([]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Conversational AI responses
+  const conversationalResponses = [
+    "Ooh, that sounds exciting! Tell me more about what you're envisioning.",
+    "I love where this is going! What features are you thinking?",
+    "Nice! So just to clarify - you want this to...",
+    "Got it! This is gonna be awesome. Let me ask you something...",
+    "That's a cool idea! Quick question though...",
+    "Okay okay, I'm seeing the vision! But help me understand...",
+    "Sweet! Before I start building, let me make sure I got this right...",
+    "Alright, so we're making something really cool here! One more thing...",
+    "This is gonna be fire! Just wanna double-check...",
+    "I'm pumped to build this with you! Let's nail down..."
+  ];
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    // Simulate conversational status updates
+    const statusMessages = [
+      "Hey! Tell me what you wanna build today. I'm all ears!",
+      "Just listening... take your time!",
+      "Mhmm, I'm following...",
+      "Go on, I'm with you!"
+    ];
+
+    if (isListening && !isSpeaking) {
+      const interval = setInterval(() => {
+        setStatusText(statusMessages[Math.floor(Math.random() * statusMessages.length)]);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [isListening, isSpeaking]);
 
   const initializeRealtimeChat = async () => {
     try {
       if (!realtimeChatRef.current) {
         realtimeChatRef.current = new RealtimeAudioChat();
         
-        // Set up event handlers
-        realtimeChatRef.current.onTranscript = (transcript, isUser) => {
-          setMessages(prev => [...prev, {
-            role: isUser ? 'user' : 'assistant',
-            content: transcript
-          }]);
+        realtimeChatRef.current.onTranscript = (text, isUser) => {
+          setTranscript(prev => [...prev, { role: isUser ? 'user' : 'assistant', content: text }]);
+          conversationRef.current.push({ role: isUser ? 'user' : 'assistant', content: text });
+          
+          if (!isUser) {
+            setStatusText(text);
+            setIsSpeaking(true);
+            setTimeout(() => setIsSpeaking(false), 2000);
+          }
+          
+          setShowTranscript(true);
         };
 
         await realtimeChatRef.current.init();
       }
       setIsListening(true);
+      setStatusText("I'm listening! What's on your mind?");
     } catch (error) {
       console.error('Failed to initialize realtime chat:', error);
+      setStatusText("Oops! Mic issue. Mind clicking the mic button again?");
     }
   };
 
@@ -59,27 +90,29 @@ const EditorPage = () => {
       realtimeChatRef.current = null;
     }
     setIsListening(false);
+    setStatusText("Paused. Hit the mic when you're ready!");
   };
 
   const handleGenerateCode = async () => {
     setIsGenerating(true);
+    setStatusText("Alright! Let me cook up something awesome for you...");
+    setIsSpeaking(true);
     
     try {
-      // Build user requirements from conversation
-      const userRequirements = messages
+      const userRequirements = conversationRef.current
         .filter(m => m.role === 'user')
         .map(m => m.content)
         .join(' ');
 
       const response = await axios.post(`${API}/generate-code`, {
-        conversation_history: messages,
+        conversation_history: conversationRef.current,
         user_requirements: userRequirements
       });
 
       if (response.data.success) {
         setGeneratedCode(response.data.code);
+        setStatusText("Ta-da! Check out what I made. Thoughts?");
         
-        // Update iframe with generated code
         if (iframeRef.current) {
           const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
           iframeDoc.open();
@@ -89,18 +122,19 @@ const EditorPage = () => {
       }
     } catch (error) {
       console.error('Code generation failed:', error);
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'Sorry, I encountered an error generating the code. Let\'s try again!'
-      }]);
+      setStatusText("Hmm, hit a snag there. Wanna try describing it differently?");
     } finally {
       setIsGenerating(false);
+      setIsSpeaking(false);
     }
   };
 
   const handleClearChat = () => {
-    setMessages([{ role: 'assistant', content: 'Hey! Tell me what you want to build today.' }]);
+    setTranscript([]);
+    conversationRef.current = [];
     setGeneratedCode('');
+    setStatusText("Fresh start! What do you wanna build?");
+    setShowTranscript(false);
   };
 
   const handleDownloadCode = () => {
@@ -169,28 +203,41 @@ const EditorPage = () => {
 
       {/* Main Content */}
       <div className="editor-content">
-        {/* Left Panel - Conversation */}
+        {/* Left Panel - Voice Sphere */}
         <div className="conversation-panel">
-          <div className="conversation-header">
-            <div className="sphere-mini" data-testid="conversation-sphere">
-              <div className={`sphere-glow-mini ${isListening ? 'active' : ''}`}></div>
+          <div className="conversation-sphere-container">
+            <div className="conversation-sphere-wrapper" style={{ position: 'relative' }}>
+              <div 
+                className={`conversation-sphere ${
+                  isGenerating ? 'speaking' : 
+                  isSpeaking ? 'speaking' : 
+                  isListening ? 'listening' : ''
+                }`}
+                data-testid="conversation-sphere"
+              >
+                <div className="conversation-sphere-glow"></div>
+              </div>
             </div>
-            <h3>Conversation</h3>
+            
+            <p className="conversation-status" data-testid="conversation-status">
+              {statusText}
+            </p>
           </div>
 
-          <div className="messages-container" data-testid="messages-container">
-            {messages.map((msg, idx) => (
+          {/* Transcript (appears at bottom) */}
+          <div 
+            className={`transcript-container ${showTranscript ? 'visible' : ''}`}
+            data-testid="transcript-container"
+          >
+            {transcript.slice(-3).map((item, idx) => (
               <div 
                 key={idx} 
-                className={`message ${msg.role}`}
-                data-testid={`message-${msg.role}-${idx}`}
+                className={`transcript-item ${item.role}`}
+                data-testid={`transcript-${item.role}`}
               >
-                <div className="message-content">
-                  {msg.content}
-                </div>
+                {item.content}
               </div>
             ))}
-            <div ref={messagesEndRef} />
           </div>
 
           <div className="conversation-controls">
@@ -207,16 +254,23 @@ const EditorPage = () => {
               onClick={isListening ? stopRealtimeChat : initializeRealtimeChat}
               data-testid="voice-toggle-btn"
             >
-              {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <line x1="12" y1="19" x2="12" y2="23" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="8" y1="23" x2="16" y2="23" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
             </button>
 
             <button 
               className="control-btn-editor"
               onClick={handleGenerateCode}
-              disabled={isGenerating}
+              disabled={isGenerating || transcript.length === 0}
               data-testid="generate-code-btn"
             >
-              <Play size={18} />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="currentColor"/>
+              </svg>
             </button>
           </div>
         </div>
@@ -261,7 +315,7 @@ const EditorPage = () => {
                 <svg width="64" height="64" viewBox="0 0 32 32" fill="none" opacity="0.3">
                   <path d="M16 4L20 12L28 16L20 20L16 28L12 20L4 16L12 12L16 4Z" fill="currentColor"/>
                 </svg>
-                <p>Start a conversation to see your creation come to life</p>
+                <p>Start chatting with me to bring your ideas to life!</p>
               </div>
             )}
           </div>

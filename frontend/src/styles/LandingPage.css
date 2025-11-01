@@ -67,47 +67,140 @@
   z-index: 10;
 }
 
-/* Sphere */
+/* Sphere Container */
 .sphere-container {
   position: relative;
-  width: 300px;
+  width: 320px;
   height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* Dynamic Fluid Sphere */
 .sphere {
-  width: 240px;
-  height: 320px;
+  width: 260px;
+  height: 340px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4a9eff 0%, #0066cc 100%);
   position: relative;
-  transition: transform 0.1s ease;
-  filter: blur(1px);
+  overflow: hidden;
+  transition: transform 0.3s ease;
 }
 
+.sphere::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: 
+    radial-gradient(ellipse at 50% 10%, rgba(255, 255, 255, 0.9) 0%, transparent 40%),
+    radial-gradient(ellipse at 30% 20%, rgba(180, 220, 255, 0.8) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 30%, rgba(120, 180, 255, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 70%, rgba(60, 140, 255, 0.9) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(100, 170, 255, 0.4) 0%, rgba(40, 120, 220, 1) 100%);
+  animation: cloudFlow 8s ease-in-out infinite;
+  filter: blur(2px);
+}
+
+.sphere::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: 
+    radial-gradient(ellipse at 40% 40%, rgba(255, 255, 255, 0.6) 0%, transparent 35%),
+    radial-gradient(ellipse at 60% 60%, rgba(150, 200, 255, 0.5) 0%, transparent 45%);
+  animation: cloudFlow2 10s ease-in-out infinite reverse;
+  filter: blur(3px);
+  mix-blend-mode: overlay;
+}
+
+/* Breathing/Idle Animation */
+.sphere {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+/* Cloud Flow Animations */
+@keyframes cloudFlow {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(5%, -3%) rotate(2deg) scale(1.02);
+  }
+  50% {
+    transform: translate(-3%, 5%) rotate(-1deg) scale(0.98);
+  }
+  75% {
+    transform: translate(4%, 2%) rotate(1deg) scale(1.01);
+  }
+}
+
+@keyframes cloudFlow2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-4%, 3%) scale(1.05);
+  }
+  66% {
+    transform: translate(3%, -4%) scale(0.95);
+  }
+}
+
+/* Listening State - More Active */
 .sphere.listening {
-  animation: pulse 2s ease-in-out infinite;
+  animation: listening 1.5s ease-in-out infinite, breathe 4s ease-in-out infinite;
 }
 
+@keyframes listening {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.05) translateY(-2px); }
+  50% { transform: scale(0.98) translateY(2px); }
+  75% { transform: scale(1.03) translateY(-1px); }
+}
+
+/* Talking State - Bouncing */
+.sphere.talking {
+  animation: bounce 0.6s ease-in-out infinite, breathe 4s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1) translateY(0); }
+  25% { transform: scale(1.08, 0.95) translateY(-8px); }
+  50% { transform: scale(0.95, 1.05) translateY(3px); }
+  75% { transform: scale(1.02, 0.98) translateY(-4px); }
+}
+
+/* Glow Effect */
 .sphere-glow {
   position: absolute;
-  inset: -20px;
+  inset: -30px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(74, 158, 255, 0.4) 0%, transparent 70%);
-  filter: blur(30px);
-  animation: glow 3s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(100, 170, 255, 0.5) 0%, transparent 70%);
+  filter: blur(40px);
+  animation: glowPulse 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
 }
 
-@keyframes glow {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+.sphere.listening .sphere-glow,
+.sphere.talking .sphere-glow {
+  animation: glowIntense 1.2s ease-in-out infinite;
+}
+
+@keyframes glowIntense {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
 }
 
 /* Text */

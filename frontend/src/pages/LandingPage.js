@@ -8,13 +8,12 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [isListening, setIsListening] = useState(false);
+  const [isTalking, setIsTalking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [sphereScale, setSphereScale] = useState(1);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
 
-  // Sphere pulsing animation based on audio
   const animateSphere = () => {
     if (!analyserRef.current) return;
 
@@ -22,8 +21,12 @@ const LandingPage = () => {
     analyserRef.current.getByteFrequencyData(dataArray);
     
     const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-    const scale = 1 + (average / 255) * 0.3;
-    setSphereScale(scale);
+    
+    if (average > 30) {
+      setIsTalking(true);
+    } else {
+      setIsTalking(false);
+    }
 
     animationFrameRef.current = requestAnimationFrame(animateSphere);
   };
@@ -52,7 +55,7 @@ const LandingPage = () => {
       cancelAnimationFrame(animationFrameRef.current);
     }
     setIsListening(false);
-    setSphereScale(1);
+    setIsTalking(false);
   };
 
   const handleTransitionToEditor = () => {
@@ -92,10 +95,10 @@ const LandingPage = () => {
         {/* Glowing Sphere */}
         <div className="sphere-container">
           <div 
-            className={`sphere ${isListening ? 'listening' : ''}`}
-            style={{
-              transform: `scale(${sphereScale})`
-            }}
+            className={`sphere ${
+              isTalking ? 'talking' : 
+              isListening ? 'listening' : ''
+            }`}
             data-testid="voice-sphere"
           >
             <div className="sphere-glow"></div>
@@ -104,7 +107,9 @@ const LandingPage = () => {
 
         {/* Text */}
         <p className="main-text" data-testid="landing-text">
-          {isListening ? 'Listening...' : 'Start speaking to build'}
+          {isTalking ? 'I\'m listening...' : 
+           isListening ? 'Go ahead, I\'m all ears!' : 
+           'Start speaking to build'}
         </p>
 
         {/* Controls */}
