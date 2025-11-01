@@ -101,3 +101,62 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Fix Whisp conversational AI to be more natural and buddy-like, and ensure sphere bounces continuously while speaking with smooth transition back to stagnant state"
+
+backend:
+  - task: "Conversational AI Instructions"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/services/RealtimeAudioChat.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Updated AI instructions to be more natural, removed numbered lists, changed greeting to 'Hey what would you like to build today', removed app suggestions"
+
+frontend:
+  - task: "Sphere Bouncing Animation"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/styles/LandingPage.css, /app/frontend/src/styles/EditorPage.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Updated sphere animation to continuously bounce while talking (.talking class) and smoothly return to stagnant state when silent. Removed timeout delays that were causing static stops."
+
+  - task: "Speaking State Logic"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/LandingPage.js, /app/frontend/src/pages/EditorPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Removed setTimeout delays in speaking state changes to allow immediate smooth transitions"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Conversational AI Instructions"
+    - "Sphere Bouncing Animation"
+    - "Speaking State Logic"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Fixed conversational AI to be more natural (no numbered lists, greeting changed to 'Hey what would you like to build today', no app suggestions). Fixed sphere bouncing to be continuous while speaking and smoothly transition back. Ready for user testing."
