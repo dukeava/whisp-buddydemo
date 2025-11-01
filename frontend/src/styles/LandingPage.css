@@ -147,14 +147,26 @@
 }
 
 @keyframes smoothBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  0%, 100% { 
+    transform: translateY(0) scale(1); 
+  }
+  50% { 
+    transform: translateY(-15px) scale(1.02); 
+  }
 }
 
-/* When transitioning from talking to not talking - smooth return */
-.sphere:not(.talking):not(.listening) {
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform: translateY(0);
+/* When NOT talking - smooth transition back to rest position */
+.sphere:not(.talking) {
+  animation: returnToRest 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes returnToRest {
+  from { 
+    transform: translateY(var(--current-y, 0)); 
+  }
+  to { 
+    transform: translateY(0) scale(1); 
+  }
 }
 
 /* Glow */
