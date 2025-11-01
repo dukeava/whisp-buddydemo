@@ -145,12 +145,13 @@ CRITICAL RULES:
     this.dataChannel = this.peerConnection.createDataChannel("oai-events");
     
     this.dataChannel.onopen = () => {
-      console.log("Data channel opened");
+      console.log("✅ Data channel opened - READY TO COMMUNICATE");
     };
     
     this.dataChannel.onmessage = (event) => {
       try {
         const eventData = JSON.parse(event.data);
+        console.log('📨 Received event:', eventData.type);
         
         if (eventData.type === 'conversation.item.input_audio_transcription.completed') {
           if (this.onTranscript) {
