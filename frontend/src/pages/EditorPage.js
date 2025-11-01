@@ -61,21 +61,13 @@ const EditorPage = () => {
           if (state === 'assistant_speaking') {
             setIsSpeaking(true);
           } else if (state === 'assistant_stopped') {
-            // Smooth transition back to stagnant state
             setIsSpeaking(false);
           }
         };
 
-        // Pass conversation history to continue the discussion
-        await realtimeChatRef.current.init('editor', conversationHistory);
+        await realtimeChatRef.current.init('editor');
         
-        // Automatically start Whisp's summary after initialization
-        setTimeout(() => {
-          if (realtimeChatRef.current && conversationHistory.length > 0) {
-            // Trigger Whisp to start speaking
-            realtimeChatRef.current.triggerResponse();
-          }
-        }, 1000);
+        // DO NOT trigger Whisp to speak automatically - just initialize for potential use
       }
       setIsListening(true);
     } catch (error) {
