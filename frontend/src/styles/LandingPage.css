@@ -133,17 +133,17 @@
   animation: cloudSwirlReverse 10s linear infinite;
 }
 
-/* Talking State - NO BOUNCE */
+/* Talking State - NO CHANGES AT ALL */
 .sphere.talking {
-  /* No animation when talking */
+  /* Sphere looks exactly the same when talking */
 }
 
 .sphere.talking::before {
-  animation: cloudSwirl 5s linear infinite;
+  animation: cloudSwirl 12s linear infinite;
 }
 
 .sphere.talking::after {
-  animation: cloudSwirlReverse 6s linear infinite;
+  animation: cloudSwirlReverse 15s linear infinite;
 }
 
 /* Glow */
