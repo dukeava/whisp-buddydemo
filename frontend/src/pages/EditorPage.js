@@ -27,15 +27,6 @@ const EditorPage = () => {
   const fileInputRef = useRef(null);
   const hasGeneratedRef = useRef(false);
 
-  // Building phase messages
-  const buildingMessages = [
-    "Okay so I'm setting up the foundation here...",
-    "Ooh, adding some really cool features now!",
-    "This is turning out awesome! Just polishing things up...",
-    "Almost done - making it look really slick...",
-    "Final touches... this is gonna be great!"
-  ];
-
   useEffect(() => {
     // Auto-start building if we have conversation history
     if (conversationHistory.length > 0 && !hasGeneratedRef.current) {
@@ -60,16 +51,23 @@ const EditorPage = () => {
           if (!isUser) {
             setStatusText(text);
             setIsSpeaking(true);
-            setTimeout(() => setIsSpeaking(false), 2000);
+            setTimeout(() => setIsSpeaking(false), 3000);
           }
         };
 
-        await realtimeChatRef.current.init();
+        realtimeChatRef.current.onSpeakingStateChange = (state) => {
+          if (state === 'assistant_speaking') {
+            setIsSpeaking(true);
+          } else if (state === 'assistant_stopped') {
+            setTimeout(() => setIsSpeaking(false), 100);
+          }
+        };
+
+        await realtimeChatRef.current.init('editor');
       }
       setIsListening(true);
     } catch (error) {
       console.error('Failed to initialize realtime chat:', error);
-      setStatusText("Having some mic trouble. Try refreshing?");
     }
   };
 
@@ -84,25 +82,31 @@ const EditorPage = () => {
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
     setAttachedFiles(prev => [...prev, ...files]);
-    setStatusText(`Sweet! Got ${files.length} more file${files.length > 1 ? 's' : ''}. Let me take a look...`);
-    setIsSpeaking(true);
-    setTimeout(() => setIsSpeaking(false), 2500);
   };
 
   const handleGenerateCode = async () => {
     setIsGenerating(true);
     setIsSpeaking(true);
     
-    let messageIndex = 0;
-    const messageInterval = setInterval(() => {
-      if (messageIndex < buildingMessages.length) {
-        setStatusText(buildingMessages[messageIndex]);
-        if (realtimeChatRef.current) {
-          realtimeChatRef.current.sendMessage(buildingMessages[messageIndex]);
+    // Send initial message via voice
+    if (realtimeChatRef.current) {
+      realtimeChatRef.current.sendMessage("Alright, starting to build this now! Setting up the foundation first...");
+    }
+    
+    // Progress updates
+    const updates = [
+      { delay: 3000, message: "Looking good! Adding the features you wanted..." },
+      { delay: 6000, message: "Ooh this is turning out nice! Working on the UI now..." },
+      { delay: 9000, message: "Almost there! Just polishing things up..." }
+    ];
+    
+    const timeouts = updates.map(({ delay, message }) => 
+      setTimeout(() => {
+        if (realtimeChatRef.current && isGenerating) {
+          realtimeChatRef.current.sendMessage(message);
         }
-        messageIndex++;
-      }
-    }, 4000);
+      }, delay)
+    );
     
     try {
       const userRequirements = conversationHistory
@@ -115,16 +119,16 @@ const EditorPage = () => {
         user_requirements: userRequirements
       });
 
-      clearInterval(messageInterval);
+      timeouts.forEach(t => clearTimeout(t));
 
       if (response.data.success) {
         setGeneratedCode(response.data.code);
-        const completionMessage = "Boom! There it is. Check it out - I think you're really gonna like this! What do you think?";
-        setStatusText(completionMessage);
         
+        const completionMessage = "Boom! Check it out - I think this really captures what you were going for! What do you think?";
         if (realtimeChatRef.current) {
           realtimeChatRef.current.sendMessage(completionMessage);
         }
+        setStatusText(completionMessage);
         
         // Render in iframe
         if (iframeRef.current) {
@@ -133,20 +137,18 @@ const EditorPage = () => {
           iframeDoc.write(response.data.code);
           iframeDoc.close();
         }
-        
-        setTimeout(() => setIsSpeaking(false), 5000);
       }
     } catch (error) {
-      clearInterval(messageInterval);
+      timeouts.forEach(t => clearTimeout(t));
       console.error('Code generation failed:', error);
-      const errorMessage = "Hmm, hit a snag there. Wanna describe what you want again?";
-      setStatusText(errorMessage);
+      const errorMessage = "Hmm, hit a snag. Let me try that again...";
       if (realtimeChatRef.current) {
         realtimeChatRef.current.sendMessage(errorMessage);
       }
-      setTimeout(() => setIsSpeaking(false), 3000);
+      setStatusText(errorMessage);
     } finally {
       setIsGenerating(false);
+      setTimeout(() => setIsSpeaking(false), 2000);
     }
   };
 
@@ -154,13 +156,7 @@ const EditorPage = () => {
     setConversationHistory([]);
     setGeneratedCode('');
     hasGeneratedRef.current = false;
-    const clearMessage = "Fresh start! What do you wanna build?";
-    setStatusText(clearMessage);
-    if (realtimeChatRef.current) {
-      realtimeChatRef.current.sendMessage(clearMessage);
-    }
-    setIsSpeaking(true);
-    setTimeout(() => setIsSpeaking(false), 2000);
+    setStatusText("Fresh start! What do you wanna build?");
   };
 
   const handleDownloadCode = () => {
@@ -173,14 +169,6 @@ const EditorPage = () => {
     a.download = `${projectName.replace(/\s+/g, '-').toLowerCase()}.html`;
     a.click();
     URL.revokeObjectURL(url);
-    
-    const downloadMessage = "Downloaded! Feel free to customize it however you want.";
-    setStatusText(downloadMessage);
-    if (realtimeChatRef.current) {
-      realtimeChatRef.current.sendMessage(downloadMessage);
-    }
-    setIsSpeaking(true);
-    setTimeout(() => setIsSpeaking(false), 2500);
   };
 
   const toggleCodePreview = () => {

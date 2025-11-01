@@ -64,25 +64,24 @@ const LandingPage = () => {
         };
 
         realtimeChatRef.current.onSpeakingStateChange = (state) => {
-          console.log('Speaking state:', state);
           if (state === 'assistant_speaking') {
             setIsWhispTalking(true);
             setIsRecording(false);
           } else if (state === 'assistant_stopped') {
-            setIsWhispTalking(false);
+            setTimeout(() => setIsWhispTalking(false), 100);
           } else if (state === 'user_speaking') {
             setIsWhispTalking(false);
           }
         };
 
-        await realtimeChatRef.current.init();
+        await realtimeChatRef.current.init('landing');
         setIsConnected(true);
         
         // Send greeting
         if (!hasGreeted) {
           setTimeout(() => {
             if (realtimeChatRef.current) {
-              realtimeChatRef.current.sendMessage("Hey there! What would you like to build today? I'm happy to help bring your ideas to life!");
+              realtimeChatRef.current.sendMessage("Hey! What would you like to build today?");
               setHasGreeted(true);
             }
           }, 800);
@@ -94,14 +93,8 @@ const LandingPage = () => {
     } else {
       // Toggle recording
       if (isRecording) {
-        // Stop recording - let Whisp respond
         setIsRecording(false);
-        if (realtimeChatRef.current) {
-          // Signal that user stopped speaking - Whisp will respond
-          console.log('User stopped speaking, waiting for Whisp response...');
-        }
       } else {
-        // Start recording
         setIsRecording(true);
         setIsWhispTalking(false);
       }
