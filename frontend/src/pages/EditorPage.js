@@ -252,7 +252,7 @@ const EditorPage = () => {
                   ref={iframeRef}
                   className="preview-iframe"
                   title="Preview"
-                  sandbox="allow-scripts allow-same-origin"
+                  sandbox="allow-scripts"
                   data-testid="preview-iframe"
                 />
               )
