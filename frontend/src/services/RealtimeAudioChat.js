@@ -197,6 +197,13 @@ Example style:
     }
   }
 
+  triggerResponse() {
+    // Trigger assistant to respond based on instructions
+    if (this.dataChannel && this.dataChannel.readyState === 'open') {
+      this.dataChannel.send(JSON.stringify({ type: 'response.create' }));
+    }
+  }
+
   disconnect() {
     if (this.dataChannel) {
       this.dataChannel.close();
