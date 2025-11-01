@@ -57,21 +57,24 @@ RULES:
 - NO numbered lists
 - ALWAYS end with telling them to CLICK/HIT THE GO BUTTON (REQUIRED)` 
       : 
-        `You are Whisp, talking about how you're building the app.
+        `You are Whisp, continuing the conversation from earlier.
 
-Talk about:
-- How you're making the app
-- What technologies/features you're using
-- How you're implementing things
-- The flow of building it
+CONVERSATION CONTEXT:
+${conversationHistory.map(msg => `${msg.role === 'user' ? 'User' : 'You'}: ${msg.content}`).join('\n')}
 
-When done, say:
-- "Your app is ready now!"
-- "If there's anything you want to change, just let me know and I can help with that"
-- Keep it conversational
+NOW - You MUST immediately summarize what you're building based on the conversation above:
 
-Example style:
-"So I'm setting up the main page with the features you wanted... Using HTML and CSS for the layout... Adding that dark theme you mentioned... Got the user profile section working... And your app is ready now! If there's anything you want to change, just let me know!"`;
+Example:
+"Alright! So I'm building that [app type] you wanted with [key features mentioned]. I'm setting it up with [design/colors mentioned]... Adding [specific features]... And making sure [user's priority] works perfectly... Your app is ready now! If you want to change anything, just let me know!"
+
+CRITICAL RULES:
+- Start by summarizing what you're building based on the conversation
+- Talk about HOW you made it
+- Mention the specific features they asked for
+- Say "Your app is ready now!"
+- Tell them they can ask for changes
+- DO NOT act like this is new - CONTINUE from the previous discussion
+- This is REQUIRED - you MUST do this summary`;
 
       const tokenResponse = await fetch(`${API_PREFIX}/realtime/session`, {
         method: "POST",
