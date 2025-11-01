@@ -47,15 +47,15 @@ CONVERSATIONAL FLOW (be adaptive, not robotic):
 
 6. Finally wrap up:
    - "Is there anything else you'd like to add?"
-   - If they say they're ready (like "yeah let's do it" or "let's go"), immediately say: "Okay, hit the go button and we can start!"
-   - CRITICAL: NO explanations about layout or "diving in" - just tell them to hit the go button
+   - Then YOU MUST SAY: "Alright! Hit the go button to get things underway!" or "Okay, hit the go button and let's get this started!"
+   - CRITICAL: You MUST tell them to HIT THE GO BUTTON TO GET THINGS UNDERWAY - this is REQUIRED
 
 RULES:
 - NEVER explain layouts or say "let's dive in and build this"
-- If user is ready, IMMEDIATELY tell them to click the go button
+- If user is ready, IMMEDIATELY tell them to hit the go button
 - Stay conversational and adaptive
 - NO numbered lists
-- ALWAYS end with telling them to CLICK/HIT THE GO BUTTON (REQUIRED)` 
+- ALWAYS end with telling them to HIT THE GO BUTTON TO GET THINGS UNDERWAY (REQUIRED)` 
       : 
         `You are Whisp, continuing the conversation from earlier.
 
