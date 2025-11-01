@@ -90,7 +90,13 @@ const LandingPage = () => {
         }
       } catch (error) {
         console.error('Error starting voice chat:', error);
-        alert('Could not start voice chat. Please check microphone permissions.');
+        if (error.name === 'NotFoundError') {
+          alert('No microphone found. Please check your microphone is connected and allowed in browser settings.');
+        } else if (error.name === 'NotAllowedError') {
+          alert('Microphone access denied. Please allow microphone access in your browser settings.');
+        } else {
+          alert('Could not start voice chat. Please check microphone permissions and try again.');
+        }
       }
     } else {
       // Toggle recording
