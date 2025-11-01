@@ -133,9 +133,9 @@
   animation: cloudSwirlReverse 10s linear infinite;
 }
 
-/* Talking State - Continuous bounce while speaking */
+/* Talking State - NO BOUNCE */
 .sphere.talking {
-  animation: smoothBounce 0.8s ease-in-out infinite;
+  /* No animation when talking */
 }
 
 .sphere.talking::before {
@@ -144,17 +144,6 @@
 
 .sphere.talking::after {
   animation: cloudSwirlReverse 6s linear infinite;
-}
-
-@keyframes smoothBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-
-/* When transitioning from talking to not talking - smooth return */
-.sphere:not(.talking):not(.listening) {
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform: translateY(0);
 }
 
 /* Glow */
