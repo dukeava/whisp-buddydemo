@@ -256,7 +256,7 @@ const EditorPage = () => {
               onClick={() => fileInputRef.current?.click()}
               data-testid="attach-file-editor-btn"
             >
-              <Plus size={18} />
+              <Plus size={22} />
             </button>
 
             <button 
@@ -264,7 +264,7 @@ const EditorPage = () => {
               onClick={handleClearChat}
               data-testid="clear-chat-btn"
             >
-              <Trash2 size={18} />
+              <Trash2 size={22} />
             </button>
 
             <button 
@@ -274,7 +274,7 @@ const EditorPage = () => {
               data-testid="generate-code-btn"
               title="Generate Preview"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <polygon points="5 3 19 12 5 21 5 3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="currentColor"/>
               </svg>
             </button>

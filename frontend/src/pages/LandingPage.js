@@ -172,7 +172,7 @@ const LandingPage = () => {
             data-testid="attach-file-btn"
             aria-label="Attach files"
           >
-            <Plus size={20} />
+            <Plus size={24} />
           </button>
 
           <button 
@@ -181,7 +181,7 @@ const LandingPage = () => {
             data-testid="mic-control-btn"
             aria-label={isListening ? 'Stop listening' : 'Start listening'}
           >
-            {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+            {isListening ? <MicOff size={24} /> : <Mic size={24} />}
           </button>
 
           <button 
@@ -190,7 +190,7 @@ const LandingPage = () => {
             data-testid="transition-to-editor-btn"
             aria-label="Go to editor"
           >
-            <ArrowUp size={20} />
+            <ArrowUp size={24} />
           </button>
         </div>
 

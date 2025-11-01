@@ -196,20 +196,20 @@
   51%, 100% { opacity: 0; }
 }
 
-/* Controls - Wider pill bar */
+/* Controls - Much Wider pill bar */
 .controls {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 14px 28px;
-  border-radius: 48px;
+  gap: 28px;
+  padding: 16px 44px;
+  border-radius: 60px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
 }
 
 .control-btn {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   border: none;
   background: transparent;
@@ -223,6 +223,11 @@
 
 .control-btn:hover {
   background: var(--border-color);
+}
+
+.control-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 /* Hidden file input */
