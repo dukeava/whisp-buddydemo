@@ -59,7 +59,8 @@ const EditorPage = () => {
           if (state === 'assistant_speaking') {
             setIsSpeaking(true);
           } else if (state === 'assistant_stopped') {
-            setTimeout(() => setIsSpeaking(false), 100);
+            // Smooth transition back to stagnant state
+            setIsSpeaking(false);
           }
         };
 
