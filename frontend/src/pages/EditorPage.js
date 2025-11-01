@@ -66,7 +66,8 @@ const EditorPage = () => {
           }
         };
 
-        await realtimeChatRef.current.init('editor');
+        // Pass conversation history to continue the discussion
+        await realtimeChatRef.current.init('editor', conversationHistory);
       }
       setIsListening(true);
     } catch (error) {
