@@ -356,15 +356,29 @@ const EditorPage = () => {
               </div>
             ) : generatedCode ? (
               showCode ? (
-                <pre className="code-display" data-testid="code-display">
-                  <code>{generatedCode}</code>
-                </pre>
+                <div className="code-display-wrapper" data-testid="code-display">
+                  <SyntaxHighlighter
+                    language="html"
+                    style={vscDarkPlus}
+                    customStyle={{
+                      margin: 0,
+                      padding: '24px',
+                      height: '100%',
+                      fontSize: '13px',
+                      lineHeight: '1.6',
+                      background: theme === 'dark' ? '#1e1e1e' : '#f5f5f5',
+                    }}
+                    showLineNumbers={true}
+                  >
+                    {generatedCode}
+                  </SyntaxHighlighter>
+                </div>
               ) : (
                 <iframe
                   ref={iframeRef}
                   className="preview-iframe"
                   title="Preview"
-                  sandbox="allow-scripts"
+                  sandbox="allow-scripts allow-same-origin"
                   data-testid="preview-iframe"
                 />
               )
