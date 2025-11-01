@@ -93,14 +93,14 @@ const EditorPage = () => {
     
     // Send initial message via voice
     if (realtimeChatRef.current) {
-      realtimeChatRef.current.sendMessage("Alright, starting to build this now! Setting up the foundation first...");
+      realtimeChatRef.current.sendMessage("Alright, starting to build this now!");
     }
     
     // Progress updates
     const updates = [
-      { delay: 3000, message: "Looking good! Adding the features you wanted..." },
-      { delay: 6000, message: "Ooh this is turning out nice! Working on the UI now..." },
-      { delay: 9000, message: "Almost there! Just polishing things up..." }
+      { delay: 3000, message: "Making the main page..." },
+      { delay: 6000, message: "Adding the features you wanted..." },
+      { delay: 9000, message: "Working on the design..." }
     ];
     
     const timeouts = updates.map(({ delay, message }) => 
@@ -117,6 +117,8 @@ const EditorPage = () => {
         .map(m => m.content)
         .join(' ');
 
+      console.log('🚀 Generating code for:', userRequirements);
+
       const response = await axios.post(`${API}/generate-code`, {
         conversation_history: conversationHistory,
         user_requirements: userRequirements
@@ -124,26 +126,41 @@ const EditorPage = () => {
 
       timeouts.forEach(t => clearTimeout(t));
 
-      if (response.data.success) {
-        setGeneratedCode(response.data.code);
+      console.log('✅ Code generation response:', response.data);
+
+      if (response.data.success && response.data.code) {
+        const generatedHTML = response.data.code;
+        setGeneratedCode(generatedHTML);
         
-        const completionMessage = "Boom! Check it out - I think this really captures what you were going for! What do you think?";
+        console.log('📝 Generated code length:', generatedHTML.length);
+        console.log('🎨 Rendering in iframe...');
+        
+        const completionMessage = "Done! Check it out!";
         if (realtimeChatRef.current) {
           realtimeChatRef.current.sendMessage(completionMessage);
         }
         setStatusText(completionMessage);
         
-        // Render in iframe
+        // Render in iframe with better error handling
         if (iframeRef.current) {
-          const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
-          iframeDoc.open();
-          iframeDoc.write(response.data.code);
-          iframeDoc.close();
+          try {
+            const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(generatedHTML);
+            iframeDoc.close();
+            console.log('✅ Preview rendered successfully');
+          } catch (iframeError) {
+            console.error('❌ Iframe rendering error:', iframeError);
+          }
+        } else {
+          console.error('❌ Iframe ref is null');
         }
+      } else {
+        console.error('❌ No code in response:', response.data);
       }
     } catch (error) {
       timeouts.forEach(t => clearTimeout(t));
-      console.error('Code generation failed:', error);
+      console.error('❌ Code generation failed:', error);
       const errorMessage = "Hmm, hit a snag. Let me try that again...";
       if (realtimeChatRef.current) {
         realtimeChatRef.current.sendMessage(errorMessage);
