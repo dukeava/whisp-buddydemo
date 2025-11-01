@@ -76,15 +76,17 @@ const LandingPage = () => {
 
         await realtimeChatRef.current.init('landing');
         setIsConnected(true);
+        console.log('✅ Realtime chat initialized');
         
         // Start Whisp's greeting
         if (!hasGreeted) {
           setTimeout(() => {
+            console.log('⏰ Timeout triggered - starting greeting');
             if (realtimeChatRef.current) {
               realtimeChatRef.current.startGreeting();
               setHasGreeted(true);
             }
-          }, 800);
+          }, 1500); // Increased to 1.5 seconds to ensure data channel is open
         }
       } catch (error) {
         console.error('Error starting voice chat:', error);
