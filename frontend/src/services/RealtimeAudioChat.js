@@ -7,6 +7,7 @@ class RealtimeAudioChat {
     this.dataChannel = null;
     this.audioElement = null;
     this.onTranscript = null;
+    this.onSpeakingStateChange = null;
   }
 
   async init(initialMessage = null) {
@@ -119,13 +120,29 @@ Important:
           if (this.onTranscript) {
             this.onTranscript(eventData.transcript, true);
           }
+          // User stopped speaking
+          if (this.onSpeakingStateChange) {
+            this.onSpeakingStateChange('user_stopped');
+          }
+        } else if (eventData.type === 'response.audio_transcript.delta') {
+          // Whisp is speaking
+          if (this.onSpeakingStateChange) {
+            this.onSpeakingStateChange('assistant_speaking');
+          }
         } else if (eventData.type === 'response.audio_transcript.done') {
           if (this.onTranscript) {
             this.onTranscript(eventData.transcript, false);
           }
         } else if (eventData.type === 'response.done') {
-          // Response completed
-          console.log("Response completed");
+          // Response completed - Whisp stopped speaking
+          if (this.onSpeakingStateChange) {
+            this.onSpeakingStateChange('assistant_stopped');
+          }
+        } else if (eventData.type === 'input_audio_buffer.speech_started') {
+          // User started speaking
+          if (this.onSpeakingStateChange) {
+            this.onSpeakingStateChange('user_speaking');
+          }
         }
       } catch (error) {
         console.error("Error parsing event data:", error);

@@ -152,6 +152,7 @@
   position: relative;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(50, 150, 255, 0.7) 0%, rgba(0, 122, 255, 1) 100%);
+  transition: transform 0.3s ease;
 }
 
 /* Swirling cloud layer 1 - Much more visible */
@@ -198,13 +199,26 @@
   }
 }
 
-/* Speaking State - Faster swirl */
+/* Speaking State - Smooth bounce */
+.conversation-sphere.speaking {
+  animation: smoothBounce 0.8s ease-in-out infinite;
+}
+
 .conversation-sphere.speaking::before {
   animation: cloudSwirl 5s linear infinite;
 }
 
 .conversation-sphere.speaking::after {
   animation: cloudSwirlReverse 6s linear infinite;
+}
+
+@keyframes smoothBounce {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-12px); 
+  }
 }
 
 /* Listening State - Moderate swirl */

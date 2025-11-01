@@ -9,15 +9,12 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [isListening, setIsListening] = useState(false);
-  const [isTalking, setIsTalking] = useState(false);
+  const [isWhispTalking, setIsWhispTalking] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [typedText, setTypedText] = useState('');
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [conversationHistory, setConversationHistory] = useState([]);
-  const audioContextRef = useRef(null);
-  const analyserRef = useRef(null);
-  const animationFrameRef = useRef(null);
   const fileInputRef = useRef(null);
   const realtimeChatRef = useRef(null);
 
@@ -29,7 +26,7 @@ const LandingPage = () => {
 
   // Typing effect
   useEffect(() => {
-    if (isListening) return; // Stop typing effect when listening
+    if (isListening) return;
     
     const currentPhrase = phrases[phraseIndex];
     const typingSpeed = isDeleting ? 50 : 100;
@@ -57,26 +54,32 @@ const LandingPage = () => {
 
   const startListening = async () => {
     try {
-      // Initialize Realtime Chat
       if (!realtimeChatRef.current) {
         realtimeChatRef.current = new RealtimeAudioChat();
         
         realtimeChatRef.current.onTranscript = (text, isUser) => {
           console.log(isUser ? 'User:' : 'Whisp:', text);
           setConversationHistory(prev => [...prev, { role: isUser ? 'user' : 'assistant', content: text }]);
-          
-          if (!isUser) {
-            setIsTalking(true);
-            setTimeout(() => setIsTalking(false), 2000);
+        };
+
+        realtimeChatRef.current.onSpeakingStateChange = (state) => {
+          console.log('Speaking state:', state);
+          if (state === 'assistant_speaking') {
+            setIsWhispTalking(true);
+          } else if (state === 'assistant_stopped') {
+            setIsWhispTalking(false);
+          } else if (state === 'user_speaking') {
+            setIsWhispTalking(false);
           }
         };
 
         await realtimeChatRef.current.init();
         
-        // Send greeting after connection established
+        // Send greeting after connection
         setTimeout(() => {
           if (realtimeChatRef.current) {
-            realtimeChatRef.current.sendMessage("Hey! What would you like to build today?");
+            realtimeChatRef.current.sendMessage("Hey! So what kind of app are you thinking of building? I'm super excited to hear your ideas!");
+            setIsWhispTalking(true);
           }
         }, 1000);
       }
@@ -95,18 +98,16 @@ const LandingPage = () => {
       realtimeChatRef.current = null;
     }
     setIsListening(false);
-    setIsTalking(false);
+    setIsWhispTalking(false);
     setTypedText('');
   };
 
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
     setAttachedFiles(prev => [...prev, ...files]);
-    console.log('Files attached:', files);
   };
 
   const handleTransitionToEditor = () => {
-    // Don't disconnect - pass the chat reference
     navigate('/editor', { 
       state: { 
         attachedFiles,
@@ -144,7 +145,7 @@ const LandingPage = () => {
         <div className="sphere-container">
           <div 
             className={`sphere ${
-              isTalking ? 'talking' : 
+              isWhispTalking ? 'talking' : 
               isListening ? 'listening' : ''
             }`}
             data-testid="voice-sphere"

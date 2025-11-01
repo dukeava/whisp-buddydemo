@@ -86,6 +86,7 @@
   position: relative;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(50, 150, 255, 0.7) 0%, rgba(0, 122, 255, 1) 100%);
+  transition: transform 0.3s ease;
 }
 
 /* Swirling cloud layer 1 - Much more visible white */
@@ -142,13 +143,26 @@
   animation: cloudSwirlReverse 10s linear infinite;
 }
 
-/* Talking State - Even faster swirl */
+/* Talking State - Smooth bounce */
+.sphere.talking {
+  animation: smoothBounce 0.8s ease-in-out infinite;
+}
+
 .sphere.talking::before {
   animation: cloudSwirl 5s linear infinite;
 }
 
 .sphere.talking::after {
   animation: cloudSwirlReverse 6s linear infinite;
+}
+
+@keyframes smoothBounce {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-12px); 
+  }
 }
 
 /* Glow Effect */
@@ -223,6 +237,11 @@
 
 .control-btn:hover {
   background: var(--border-color);
+}
+
+.control-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .control-btn svg {
