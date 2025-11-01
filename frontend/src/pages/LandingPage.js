@@ -77,11 +77,11 @@ const LandingPage = () => {
         await realtimeChatRef.current.init('landing');
         setIsConnected(true);
         
-        // Send greeting
+        // Start Whisp's greeting
         if (!hasGreeted) {
           setTimeout(() => {
             if (realtimeChatRef.current) {
-              realtimeChatRef.current.sendMessage("What would you like to build today?");
+              realtimeChatRef.current.startGreeting();
               setHasGreeted(true);
             }
           }, 800);
