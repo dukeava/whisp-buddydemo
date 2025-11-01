@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Trash2, Code, Eye, Download, Plus } from 'lucide-react';
+import { Sun, Moon, Trash2, Code, Eye, Download, Plus, Mic, MicOff } from 'lucide-react';
 import RealtimeAudioChat from '@/services/RealtimeAudioChat';
 import axios from 'axios';
 import '../styles/EditorPage.css';
@@ -265,6 +265,14 @@ const EditorPage = () => {
               data-testid="clear-chat-btn"
             >
               <Trash2 size={22} />
+            </button>
+
+            <button 
+              className="control-btn-editor"
+              onClick={isListening ? stopRealtimeChat : initializeRealtimeChat}
+              data-testid="mic-toggle-editor-btn"
+            >
+              {isListening ? <MicOff size={22} /> : <Mic size={22} />}
             </button>
 
             <button 
