@@ -76,27 +76,19 @@ const LandingPage = () => {
 
         await realtimeChatRef.current.init('landing');
         setIsConnected(true);
-        console.log('✅ Realtime chat initialized');
         
-        // Start Whisp's greeting
+        // Send greeting
         if (!hasGreeted) {
           setTimeout(() => {
-            console.log('⏰ Timeout triggered - starting greeting');
             if (realtimeChatRef.current) {
-              realtimeChatRef.current.startGreeting();
+              realtimeChatRef.current.sendMessage("What would you like to build today?");
               setHasGreeted(true);
             }
-          }, 1500); // Increased to 1.5 seconds to ensure data channel is open
+          }, 800);
         }
       } catch (error) {
         console.error('Error starting voice chat:', error);
-        if (error.name === 'NotFoundError') {
-          alert('No microphone found. Please check your microphone is connected and allowed in browser settings.');
-        } else if (error.name === 'NotAllowedError') {
-          alert('Microphone access denied. Please allow microphone access in your browser settings.');
-        } else {
-          alert('Could not start voice chat. Please check microphone permissions and try again.');
-        }
+        alert('Could not start voice chat. Please check microphone permissions.');
       }
     } else {
       // Toggle recording
