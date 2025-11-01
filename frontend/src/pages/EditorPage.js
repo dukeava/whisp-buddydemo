@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Sun, Moon, Trash2, Code, Eye, Download, Plus, Mic, MicOff } from 'lucide-react';
 import RealtimeAudioChat from '@/services/RealtimeAudioChat';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import axios from 'axios';
 import '../styles/EditorPage.css';
 
