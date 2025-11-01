@@ -208,8 +208,12 @@ CRITICAL RULES:
 
   startGreeting() {
     // Trigger the assistant to speak first without user input
+    console.log('🎤 Triggering Whisp to start greeting...');
     if (this.dataChannel && this.dataChannel.readyState === 'open') {
+      console.log('✅ Data channel is open, sending response.create');
       this.dataChannel.send(JSON.stringify({ type: 'response.create' }));
+    } else {
+      console.error('❌ Data channel NOT open! State:', this.dataChannel?.readyState);
     }
   }
 
