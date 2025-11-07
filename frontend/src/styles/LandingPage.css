@@ -192,6 +192,7 @@
 .main-text {
   font-size: 18px;
   font-weight: 400;
+  font-family: 'Host Grotesk', sans-serif;
   color: var(--text-secondary);
   letter-spacing: 0.5px;
   min-height: 28px;
