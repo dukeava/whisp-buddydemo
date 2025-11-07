@@ -78,7 +78,7 @@
   justify-content: center;
 }
 
-/* Sphere - THICK blue bottom half + white and light blue top */
+/* Sphere - THICK blue bottom with FLUID swirling white and light blue */
 .sphere {
   width: 280px;
   height: 280px;
@@ -97,37 +97,36 @@
   box-shadow: 0 0 80px rgba(0, 100, 230, 0.7);
 }
 
-/* THICK WHITE swirling - top area */
+/* FLUID WHITE swirling - organic shapes */
 .sphere::before {
-  content: '';
-  position: absolute;
-  inset: -15%;
-  border-radius: 50%;
-  background: 
-    radial-gradient(ellipse at 45% 15%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.95) 10%, rgba(255, 255, 255, 0.7) 20%, rgba(255, 255, 255, 0.4) 35%, transparent 50%),
-    radial-gradient(ellipse at 25% 35%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.85) 12%, rgba(255, 255, 255, 0.6) 25%, rgba(255, 255, 255, 0.3) 40%, transparent 55%),
-    radial-gradient(ellipse at 70% 25%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 15%, rgba(255, 255, 255, 0.5) 28%, rgba(255, 255, 255, 0.2) 42%, transparent 56%),
-    radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 14%, rgba(255, 255, 255, 0.4) 28%, transparent 45%);
-  animation: cloudSwirl 12s linear infinite;
-  mix-blend-mode: screen;
-  filter: brightness(1.3);
-  mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 35%, rgba(0,0,0,0.3) 50%, transparent 60%);
-}
-
-/* THICK LIGHT BLUE swirling - middle/top area */
-.sphere::after {
   content: '';
   position: absolute;
   inset: -20%;
   border-radius: 50%;
   background: 
-    radial-gradient(ellipse at 60% 25%, rgba(140, 210, 255, 0.95) 0%, rgba(110, 190, 255, 0.8) 12%, rgba(85, 170, 255, 0.6) 24%, rgba(60, 150, 255, 0.35) 38%, transparent 52%),
-    radial-gradient(ellipse at 30% 40%, rgba(160, 220, 255, 0.9) 0%, rgba(125, 200, 255, 0.75) 15%, rgba(95, 180, 255, 0.55) 28%, rgba(70, 160, 255, 0.3) 42%, transparent 56%),
-    radial-gradient(ellipse at 75% 35%, rgba(150, 215, 255, 0.88) 0%, rgba(115, 195, 255, 0.7) 14%, rgba(90, 175, 255, 0.5) 26%, rgba(65, 155, 255, 0.28) 40%, transparent 54%),
-    radial-gradient(ellipse at 50% 50%, rgba(130, 205, 255, 0.85) 0%, rgba(100, 185, 255, 0.65) 16%, rgba(80, 165, 255, 0.45) 30%, transparent 48%);
+    radial-gradient(ellipse 80px 120px at 40% 18%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 25%, rgba(255, 255, 255, 0.4) 50%, transparent 75%),
+    radial-gradient(ellipse 100px 85px at 68% 28%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 30%, rgba(255, 255, 255, 0.3) 55%, transparent 80%),
+    radial-gradient(ellipse 70px 95px at 22% 38%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.65) 28%, rgba(255, 255, 255, 0.3) 52%, transparent 78%),
+    radial-gradient(ellipse 90px 75px at 55% 45%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.6) 32%, rgba(255, 255, 255, 0.25) 58%, transparent 82%);
+  animation: cloudSwirl 12s linear infinite;
+  mix-blend-mode: screen;
+  filter: brightness(1.3) blur(1px);
+}
+
+/* FLUID LIGHT BLUE swirling - blends with white organically */
+.sphere::after {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(ellipse 110px 140px at 58% 22%, rgba(140, 210, 255, 0.9) 0%, rgba(120, 195, 255, 0.7) 20%, rgba(100, 180, 255, 0.45) 40%, rgba(80, 165, 255, 0.2) 60%, transparent 80%),
+    radial-gradient(ellipse 95px 110px at 28% 35%, rgba(160, 220, 255, 0.85) 0%, rgba(135, 205, 255, 0.65) 22%, rgba(110, 190, 255, 0.4) 45%, rgba(85, 175, 255, 0.18) 65%, transparent 82%),
+    radial-gradient(ellipse 125px 100px at 72% 40%, rgba(150, 215, 255, 0.88) 0%, rgba(125, 200, 255, 0.68) 24%, rgba(100, 185, 255, 0.42) 48%, rgba(75, 170, 255, 0.2) 68%, transparent 85%),
+    radial-gradient(ellipse 80px 120px at 45% 52%, rgba(130, 205, 255, 0.8) 0%, rgba(110, 190, 255, 0.6) 26%, rgba(90, 175, 255, 0.38) 50%, rgba(70, 160, 255, 0.15) 70%, transparent 88%);
   animation: cloudSwirlReverse 15s linear infinite;
-  mix-blend-mode: overlay;
-  mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.2) 60%, transparent 70%);
+  mix-blend-mode: soft-light;
+  filter: blur(2px);
 }
 
 @keyframes cloudSwirl {
