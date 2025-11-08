@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import '../styles/AuthModal.css';
 
-const AuthModal = ({ isOpen, onClose }) => {
+const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
@@ -11,12 +11,45 @@ const AuthModal = ({ isOpen, onClose }) => {
 
   const handleGoogleAuth = () => {
     // TODO: Implement Google OAuth
-    console.log('Google auth clicked');
+    const user = {
+      email: 'user@google.com',
+      authMethod: 'google',
+      createdAt: new Date().toISOString()
+    };
+    localStorage.setItem('whispUser', JSON.stringify(user));
+    onAuthSuccess();
   };
 
   const handleContinue = () => {
-    // TODO: Implement email/password auth
-    console.log(isSignUp ? 'Sign up with email/password' : 'Sign in with email/password');
+    if (!email || !password) {
+      alert('Please enter both email and password');
+      return;
+    }
+
+    if (isSignUp) {
+      // Sign up flow
+      const user = {
+        email,
+        password, // In production, never store plain passwords!
+        authMethod: 'email',
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem('whispUser', JSON.stringify(user));
+      onAuthSuccess();
+    } else {
+      // Sign in flow
+      const storedUser = localStorage.getItem('whispUser');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        if (user.email === email && user.password === password) {
+          onAuthSuccess();
+        } else {
+          alert('Invalid email or password');
+        }
+      } else {
+        alert('No account found. Please sign up first.');
+      }
+    }
   };
 
   const toggleMode = () => {
