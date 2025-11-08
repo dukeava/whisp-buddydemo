@@ -11,7 +11,7 @@ const ModeSelectionModal = ({ isOpen, onClose, onSelectMode }) => {
   return (
     <div className="mode-modal-overlay" onClick={onClose}>
       <div className="mode-modal-container" onClick={(e) => e.stopPropagation()}>
-        <h2 className="mode-modal-title">Choose your mode</h2>
+        <h2 className="mode-modal-title">Choose your <span className="mode-italic">mode</span></h2>
         
         <div className="mode-cards-container">
           {/* Dictational Mode */}
@@ -35,7 +35,7 @@ const ModeSelectionModal = ({ isOpen, onClose, onSelectMode }) => {
             <span className="mode-recommended-badge">Recommended</span>
             <div className="mode-card-image">
               <img 
-                src="https://customer-assets.emergentagent.com/job_whisp-buddy/artifacts/w2kthpkg_u3752894846_a_man_seen_walking_into_the_unknown_in_a_greenery_f743c564-10fe-4a15-8fa2-5453dee881f2_0.png" 
+                src="https://customer-assets.emergentagent.com/job_whisp-buddy/artifacts/0my0aekf_u3752894846_two_people_sitting_in_a_mountain_top_greenery_flo_2f2a3a76-b0a7-4c80-8dcc-91a824f03991_0.png" 
                 alt="Conversational mode"
               />
             </div>
