@@ -200,11 +200,11 @@ async def generate_elevenlabs_tts(request: TTSRequest):
     try:
         voice_id = request.voice_id or ELEVENLABS_VOICE_ID
         
-        # Generate audio using ElevenLabs
+        # Generate audio using ElevenLabs with proper settings
         audio_generator = elevenlabs_client.text_to_speech.convert(
             text=request.text,
             voice_id=voice_id,
-            model_id="eleven_multilingual_v2",
+            model_id="eleven_turbo_v2_5",  # Faster, better quality
             output_format="mp3_44100_128"
         )
         

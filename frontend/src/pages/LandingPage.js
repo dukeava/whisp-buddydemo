@@ -26,7 +26,7 @@ const LandingPage = () => {
     'Start speaking to wonder'
   ];
 
-  // Typing effect - Always runs
+  // Typing effect  Always runs
   useEffect(() => {
     const currentPhrase = phrases[phraseIndex];
     const typingSpeed = isDeleting ? 50 : 100;
