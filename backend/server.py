@@ -189,6 +189,43 @@ Code generation rules:
         logging.error(f"Code generation error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# ElevenLabs TTS Endpoint
+class TTSRequest(BaseModel):
+    text: str
+    voice_id: Optional[str] = None
+
+@api_router.post("/elevenlabs/tts")
+async def generate_elevenlabs_tts(request: TTSRequest):
+    """Generate speech using ElevenLabs with the configured voice"""
+    try:
+        voice_id = request.voice_id or ELEVENLABS_VOICE_ID
+        
+        # Generate audio using ElevenLabs
+        audio_generator = elevenlabs_client.text_to_speech.convert(
+            text=request.text,
+            voice_id=voice_id,
+            model_id="eleven_multilingual_v2",
+            output_format="mp3_44100_128"
+        )
+        
+        # Collect audio data
+        audio_data = b""
+        for chunk in audio_generator:
+            audio_data += chunk
+        
+        # Convert to base64
+        audio_b64 = base64.b64encode(audio_data).decode()
+        
+        return {
+            "success": True,
+            "audio": audio_b64,
+            "format": "mp3"
+        }
+    
+    except Exception as e:
+        logging.error(f"ElevenLabs TTS error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Register OpenAI Realtime router
 OpenAIChatRealtime.register_openai_realtime_router(api_router, realtime_chat)
 
