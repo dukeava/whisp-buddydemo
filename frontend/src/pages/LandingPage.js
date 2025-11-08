@@ -106,7 +106,7 @@ const LandingPage = () => {
 
   const toggleMic = async () => {
     if (!isConnected) {
-      // First click - initialize voice chat
+      // First click - initialize voice chat and greet
       try {
         realtimeChatRef.current = new RealtimeAudioChat();
         
@@ -129,6 +129,16 @@ const LandingPage = () => {
         await realtimeChatRef.current.init('landing');
         setIsConnected(true);
         console.log('✅ Voice chat initialized');
+        
+        // Trigger greeting after initialization
+        if (!hasGreeted) {
+          setTimeout(() => {
+            if (realtimeChatRef.current) {
+              realtimeChatRef.current.triggerResponse();
+              setHasGreeted(true);
+            }
+          }, 500);
+        }
       } catch (error) {
         console.error('Error starting voice chat:', error);
         alert('Could not start voice chat. Please check microphone permissions.');
