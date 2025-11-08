@@ -72,12 +72,10 @@ const HomePage = () => {
           <a href="#about">About</a>
         </nav>
 
-        {/* Spacer and Get Started - Far Right */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <button onClick={handleGetStarted} className="get-started-btn">
-            Get Started
-          </button>
-        </div>
+        {/* Get Started - Far Right */}
+        <button onClick={handleGetStarted} className="get-started-btn">
+          Get Started
+        </button>
       </header>
 
       {/* Hero Content */}
