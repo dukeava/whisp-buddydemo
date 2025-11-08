@@ -158,12 +158,13 @@ RULES:
   }
 
   setupAudioElement() {
-    this.audioElement = document.createElement("audio");
-    this.audioElement.autoplay = true;
-    document.body.appendChild(this.audioElement);
-
+    // DISABLED - Not using OpenAI audio, using ElevenLabs instead
+    // Audio element removed to prevent OpenAI voice from playing
     this.peerConnection.ontrack = (event) => {
-      this.audioElement.srcObject = event.streams[0];
+      // Mute OpenAI audio track
+      if (event.track.kind === 'audio') {
+        event.track.enabled = false;
+      }
     };
   }
 
