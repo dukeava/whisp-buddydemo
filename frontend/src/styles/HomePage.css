@@ -82,6 +82,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  top: 20px;
   display: flex;
   gap: 24px;
   align-items: center;
