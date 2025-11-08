@@ -49,7 +49,7 @@ const HomePage = () => {
           className="absolute inset-0 w-full h-full object-cover"
           style={{ objectFit: 'cover' }}
         >
-          <source src="https://customer-assets.emergentagent.com/job_code-whisperer-12/artifacts/08owjfff_1104.mp4" type="video/mp4" />
+          <source src="https://customer-assets.emergentagent.com/job_whisp-buddy/artifacts/n7mh31n0_1105.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
