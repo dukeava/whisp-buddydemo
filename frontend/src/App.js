@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "@/pages/HomePage";
 import LandingPage from "@/pages/LandingPage";
 import EditorPage from "@/pages/EditorPage";
 import { ThemeProvider } from "@/contexts/ThemeContext";
@@ -11,7 +12,8 @@ function App() {
       <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/workspace" element={<LandingPage />} />
             <Route path="/editor" element={<EditorPage />} />
           </Routes>
         </BrowserRouter>
