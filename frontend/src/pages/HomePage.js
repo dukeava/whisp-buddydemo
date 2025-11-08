@@ -92,7 +92,7 @@ const HomePage = () => {
 
         {/* Pill Bar - Wide with typing effect */}
         <div className="pill-bar">
-          <button className="pill-button" title="Attach file">
+          <button className="pill-button" title="Attach file" onClick={handleGetStarted}>
             <Plus size={20} />
           </button>
           <div className="pill-input-area" onClick={handleGetStarted}>
@@ -103,7 +103,7 @@ const HomePage = () => {
           <button className="pill-button mic-button" onClick={handleGetStarted} title="Start voice">
             <Mic size={20} />
           </button>
-          <button className="pill-button" title="Submit">
+          <button className="pill-button" title="Submit" onClick={handleGetStarted}>
             <ArrowUp size={20} />
           </button>
         </div>
