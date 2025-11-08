@@ -212,7 +212,7 @@ RULES:
     this.dataChannel.onmessage = (event) => {
       try {
         const eventData = JSON.parse(event.data);
-        console.log('📨 Event received:', eventData.type, eventData);
+        console.log('📨 Event received:', eventData.type);
         
         if (eventData.type === 'conversation.item.input_audio_transcription.completed') {
           if (this.onTranscript) {
@@ -221,49 +221,21 @@ RULES:
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('user_stopped');
           }
-        } else if (eventData.type === 'response.text.delta') {
-          console.log('📝 Text delta:', eventData.delta);
-          // Collect text delta
-          if (!this.currentResponseText) {
-            this.currentResponseText = '';
+        } else if (eventData.type === 'response.audio_transcript.done') {
+          console.log('🎤 Got transcript:', eventData.transcript);
+          
+          // Send transcript callback
+          if (this.onTranscript) {
+            this.onTranscript(eventData.transcript, false);
           }
-          this.currentResponseText += eventData.delta || '';
-        } else if (eventData.type === 'response.output_item.done') {
-          console.log('✅ Response output item done:', eventData);
-          // Check if there's text in the output item
-          if (eventData.item?.content && Array.isArray(eventData.item.content)) {
-            const textContent = eventData.item.content.find(c => c.type === 'text');
-            if (textContent && textContent.text) {
-              const fullText = textContent.text.trim();
-              console.log('🎤 Playing text through ElevenLabs:', fullText);
-              
-              // Send transcript callback
-              if (this.onTranscript) {
-                this.onTranscript(fullText, false);
-              }
-              
-              // Play through ElevenLabs
-              this.playElevenLabsAudio(fullText);
-            }
+          
+          // Play through ElevenLabs instead of OpenAI audio
+          if (eventData.transcript && eventData.transcript.trim()) {
+            this.playElevenLabsAudio(eventData.transcript.trim());
           }
-        } else if (eventData.type === 'response.text.done' || eventData.type === 'response.done') {
-          console.log('✅ Response done, text collected:', this.currentResponseText);
-          // Play full text through ElevenLabs
-          if (this.currentResponseText && this.currentResponseText.trim()) {
-            const fullText = this.currentResponseText.trim();
-            console.log('🎤 Playing text through ElevenLabs:', fullText);
-            
-            // Send transcript callback
-            if (this.onTranscript) {
-              this.onTranscript(fullText, false);
-            }
-            
-            // Play through ElevenLabs
-            this.playElevenLabsAudio(fullText);
-            
-            // Reset
-            this.currentResponseText = '';
-          } else if (this.onSpeakingStateChange) {
+        } else if (eventData.type === 'response.done') {
+          console.log('✅ Response complete');
+          if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('assistant_stopped');
           }
         } else if (eventData.type === 'input_audio_buffer.speech_started') {
