@@ -108,6 +108,9 @@ const HomePage = () => {
           </button>
         </div>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </div>
   );
 };
