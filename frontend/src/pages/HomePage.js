@@ -1,12 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Plus, Mic, ArrowUp } from 'lucide-react';
+import { Plus, Mic, ArrowUp } from 'lucide-react';
 import '../styles/HomePage.css';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
 
   const handleGetStarted = () => {
     navigate('/workspace');
@@ -22,6 +20,7 @@ const HomePage = () => {
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
+          style={{ objectFit: 'cover' }}
         >
           <source src="https://customer-assets.emergentagent.com/job_code-whisperer-12/artifacts/08owjfff_1104.mp4" type="video/mp4" />
           Your browser does not support the video tag.
@@ -40,18 +39,15 @@ const HomePage = () => {
           <span className="beta-badge">BETA</span>
         </div>
         
-        {/* Nav - Center */}
+        {/* Nav - Top Center */}
         <nav className="nav-links">
           <a href="#features">Features</a>
           <a href="#pricing">Pricing</a>
           <a href="#about">About</a>
         </nav>
 
-        {/* Actions - Far Right */}
+        {/* Get Started - Far Right Corner */}
         <div className="header-actions">
-          <button onClick={toggleTheme} className="theme-toggle" aria-label="Toggle theme">
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
           <button onClick={handleGetStarted} className="get-started-btn">
             Get Started
           </button>
@@ -67,11 +63,14 @@ const HomePage = () => {
           Build apps by talking, not typing.
         </p>
 
-        {/* Pill Bar */}
+        {/* Pill Bar - Wide like voice landing page */}
         <div className="pill-bar">
           <button className="pill-button" title="Attach file">
             <Plus size={20} />
           </button>
+          <div className="pill-input-area" onClick={handleGetStarted}>
+            <span className="pill-placeholder">Start speaking to build...</span>
+          </div>
           <button className="pill-button mic-button" onClick={handleGetStarted} title="Start voice">
             <Mic size={20} />
           </button>
