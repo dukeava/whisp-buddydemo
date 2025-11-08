@@ -191,16 +191,28 @@ RULES:
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('user_stopped');
           }
-        } else if (eventData.type === 'response.audio_transcript.delta') {
-          if (this.onSpeakingStateChange) {
-            this.onSpeakingStateChange('assistant_speaking');
+        } else if (eventData.type === 'response.text.delta') {
+          // Collect text delta
+          if (!this.currentResponseText) {
+            this.currentResponseText = '';
           }
-        } else if (eventData.type === 'response.audio_transcript.done') {
-          if (this.onTranscript) {
-            this.onTranscript(eventData.transcript, false);
-          }
-        } else if (eventData.type === 'response.done') {
-          if (this.onSpeakingStateChange) {
+          this.currentResponseText += eventData.delta || '';
+        } else if (eventData.type === 'response.text.done' || eventData.type === 'response.done') {
+          // Play full text through ElevenLabs
+          if (this.currentResponseText && this.currentResponseText.trim()) {
+            const fullText = this.currentResponseText.trim();
+            
+            // Send transcript callback
+            if (this.onTranscript) {
+              this.onTranscript(fullText, false);
+            }
+            
+            // Play through ElevenLabs
+            this.playElevenLabsAudio(fullText);
+            
+            // Reset
+            this.currentResponseText = '';
+          } else if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('assistant_stopped');
           }
         } else if (eventData.type === 'input_audio_buffer.speech_started') {
