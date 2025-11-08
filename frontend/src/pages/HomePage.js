@@ -41,6 +41,18 @@ const HomePage = () => {
     setIsAuthModalOpen(true);
   };
 
+  const handleAuthSuccess = () => {
+    setIsAuthModalOpen(false);
+    setIsModeModalOpen(true);
+  };
+
+  const handleModeSelect = (mode) => {
+    console.log('Selected mode:', mode);
+    setIsModeModalOpen(false);
+    // For now, navigate to workspace (conversational mode)
+    navigate('/workspace');
+  };
+
   return (
     <div className="homepage">
       {/* Video Background */}
