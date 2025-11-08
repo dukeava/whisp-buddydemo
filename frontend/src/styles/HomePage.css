@@ -111,6 +111,7 @@
   color: #000;
   cursor: pointer;
   transition: all 0.2s;
+  justify-self: end;
 }
 
 .get-started-btn:hover {
