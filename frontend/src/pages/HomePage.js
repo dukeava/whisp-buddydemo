@@ -36,7 +36,7 @@ const HomePage = () => {
   }, [typedText, isDeleting, phraseIndex]);
 
   const handleGetStarted = () => {
-    navigate('/workspace');
+    setIsAuthModalOpen(true);
   };
 
   return (
