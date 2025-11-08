@@ -61,7 +61,6 @@ const HomePage = () => {
       <header className="homepage-header">
         {/* Logo - Far Left */}
         <div className="logo">
-          <span className="logo-icon">✦</span>
           <span>Whisp</span>
           <span className="beta-badge">BETA</span>
         </div>
