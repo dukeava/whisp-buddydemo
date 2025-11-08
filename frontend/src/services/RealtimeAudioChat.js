@@ -143,7 +143,7 @@ RULES:
         },
         body: JSON.stringify({
           model: "gpt-4o-realtime-preview",
-          modalities: ["text"],  // Disable audio output, only text
+          voice: "alloy",  // Keep voice enabled to get transcripts
           turn_detection: null,
           instructions: instructions
         })
