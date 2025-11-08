@@ -119,7 +119,7 @@
   box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
 }
 
-/* Hero Content - Moved down */
+/* Hero Content - Moved down more */
 .hero-content {
   position: relative;
   z-index: 10;
@@ -129,7 +129,7 @@
   text-align: center;
   max-width: 900px;
   padding: 0 24px;
-  margin-top: 80px;
+  margin-top: 120px;
 }
 
 .hero-title {
@@ -138,7 +138,7 @@
   font-weight: 400;
   line-height: 1.1;
   color: white;
-  margin: 0 0 24px 0;
+  margin: 0 0 16px 0;
   text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
 }
 
