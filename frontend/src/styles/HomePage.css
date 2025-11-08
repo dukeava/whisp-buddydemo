@@ -63,6 +63,7 @@
   font-size: 20px;
   font-weight: 600;
   color: white;
+  justify-self: start;
 }
 
 .logo-icon {
