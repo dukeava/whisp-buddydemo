@@ -5,6 +5,7 @@ import '../styles/AuthModal.css';
 const AuthModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
 
   if (!isOpen) return null;
 
@@ -15,7 +16,11 @@ const AuthModal = ({ isOpen, onClose }) => {
 
   const handleContinue = () => {
     // TODO: Implement email/password auth
-    console.log('Continue with email/password');
+    console.log(isSignUp ? 'Sign up with email/password' : 'Sign in with email/password');
+  };
+
+  const toggleMode = () => {
+    setIsSignUp(!isSignUp);
   };
 
   return (
@@ -37,10 +42,17 @@ const AuthModal = ({ isOpen, onClose }) => {
 
           <div className="auth-modal-content">
             <h2 className="auth-modal-title">
-              Sign in / <span className="italic">Sign up</span>
+              {isSignUp ? (
+                <>Sign up / <span className="italic">Create account</span></>
+              ) : (
+                <>Sign in / <span className="italic">Sign up</span></>
+              )}
             </h2>
             <p className="auth-modal-subtitle">
-              We'll sign you in or create an account if you don't have one yet
+              {isSignUp 
+                ? "Create your Whisp account to start building"
+                : "We'll sign you in or create an account if you don't have one yet"
+              }
             </p>
 
             <button className="auth-google-btn" onClick={handleGoogleAuth}>
@@ -77,8 +89,11 @@ const AuthModal = ({ isOpen, onClose }) => {
               Continue
             </button>
 
-            <p className="auth-create-account">
-              New to Whisp? Create an account
+            <p className="auth-create-account" onClick={toggleMode}>
+              {isSignUp 
+                ? "Have an account? Log in"
+                : "New to Whisp? Create an account"
+              }
             </p>
 
             <p className="auth-terms">
