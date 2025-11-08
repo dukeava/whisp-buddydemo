@@ -31,6 +31,10 @@
   margin: 0 0 48px 0;
 }
 
+.mode-modal-title .mode-italic {
+  font-style: italic;
+}
+
 .mode-cards-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
