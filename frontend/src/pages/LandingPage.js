@@ -52,6 +52,48 @@ const LandingPage = () => {
     return () => clearTimeout(timer);
   }, [typedText, isDeleting, phraseIndex]);
 
+  // Auto-initialize and greet on page load
+  useEffect(() => {
+    const initVoice = async () => {
+      if (!hasGreeted && !realtimeChatRef.current) {
+        try {
+          realtimeChatRef.current = new RealtimeAudioChat();
+          
+          realtimeChatRef.current.onTranscript = (text, isUser) => {
+            console.log(isUser ? 'User:' : 'Whisp:', text);
+            setConversationHistory(prev => [...prev, { role: isUser ? 'user' : 'assistant', content: text }]);
+          };
+
+          realtimeChatRef.current.onSpeakingStateChange = (state) => {
+            if (state === 'assistant_speaking') {
+              setIsWhispTalking(true);
+              setIsRecording(false);
+            } else if (state === 'assistant_stopped') {
+              setTimeout(() => setIsWhispTalking(false), 100);
+            } else if (state === 'user_speaking') {
+              setIsWhispTalking(false);
+            }
+          };
+
+          await realtimeChatRef.current.init('landing');
+          setIsConnected(true);
+          
+          // Auto-greet after initialization
+          setTimeout(() => {
+            if (realtimeChatRef.current) {
+              realtimeChatRef.current.triggerResponse();
+              setHasGreeted(true);
+            }
+          }, 1500);
+        } catch (error) {
+          console.error('Auto-init error:', error);
+        }
+      }
+    };
+    
+    initVoice();
+  }, []);
+
   const toggleMic = async () => {
     if (!isConnected) {
       // First click - connect and greet
