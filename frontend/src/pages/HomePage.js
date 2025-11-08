@@ -65,18 +65,17 @@ const HomePage = () => {
           <span className="beta-badge">BETA</span>
         </div>
         
-        {/* Nav + Get Started grouped in center */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <nav className="nav-links">
-            <a href="#features">Features</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#about">About</a>
-          </nav>
+        {/* Nav - Centered */}
+        <nav className="nav-links">
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#about">About</a>
+        </nav>
 
-          <button onClick={handleGetStarted} className="get-started-btn">
-            Get Started
-          </button>
-        </div>
+        {/* Get Started - Far Right */}
+        <button onClick={handleGetStarted} className="get-started-btn">
+          Get Started
+        </button>
       </header>
 
       {/* Hero Content */}
