@@ -185,13 +185,17 @@ RULES:
   }
 
   setupAudioElement() {
-    // DISABLED - Not using OpenAI audio, using ElevenLabs instead
-    // Audio element removed to prevent OpenAI voice from playing
+    // Create audio element but keep it muted - we use ElevenLabs for voice
+    this.audioElement = document.createElement("audio");
+    this.audioElement.autoplay = true;
+    this.audioElement.muted = true;  // MUTE OpenAI audio
+    this.audioElement.volume = 0;    // Set volume to 0
+    document.body.appendChild(this.audioElement);
+
     this.peerConnection.ontrack = (event) => {
-      // Mute OpenAI audio track
-      if (event.track.kind === 'audio') {
-        event.track.enabled = false;
-      }
+      this.audioElement.srcObject = event.streams[0];
+      // Mute the track as well
+      event.track.enabled = false;
     };
   }
 
