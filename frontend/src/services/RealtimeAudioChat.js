@@ -297,8 +297,12 @@ RULES:
 
   triggerResponse() {
     // Trigger assistant to respond based on instructions
+    console.log('🎯 Triggering response...');
     if (this.dataChannel && this.dataChannel.readyState === 'open') {
+      console.log('📡 Sending response.create');
       this.dataChannel.send(JSON.stringify({ type: 'response.create' }));
+    } else {
+      console.error('❌ Data channel not open! State:', this.dataChannel?.readyState);
     }
   }
 
