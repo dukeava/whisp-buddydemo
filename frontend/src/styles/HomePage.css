@@ -101,11 +101,6 @@
   color: white;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-}
-
 .get-started-btn {
   font-family: 'Host Grotesk', sans-serif;
   font-size: 15px;
