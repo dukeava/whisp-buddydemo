@@ -11,6 +11,7 @@ class RealtimeAudioChat {
     this.audioContext = null;
     this.audioQueue = [];
     this.isPlaying = false;
+    this.currentResponseText = '';
   }
 
   async playElevenLabsAudio(text) {
