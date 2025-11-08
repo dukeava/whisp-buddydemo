@@ -11,6 +11,7 @@ const HomePage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isModeModalOpen, setIsModeModalOpen] = useState(false);
   
   const phrases = ['build', 'imagine', 'create', 'design'];
 
