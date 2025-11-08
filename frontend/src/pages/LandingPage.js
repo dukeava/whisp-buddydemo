@@ -96,42 +96,8 @@ const LandingPage = () => {
 
   const toggleMic = async () => {
     if (!isConnected) {
-      // First click - connect and greet
-      try {
-        realtimeChatRef.current = new RealtimeAudioChat();
-        
-        realtimeChatRef.current.onTranscript = (text, isUser) => {
-          console.log(isUser ? 'User:' : 'Whisp:', text);
-          setConversationHistory(prev => [...prev, { role: isUser ? 'user' : 'assistant', content: text }]);
-        };
-
-        realtimeChatRef.current.onSpeakingStateChange = (state) => {
-          if (state === 'assistant_speaking') {
-            setIsWhispTalking(true);
-            setIsRecording(false);
-          } else if (state === 'assistant_stopped') {
-            setTimeout(() => setIsWhispTalking(false), 100);
-          } else if (state === 'user_speaking') {
-            setIsWhispTalking(false);
-          }
-        };
-
-        await realtimeChatRef.current.init('landing');
-        setIsConnected(true);
-        
-        // Trigger Whisp to speak based on its instructions
-        if (!hasGreeted) {
-          setTimeout(() => {
-            if (realtimeChatRef.current) {
-              realtimeChatRef.current.triggerResponse();
-              setHasGreeted(true);
-            }
-          }, 1000);
-        }
-      } catch (error) {
-        console.error('Error starting voice chat:', error);
-        alert('Could not start voice chat. Please check microphone permissions.');
-      }
+      // Already initialized by auto-init, just set connected
+      console.log('Voice already initialized, mic ready');
     } else {
       // Toggle recording
       if (isRecording) {
