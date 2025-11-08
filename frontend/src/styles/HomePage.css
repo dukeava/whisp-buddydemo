@@ -101,6 +101,8 @@
 }
 
 .get-started-btn {
+  position: absolute;
+  right: 32px;
   font-family: 'Host Grotesk', sans-serif;
   font-size: 15px;
   font-weight: 600;
@@ -111,7 +113,6 @@
   color: #000;
   cursor: pointer;
   transition: all 0.2s;
-  justify-self: end;
 }
 
 .get-started-btn:hover {
