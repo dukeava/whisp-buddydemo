@@ -8,6 +8,55 @@ class RealtimeAudioChat {
     this.audioElement = null;
     this.onTranscript = null;
     this.onSpeakingStateChange = null;
+    this.audioContext = null;
+    this.audioQueue = [];
+    this.isPlaying = false;
+  }
+
+  async playElevenLabsAudio(text) {
+    try {
+      // Signal that assistant is speaking
+      if (this.onSpeakingStateChange) {
+        this.onSpeakingStateChange('assistant_speaking');
+      }
+
+      // Call ElevenLabs TTS endpoint
+      const response = await fetch(`${API_PREFIX}/elevenlabs/tts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+
+      const data = await response.json();
+      
+      if (data.success && data.audio) {
+        // Decode base64 to binary
+        const binaryString = atob(data.audio);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and play
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        const audioUrl = URL.createObjectURL(blob);
+        
+        const audio = new Audio(audioUrl);
+        audio.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+          if (this.onSpeakingStateChange) {
+            this.onSpeakingStateChange('assistant_stopped');
+          }
+        };
+        
+        await audio.play();
+      }
+    } catch (error) {
+      console.error('ElevenLabs TTS error:', error);
+      if (this.onSpeakingStateChange) {
+        this.onSpeakingStateChange('assistant_stopped');
+      }
+    }
   }
 
   async init(context = 'landing') {
