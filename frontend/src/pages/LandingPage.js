@@ -52,58 +52,6 @@ const LandingPage = () => {
     return () => clearTimeout(timer);
   }, [typedText, isDeleting, phraseIndex]);
 
-  // Auto-initialize and greet on page load
-  useEffect(() => {
-    const initVoice = async () => {
-      if (!hasGreeted) {
-        try {
-          // Just play the greeting directly through ElevenLabs without full voice init
-          const greetingText = "Hey I'm Dan, um what do you want to build or imagine today?";
-          
-          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/elevenlabs/tts`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: greetingText })
-          });
-
-          const data = await response.json();
-          
-          if (data.success && data.audio) {
-            // Decode and play
-            const binaryString = atob(data.audio);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-              bytes[i] = binaryString.charCodeAt(i);
-            }
-            
-            const blob = new Blob([bytes], { type: 'audio/mpeg' });
-            const audioUrl = URL.createObjectURL(blob);
-            const audio = new Audio(audioUrl);
-            
-            audio.onended = () => {
-              URL.revokeObjectURL(audioUrl);
-            };
-            
-            try {
-              await audio.play();
-              console.log('✅ Auto-greeting played');
-            } catch (playError) {
-              console.log('⚠️ Autoplay blocked - user needs to interact first');
-              // Autoplay blocked - will play when user clicks mic
-            }
-          }
-          
-          setHasGreeted(true);
-        } catch (error) {
-          console.error('Auto-greeting error:', error);
-        }
-      }
-    };
-    
-    // Play greeting after 1 second
-    setTimeout(initVoice, 1000);
-  }, []);
-
   const toggleMic = async () => {
     if (!isConnected) {
       // First click - initialize voice chat and greet
