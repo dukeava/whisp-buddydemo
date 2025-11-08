@@ -79,10 +79,12 @@
 }
 
 .nav-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 24px;
   align-items: center;
-  justify-self: center;
 }
 
 .nav-links a {
