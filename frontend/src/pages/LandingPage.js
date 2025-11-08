@@ -55,43 +55,53 @@ const LandingPage = () => {
   // Auto-initialize and greet on page load
   useEffect(() => {
     const initVoice = async () => {
-      if (!hasGreeted && !realtimeChatRef.current) {
+      if (!hasGreeted) {
         try {
-          realtimeChatRef.current = new RealtimeAudioChat();
+          // Just play the greeting directly through ElevenLabs without full voice init
+          const greetingText = "Hey I'm Dan, um what do you want to build or imagine today?";
           
-          realtimeChatRef.current.onTranscript = (text, isUser) => {
-            console.log(isUser ? 'User:' : 'Whisp:', text);
-            setConversationHistory(prev => [...prev, { role: isUser ? 'user' : 'assistant', content: text }]);
-          };
+          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/elevenlabs/tts`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: greetingText })
+          });
 
-          realtimeChatRef.current.onSpeakingStateChange = (state) => {
-            if (state === 'assistant_speaking') {
-              setIsWhispTalking(true);
-              setIsRecording(false);
-            } else if (state === 'assistant_stopped') {
-              setTimeout(() => setIsWhispTalking(false), 100);
-            } else if (state === 'user_speaking') {
-              setIsWhispTalking(false);
-            }
-          };
-
-          await realtimeChatRef.current.init('landing');
-          setIsConnected(true);
+          const data = await response.json();
           
-          // Auto-greet after initialization
-          setTimeout(() => {
-            if (realtimeChatRef.current) {
-              realtimeChatRef.current.triggerResponse();
-              setHasGreeted(true);
+          if (data.success && data.audio) {
+            // Decode and play
+            const binaryString = atob(data.audio);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
             }
-          }, 1500);
+            
+            const blob = new Blob([bytes], { type: 'audio/mpeg' });
+            const audioUrl = URL.createObjectURL(blob);
+            const audio = new Audio(audioUrl);
+            
+            audio.onended = () => {
+              URL.revokeObjectURL(audioUrl);
+            };
+            
+            try {
+              await audio.play();
+              console.log('✅ Auto-greeting played');
+            } catch (playError) {
+              console.log('⚠️ Autoplay blocked - user needs to interact first');
+              // Autoplay blocked - will play when user clicks mic
+            }
+          }
+          
+          setHasGreeted(true);
         } catch (error) {
-          console.error('Auto-init error:', error);
+          console.error('Auto-greeting error:', error);
         }
       }
     };
     
-    initVoice();
+    // Play greeting after 1 second
+    setTimeout(initVoice, 1000);
   }, []);
 
   const toggleMic = async () => {
