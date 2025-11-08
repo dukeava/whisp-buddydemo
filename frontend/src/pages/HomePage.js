@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Mic, ArrowUp } from 'lucide-react';
+import AuthModal from '../components/AuthModal';
 import '../styles/HomePage.css';
 
 const HomePage = () => {
