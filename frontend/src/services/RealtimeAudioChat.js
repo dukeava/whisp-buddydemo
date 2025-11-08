@@ -16,6 +16,8 @@ class RealtimeAudioChat {
 
   async playElevenLabsAudio(text) {
     try {
+      console.log('🔊 ElevenLabs TTS request for:', text);
+      
       // Signal that assistant is speaking
       if (this.onSpeakingStateChange) {
         this.onSpeakingStateChange('assistant_speaking');
@@ -29,6 +31,7 @@ class RealtimeAudioChat {
       });
 
       const data = await response.json();
+      console.log('🎵 ElevenLabs response:', data.success ? 'Success' : 'Failed');
       
       if (data.success && data.audio) {
         // Decode base64 to binary
@@ -44,16 +47,40 @@ class RealtimeAudioChat {
         
         const audio = new Audio(audioUrl);
         audio.onended = () => {
+          console.log('🔇 Audio playback ended');
           URL.revokeObjectURL(audioUrl);
           if (this.onSpeakingStateChange) {
             this.onSpeakingStateChange('assistant_stopped');
           }
         };
         
-        await audio.play();
+        audio.onerror = (e) => {
+          console.error('❌ Audio playback error:', e);
+          URL.revokeObjectURL(audioUrl);
+          if (this.onSpeakingStateChange) {
+            this.onSpeakingStateChange('assistant_stopped');
+          }
+        };
+        
+        console.log('▶️ Playing audio...');
+        try {
+          await audio.play();
+          console.log('✅ Audio playing');
+        } catch (playError) {
+          console.error('❌ Autoplay blocked:', playError);
+          // Autoplay might be blocked - user needs to interact first
+          alert('Click anywhere to enable voice');
+          document.addEventListener('click', async () => {
+            try {
+              await audio.play();
+            } catch (e) {
+              console.error('Play after click failed:', e);
+            }
+          }, { once: true });
+        }
       }
     } catch (error) {
-      console.error('ElevenLabs TTS error:', error);
+      console.error('❌ ElevenLabs TTS error:', error);
       if (this.onSpeakingStateChange) {
         this.onSpeakingStateChange('assistant_stopped');
       }
