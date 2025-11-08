@@ -1,10 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Mic, ArrowUp } from 'lucide-react';
 import '../styles/HomePage.css';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [typedText, setTypedText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  
+  const phrases = ['build', 'imagine', 'create', 'design'];
+
+  useEffect(() => {
+    const currentPhrase = phrases[phraseIndex];
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        if (typedText.length < currentPhrase.length) {
+          setTypedText(currentPhrase.slice(0, typedText.length + 1));
+        } else {
+          setTimeout(() => setIsDeleting(true), 2000);
+        }
+      } else {
+        if (typedText.length > 0) {
+          setTypedText(currentPhrase.slice(0, typedText.length - 1));
+        } else {
+          setIsDeleting(false);
+          setPhraseIndex((phraseIndex + 1) % phrases.length);
+        }
+      }
+    }, isDeleting ? 50 : 150);
+
+    return () => clearTimeout(timeout);
+  }, [typedText, isDeleting, phraseIndex]);
 
   const handleGetStarted = () => {
     navigate('/workspace');
@@ -47,29 +74,30 @@ const HomePage = () => {
         </nav>
 
         {/* Get Started - Far Right Corner */}
-        <div className="header-actions">
-          <button onClick={handleGetStarted} className="get-started-btn">
-            Get Started
-          </button>
-        </div>
+        <button onClick={handleGetStarted} className="get-started-btn">
+          Get Started
+        </button>
       </header>
 
       {/* Hero Content */}
       <div className="hero-content">
         <h1 className="hero-title">
-          Say it. See it. Ship it.
+          <span className="title-regular">Say it. See it. </span>
+          <span className="title-italic">Ship it.</span>
         </h1>
         <p className="hero-subtitle">
           Build apps by talking, not typing.
         </p>
 
-        {/* Pill Bar - Wide like voice landing page */}
+        {/* Pill Bar - Wide with typing effect */}
         <div className="pill-bar">
           <button className="pill-button" title="Attach file">
             <Plus size={20} />
           </button>
           <div className="pill-input-area" onClick={handleGetStarted}>
-            <span className="pill-placeholder">Start speaking to build...</span>
+            <span className="pill-placeholder">
+              Start speaking to {typedText}<span className="cursor">|</span>
+            </span>
           </div>
           <button className="pill-button mic-button" onClick={handleGetStarted} title="Start voice">
             <Mic size={20} />
