@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 from emergentintegrations.llm.openai import OpenAIChatRealtime
 import openai
 import json
+from elevenlabs.client import ElevenLabs
+import base64
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -24,6 +26,11 @@ db = client[os.environ['DB_NAME']]
 # OpenAI Setup
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 openai_client = openai.OpenAI(api_key=OPENAI_API_KEY)
+
+# ElevenLabs Setup
+ELEVENLABS_API_KEY = os.environ.get('ELEVENLABS_API_KEY')
+ELEVENLABS_VOICE_ID = os.environ.get('ELEVENLABS_VOICE_ID')
+elevenlabs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
 
 # Initialize Realtime Chat
 realtime_chat = OpenAIChatRealtime(api_key=OPENAI_API_KEY)
