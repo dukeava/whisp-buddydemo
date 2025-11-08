@@ -9,6 +9,7 @@ const HomePage = () => {
   const [typedText, setTypedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   
   const phrases = ['build', 'imagine', 'create', 'design'];
 
