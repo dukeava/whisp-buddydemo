@@ -49,8 +49,12 @@ const HomePage = () => {
   const handleModeSelect = (mode) => {
     console.log('Selected mode:', mode);
     setIsModeModalOpen(false);
-    // For now, navigate to workspace (conversational mode)
-    navigate('/workspace');
+    // Navigate based on mode selection
+    if (mode === 'dictational') {
+      navigate('/dictational');
+    } else {
+      navigate('/workspace');
+    }
   };
 
   return (
