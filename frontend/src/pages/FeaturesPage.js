@@ -55,7 +55,7 @@ const FeaturesPage = () => {
                 {feature.title} <em>{feature.titleItalic}</em>
               </h3>
               <p className="feature-description">{feature.description}</p>
-              <button className="feature-button" onClick={() => navigate('/workspace')}>
+              <button className="feature-button" onClick={() => setIsAuthModalOpen(true)}>
                 <span>Start speaking</span>
                 <ArrowRight size={18} />
               </button>
@@ -63,6 +63,16 @@ const FeaturesPage = () => {
           ))}
         </div>
       </div>
+      
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={() => {
+          setIsAuthModalOpen(false);
+          navigate('/workspace');
+        }}
+      />
     </div>
   );
 };
