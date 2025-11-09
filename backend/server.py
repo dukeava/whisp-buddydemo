@@ -426,28 +426,51 @@ async def conversational_generate(request: DictationalGenerateRequest):
     """Generate code for conversational mode - follows user's exact conversational prompt"""
     try:
         # Build context-aware prompt
-        conversationText = request.prompt
+        if request.previous_code:
+            # MODIFICATION MODE
+            context = f"""USER REQUEST: {request.prompt}
+
+EXISTING APP CODE:
+{request.previous_code[:3000]}
+
+TASK: Modify ONLY what the user asked for. Return the COMPLETE updated HTML with the change applied.
+Keep everything else exactly the same."""
+            
+            summary_example = "Alright! So I changed [what you asked] for you. Umm, I made [specific change]. That's it! Check it out!"
+        else:
+            # NEW APP MODE
+            context = f"""USER CONVERSATION: {request.prompt}
+
+TASK: Create a new app based on what they described."""
+            
+            summary_example = "Alright! So I built this [app] for you. Umm, it's got [features]. I think you're gonna love how [aspect]. Like, [detail]. You know what's cool? [thing]. Anyway, check it out!"
         
         # Initialize GPT-4o chat
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - build beautiful web apps from voice conversations.
+            system_message=f"""You are Whisp - build beautiful web apps.
 
 Generate ONE complete HTML file with Tailwind CDN.
 
-Return ONLY this JSON (no markdown, no explanation):
-{
+Return ONLY this JSON (no markdown):
+{{
   "html": "<!DOCTYPE html>...COMPLETE APP...</html>",
-  "summary": "Alright! So I built this [app] for you. Umm, it's got [features]. I think you're gonna love how [aspect]. Like, [detail]. You know what's cool? [thing]. Anyway, check it out!",
-  "steps": ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5", "Step 6"]
-}
+  "summary": "{summary_example}",
+  "steps": ["Step 1", "Step 2", "Step 3"]
+}}
 
-SUMMARY RULES: Pure conversational flow, NO bullet points, NO headers, use natural fillers like "umm", "like", "you know\""""
+SUMMARY RULES:
+- Pure conversational flow
+- NO bullet points, NO headers
+- Use natural fillers: "umm", "like", "you know"
+- If MODIFICATION: Talk ONLY about the change made (not the whole app!)
+- If NEW APP: Talk about what you built
+- Keep it short and natural"""
         ).with_model("openai", "gpt-4o")
         
         # Get response
-        user_message = UserMessage(text=f"Based on this conversation, generate the app:\n\n{conversationText}")
+        user_message = UserMessage(text=context)
         response = await gpt_chat.send_message(user_message)
         response_text = str(response).strip()
         
