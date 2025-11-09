@@ -254,27 +254,33 @@ async def dictational_generate(request: DictationalGenerateRequest):
                 session_id=request.session_id,
                 system_message="""You are Whisp's dictational mode - an AI that generates beautiful, functional web applications from voice descriptions.
 
-Your task:
-1. Generate complete, production-ready React/TypeScript applications
-2. Create multiple files (components, styles, utilities as needed)
+CRITICAL INSTRUCTIONS:
+1. Generate COMPLETE, BROWSER-READY code (NO imports, NO require, NO exports)
+2. Create a SINGLE self-contained HTML file OR multiple files as specified below
 3. Make designs modern, beautiful, and responsive
-4. Follow best practices and clean code principles
+4. Use CDN libraries only (React via CDN, Tailwind via CDN)
 
-File structure format:
-Return your response in this exact JSON format:
+IMPORTANT: Do NOT use:
+- import statements
+- require() calls  
+- export statements
+- Node.js modules
+
+For React apps, use browser globals:
+- React is available as window.React
+- ReactDOM is available as window.ReactDOM
+- Use const { useState, useEffect } = React;
+
+File structure format - RETURN ONLY THIS JSON, nothing else:
 {
   "files": [
-    {"path": "App.tsx", "content": "... tsx code here ..."},
-    {"path": "styles.css", "content": "... css code here ..."}
+    {"path": "App.tsx", "content": "actual code here without imports"},
+    {"path": "styles.css", "content": "css code here"}
   ],
-  "summary": "Brief description of what was created"
+  "summary": "Brief 1-2 sentence description of what was created"
 }
 
-Important:
-- Always include all imports
-- Make sure code is complete and runnable
-- Use Tailwind CSS classes when possible
-- Include proper TypeScript types"""
+Make sure the JSON is valid and contains NO markdown formatting."""
             ).with_model("anthropic", "claude-sonnet-4-20250514")
             
             # Send progress messages
