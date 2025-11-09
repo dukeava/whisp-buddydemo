@@ -21,36 +21,29 @@ const LandingPage = () => {
   const fileInputRef = useRef(null);
   const realtimeChatRef = useRef(null);
 
-  const phrases = [
-    'Start speaking to build',
-    'Start speaking to imagine',
-    'Start speaking to wonder'
-  ];
+  const phrases = ['build', 'imagine', 'create', 'design'];
 
-  // Typing effect  Always runs
+  // Typing effect - matches homepage
   useEffect(() => {
     const currentPhrase = phrases[phraseIndex];
-    const typingSpeed = isDeleting ? 50 : 100;
-    const pauseTime = 2000;
-
-    const timer = setTimeout(() => {
+    const timeout = setTimeout(() => {
       if (!isDeleting) {
         if (typedText.length < currentPhrase.length) {
-          setTypedText(currentPhrase.substring(0, typedText.length + 1));
+          setTypedText(currentPhrase.slice(0, typedText.length + 1));
         } else {
-          setTimeout(() => setIsDeleting(true), pauseTime);
+          setTimeout(() => setIsDeleting(true), 2000);
         }
       } else {
         if (typedText.length > 0) {
-          setTypedText(typedText.substring(0, typedText.length - 1));
+          setTypedText(currentPhrase.slice(0, typedText.length - 1));
         } else {
           setIsDeleting(false);
-          setPhraseIndex((prev) => (prev + 1) % phrases.length);
+          setPhraseIndex((phraseIndex + 1) % phrases.length);
         }
       }
-    }, typingSpeed);
+    }, isDeleting ? 50 : 150);
 
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timeout);
   }, [typedText, isDeleting, phraseIndex]);
 
   const toggleMic = async () => {
