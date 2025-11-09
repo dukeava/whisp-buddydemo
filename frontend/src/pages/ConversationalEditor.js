@@ -194,17 +194,26 @@ const ConversationalEditor = () => {
   
   const toggleVoice = async () => {
     if (!isVoiceConnected) {
+      // First click - initialize and greet
+      setIsUserSpeaking(true); // Show visualizer immediately
       await initializeVoice();
-    } else {
-      // Toggle listening
-      setIsUserSpeaking(!isUserSpeaking);
       
-      // If first time, greet
-      if (!hasGreeted && realtimeChatRef.current) {
-        setHasGreeted(true);
-        await realtimeChatRef.current.playElevenLabsAudio(
-          "Hey! Umm, are you looking to change anything?"
-        );
+      // Greet after initialization
+      if (realtimeChatRef.current) {
+        setTimeout(async () => {
+          await realtimeChatRef.current.playElevenLabsAudio(
+            "Hey! Umm, are you looking to change anything?"
+          );
+          setHasGreeted(true);
+        }, 800);
+      }
+    } else {
+      // X button - Stop and disconnect
+      setIsUserSpeaking(false);
+      setIsWhispTalking(false);
+      setIsVoiceConnected(false);
+      if (realtimeChatRef.current) {
+        realtimeChatRef.current.disconnect();
       }
     }
   };
