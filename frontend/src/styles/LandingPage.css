@@ -258,6 +258,29 @@
   cursor: not-allowed;
 }
 
+.pill-input-area {
+  flex: 1;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.pill-placeholder {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cursor {
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 .file-input {
   display: none;
 }
