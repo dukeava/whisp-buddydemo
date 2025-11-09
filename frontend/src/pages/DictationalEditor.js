@@ -423,7 +423,7 @@ const DictationalEditor = () => {
               </div>
             )}
             
-            {isGenerating && chatMessages.filter(m => !m.showPreviewButton).length <= 1 && (
+            {isGenerating && (
               <div className="chat-message system">
                 <div className="message-avatar">⚙️</div>
                 <div className="message-content">
