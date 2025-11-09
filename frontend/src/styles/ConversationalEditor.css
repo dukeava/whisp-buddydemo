@@ -1110,3 +1110,13 @@
     height: 50%;
   }
 }
+
+/* Pill input area adjustments for visualizer */
+.voice-pill-bar .pill-input-area {
+  flex: 1;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
