@@ -234,7 +234,8 @@
 }
 
 .chat-message.user .message-content {
-  background: rgba(74, 158, 255, 0.15);
+  background: rgba(128, 128, 128, 0.15);
+  border: 1px solid rgba(128, 128, 128, 0.2);
 }
 
 .chat-message.error .message-content {
