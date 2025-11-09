@@ -53,6 +53,7 @@ const DictationalEditor = () => {
     
     // Add transcribing message to chat
     setChatMessages(prev => [...prev, {
+      id: `system-transcribing-${Date.now()}`,
       role: 'system',
       content: 'Transcribing your voice...'
     }]);
