@@ -414,6 +414,28 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+.export-btn {
+  margin-top: 12px;
+  padding: 12px 24px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-btn:hover {
+  background: var(--border-color);
+  transform: translateY(-1px);
+}
+
 .cursor {
   animation: blink 1s infinite;
   margin-left: 2px;
