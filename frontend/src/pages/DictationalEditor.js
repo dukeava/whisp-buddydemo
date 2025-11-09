@@ -25,6 +25,7 @@ const DictationalEditor = () => {
   const [sessionId] = useState(() => `session-${Date.now()}`);
   
   const iframeRef = useRef(null);
+  const stackblitzRef = useRef(null);
   const chatEndRef = useRef(null);
   const hasInitialized = useRef(false);
   
