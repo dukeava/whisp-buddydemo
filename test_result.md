@@ -272,7 +272,7 @@ frontend:
     status_history:
       - working: "needs_testing"
         agent: "main"
-        comment: "Preview already has auto-refresh logic via useEffect hooks on lines 104-118. Preview re-renders when currentAppCode or generatedFiles change. User needs to verify this is working as expected."
+        comment: "Enhanced preview auto-refresh to explicitly reload after every code generation. Added: 1) Explicit renderPreview() call after generation completes, 2) Clear previous StackBlitz instance before embedding new preview, 3) Force fresh embed with forceEmbedLayout flag. Preview now guaranteed to refresh and show new changes after each prompt."
 
   - task: "Sphere Bouncing Animation"
     implemented: true
