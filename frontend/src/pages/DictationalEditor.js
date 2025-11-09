@@ -329,6 +329,12 @@ const DictationalEditor = () => {
     }
   };
   
+  const handleStopGeneration = () => {
+    console.log('🛑 Stopping generation...');
+    setGenerationCancelled(true);
+    setIsGenerating(false);
+  };
+  
   return (
     <div className={`dictational-editor ${theme}`}>
       {/* Header */}
