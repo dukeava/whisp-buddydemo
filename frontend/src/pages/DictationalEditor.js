@@ -221,11 +221,17 @@ const DictationalEditor = () => {
           await new Promise(resolve => setTimeout(resolve, 800));
         }
         
-        // Add step messages with loading animation
+        console.log('✅ Generation complete with steps:', steps);
+        console.log('📊 Steps array:', steps);
+        console.log('📊 Steps length:', steps.length);
+        
+        // Add step messages one by one with loading animation
         for (let i = 0; i < steps.length; i++) {
           if (generationCancelled) break;
           
           const stepId = `step-${Date.now()}-${i}`;
+          
+          console.log(`➕ Adding step ${i + 1}/${steps.length}: ${steps[i]}`);
           
           // Add with loading spinner
           setChatMessages(prev => [...prev, {
@@ -239,6 +245,8 @@ const DictationalEditor = () => {
           await new Promise(resolve => setTimeout(resolve, 700));
           
           if (generationCancelled) break;
+          
+          console.log(`✅ Completing step ${i + 1}: ${steps[i]}`);
           
           setChatMessages(prev => prev.map(m =>
             m.id === stepId
