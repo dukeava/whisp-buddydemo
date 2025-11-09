@@ -298,6 +298,12 @@ const DictationalEditor = () => {
           setCurrentAppCode(htmlFile.content);
         }
         
+        // Explicitly refresh preview to show new changes
+        if (result.files && result.files.length > 0 && !previewCollapsed) {
+          console.log('🔄 Auto-refreshing preview with new code');
+          await renderPreview(result.files);
+        }
+        
         setIsGenerating(false);
       }
       
