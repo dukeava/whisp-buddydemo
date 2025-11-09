@@ -193,6 +193,14 @@
   line-height: 1.6;
 }
 
+.chat-message.assistant .message-content {
+  background: transparent;
+  padding: 16px 0;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text-primary);
+}
+
 .chat-message.user .message-content {
   background: rgba(74, 158, 255, 0.15);
 }
