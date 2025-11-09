@@ -144,6 +144,52 @@ const DictationalPage = () => {
     setIsSettingsOpen(false);
     navigate('/');
   };
+  
+  const handleAttachImage = () => {
+    fileInputRef.current?.click();
+  };
+  
+  const handleFileSelect = async (e) => {
+    const files = Array.from(e.target.files);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    if (imageFiles.length === 0) {
+      alert('Please select image files only');
+      return;
+    }
+    
+    // Convert images to base64
+    const imagePromises = imageFiles.map(file => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          resolve({
+            name: file.name,
+            data: e.target.result,
+            type: file.type
+          });
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    });
+    
+    try {
+      const images = await Promise.all(imagePromises);
+      setAttachedImages(prev => [...prev, ...images]);
+      console.log('✅ Images attached:', images.length);
+      
+      // Clear file input
+      e.target.value = '';
+    } catch (error) {
+      console.error('❌ Image upload failed:', error);
+      alert('Failed to upload images. Please try again.');
+    }
+  };
+  
+  const handleRemoveImage = (index) => {
+    setAttachedImages(prev => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="dictational-page">
