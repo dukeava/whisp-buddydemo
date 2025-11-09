@@ -315,7 +315,7 @@ const DictationalEditor = () => {
       console.log('🚀 Vite React project');
       project = {
         title: 'Whisp App',
-        template: 'node',
+        template: 'vite',  // ✅ CORRECT template for Vite React
         files: projectFiles
       };
     } else {
