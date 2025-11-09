@@ -170,6 +170,80 @@ const ConversationalEditor = () => {
     }
   }, [generatedFiles, previewCollapsed]);
   
+  const handleGenerateFromAudio = async (audioBlob) => {
+    console.log('🚀 Starting generation from audio');
+    setIsGenerating(true);
+    
+    try {
+      // 1. Transcribe audio to get full prompt
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'audio.webm');
+      
+      const transcribeResponse = await axios.post(`${API}/dictational/transcribe`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      
+      if (!transcribeResponse.data.success) {
+        throw new Error('Transcription failed');
+      }
+      
+      const prompt = transcribeResponse.data.text;
+      console.log('📝 Full prompt:', prompt);
+      
+      // 2. Generate code
+      const response = await axios.post(`${API}/conversational/generate`, {
+        prompt: prompt,
+        session_id: sessionId,
+        previous_code: currentAppCode || null,
+        attached_images: attachedImages,
+        conversation_history: []
+      });
+      
+      console.log('📥 Response received:', response.data);
+      
+      // Clear attached images
+      setAttachedImages([]);
+      
+      if (response.data.success) {
+        const result = response.data.result;
+        
+        setGeneratedFiles(result.files || []);
+        
+        // Store code
+        const htmlFile = result.files?.find(f => f.path === 'index.html');
+        if (htmlFile) {
+          setCurrentAppCode(htmlFile.content);
+        }
+        
+        // Refresh preview
+        if (result.files && result.files.length > 0 && !previewCollapsed) {
+          console.log('🔄 Auto-refreshing preview');
+          setShowPreview(true);
+          await renderPreview(result.files);
+        }
+        
+        // Speak conversational summary
+        if (result.summary) {
+          setTimeout(async () => {
+            setIsWhispTalking(true);
+            await speakWithElevenLabs(result.summary);
+            setIsWhispTalking(false);
+          }, 1000);
+        }
+        
+        setIsGenerating(false);
+      }
+      
+    } catch (error) {
+      console.error('❌ Generation error:', error);
+      setIsGenerating(false);
+      
+      setIsWhispTalking(true);
+      await speakWithElevenLabs("Hmm, something went wrong. Uhh, wanna try again?");
+      setIsWhispTalking(false);
+    }
+  };
+  
   const handleGenerateFromConversation = async () => {
     console.log('🚀 Starting code generation from conversation');
     setIsGenerating(true);
