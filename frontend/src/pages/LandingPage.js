@@ -56,7 +56,7 @@ const LandingPage = () => {
 
   const toggleMic = async () => {
     if (!isConnected) {
-      // Start conversation
+      // Start "conversation" (fake it with pre-scripted responses)
       setIsRecording(true);
       setIsConnected(true);
       
@@ -67,25 +67,26 @@ const LandingPage = () => {
         setIsWhispTalking(false);
         setHasGreeted(true);
         
-        // Start continuous recording
-        await startContinuousRecording();
+        // Start recording (will be used as prompt later)
+        await startSimpleRecording();
+        
+        // Fake conversation flow with pre-scripted responses
+        startFakeConversation();
       }, 300);
     } else {
-      // Stop conversation
-      stopContinuousRecording();
+      // Stop everything
+      stopSimpleRecording();
+      stopFakeConversation();
       setIsRecording(false);
       setIsWhispTalking(false);
       setIsConnected(false);
     }
   };
   
-  const startContinuousRecording = async () => {
+  const startSimpleRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-      
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
+      const mediaRecorder = new MediaRecorder(stream);
       
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -93,31 +94,12 @@ const LandingPage = () => {
         }
       };
       
-      // Start recording - continuous
-      mediaRecorder.start();
-      console.log('🎤 Recording started');
-      
-      // Process audio every 8 seconds (gives you time to speak full thoughts)
-      const processInterval = setInterval(async () => {
-        // Skip if Whisp is talking or already processing
-        if (isWhispTalking || isProcessing) {
-          console.log('⏭️ Skipping - Whisp talking or processing');
-          return;
-        }
-        
-        if (audioChunksRef.current.length > 0) {
-          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-          audioChunksRef.current = []; // Clear for next batch
-          
-          if (audioBlob.size > 5000) {
-            console.log('🎧 Processing audio batch:', audioBlob.size);
-            await handleConversation(audioBlob);
-          }
-        }
-      }, 8000); // Process every 8 seconds
-      
-      window.landingProcessInterval = processInterval;
+      window.landingRecorder = mediaRecorder;
       window.landingStream = stream;
+      
+      // Just record continuously, no processing
+      mediaRecorder.start();
+      console.log('🎤 Recording (will use as prompt when Go clicked)');
       
     } catch (error) {
       console.error('❌ Recording error:', error);
@@ -125,17 +107,49 @@ const LandingPage = () => {
     }
   };
   
-  const stopContinuousRecording = () => {
-    if (window.landingProcessInterval) {
-      clearInterval(window.landingProcessInterval);
-    }
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-      mediaRecorderRef.current.stop();
+  const stopSimpleRecording = () => {
+    if (window.landingRecorder && window.landingRecorder.state === 'recording') {
+      window.landingRecorder.stop();
     }
     if (window.landingStream) {
       window.landingStream.getTracks().forEach(track => track.stop());
     }
-    audioChunksRef.current = [];
+  };
+  
+  const fakeConversationLines = [
+    "Oh nice! Umm, what kind of vibe are you going for?",
+    "Cool! So who's this for? Like for yourself or?",
+    "Hmm that's actually not bad! What features are you thinking?",
+    "Wait that's sick! Uhh, how should it look?",
+    "Okay okay, I'm seeing the vision! Any specific colors or style?",
+    "Alright hit go AND lets GET this rolling"
+  ];
+  
+  const startFakeConversation = () => {
+    let step = 0;
+    
+    const conversationInterval = setInterval(async () => {
+      if (!isConnected || step >= fakeConversationLines.length) {
+        clearInterval(conversationInterval);
+        return;
+      }
+      
+      // Speak next line
+      setIsWhispTalking(true);
+      await speakWithElevenLabs(fakeConversationLines[step]);
+      setIsWhispTalking(false);
+      
+      step++;
+      setConversationStep(step);
+    }, 12000); // Every 12 seconds
+    
+    window.landingConversationInterval = conversationInterval;
+  };
+  
+  const stopFakeConversation = () => {
+    if (window.landingConversationInterval) {
+      clearInterval(window.landingConversationInterval);
+    }
   };
   
   const handleConversation = async (audioBlob) => {
