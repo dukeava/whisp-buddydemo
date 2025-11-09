@@ -122,21 +122,21 @@
 
 .pricing-tier-name {
   font-family: 'Instrument Serif', serif;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 400;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   color: white;
 }
 
 .pricing-price {
   display: flex;
   align-items: baseline;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .price-amount {
   font-family: 'Instrument Serif', serif;
-  font-size: 48px;
+  font-size: 42px;
   font-weight: 400;
   color: white;
 }
