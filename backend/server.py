@@ -273,6 +273,7 @@ Rules:
 - Escape quotes with backslash
 - NO trailing commas
 - Valid JSON syntax"""
+        ).with_model("openai", "gpt-4o")
         
         # Get response
         response = await gpt_chat.send_message(UserMessage(text=request.prompt))
