@@ -152,65 +152,6 @@ const LandingPage = () => {
     }
   };
   
-  const handleConversation = async (audioBlob) => {
-    if (isProcessing) return; // Don't process if already processing
-    
-    try {
-      setIsProcessing(true);
-      
-      console.log('🎧 Processing audio:', audioBlob.size, 'bytes');
-      
-      // 1. Transcribe with Whisper
-      const formData = new FormData();
-      formData.append('file', audioBlob, 'audio.webm');
-      
-      const transcribeResponse = await axios.post(`${API}/dictational/transcribe`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      
-      if (!transcribeResponse.data.success || !transcribeResponse.data.text.trim()) {
-        setIsProcessing(false);
-        return;
-      }
-      
-      const userText = transcribeResponse.data.text.trim();
-      console.log('📝 User:', userText);
-      
-      // Add to conversation
-      const newConversation = [...conversationHistory, { role: 'user', content: userText }];
-      setConversationHistory(newConversation);
-      
-      // 2. Get GPT-4o response
-      const chatResponse = await axios.post(`${API}/conversational/chat`, {
-        message: userText,
-        session_id: sessionId,
-        conversation_history: newConversation
-      });
-      
-      if (!chatResponse.data.success) {
-        setIsProcessing(false);
-        return;
-      }
-      
-      const aiResponse = chatResponse.data.response;
-      console.log('🤖 Whisp:', aiResponse);
-      
-      // Add to conversation
-      setConversationHistory(prev => [...prev, { role: 'assistant', content: aiResponse }]);
-      
-      // 3. Speak with ElevenLabs
-      setIsWhispTalking(true);
-      await speakWithElevenLabs(aiResponse);
-      setIsWhispTalking(false);
-      
-      setIsProcessing(false);
-      
-    } catch (error) {
-      console.error('❌ Conversation error:', error);
-      setIsProcessing(false);
-    }
-  };
-  
   const speakWithElevenLabs = async (text) => {
     try {
       const response = await axios.post(`${API}/elevenlabs/tts`, { text });
@@ -244,12 +185,37 @@ const LandingPage = () => {
   };
 
   const handleTransitionToEditor = () => {
-    navigate('/conversational-editor', { 
-      state: { 
-        attachedFiles,
-        conversationHistory
-      } 
-    });
+    // Stop recording and get all audio
+    stopFakeConversation();
+    
+    if (window.landingRecorder && window.landingRecorder.state === 'recording') {
+      window.landingRecorder.stop();
+      
+      // Wait for final chunks then navigate
+      setTimeout(() => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        
+        if (window.landingStream) {
+          window.landingStream.getTracks().forEach(track => track.stop());
+        }
+        
+        navigate('/conversational-editor', { 
+          state: { 
+            audioBlob, // Full recording as prompt
+            attachedFiles,
+            conversationHistory
+          } 
+        });
+      }, 200);
+    } else {
+      // No recording, just navigate
+      navigate('/conversational-editor', { 
+        state: { 
+          attachedFiles,
+          conversationHistory
+        } 
+      });
+    }
   };
 
   const handleDictational = () => {
