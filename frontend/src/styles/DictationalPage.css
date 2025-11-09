@@ -255,37 +255,47 @@
   }
 }
 
-/* Attached Images Preview */
-.attached-images-preview {
+/* Attached Images Tags - Above pill bar */
+.attached-images-tags {
   display: flex;
   gap: 8px;
-  padding: 8px;
   flex-wrap: wrap;
-  max-width: 60%;
-  overflow-x: auto;
+  margin-bottom: 12px;
+  padding: 0 8px;
 }
 
-.attached-image-item {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+.image-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 6px 12px 6px 6px;
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 13px;
+  color: white;
+  max-width: 200px;
+}
+
+.image-tag img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
   flex-shrink: 0;
 }
 
-.attached-image-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.image-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.remove-image-btn {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  background: rgba(0, 0, 0, 0.7);
+.remove-tag-btn {
+  background: rgba(0, 0, 0, 0.3);
   border: none;
   border-radius: 50%;
   width: 20px;
@@ -295,9 +305,10 @@
   justify-content: center;
   cursor: pointer;
   color: white;
+  flex-shrink: 0;
   transition: background 0.2s;
 }
 
-.remove-image-btn:hover {
-  background: rgba(255, 0, 0, 0.8);
+.remove-tag-btn:hover {
+  background: rgba(255, 0, 0, 0.6);
 }
