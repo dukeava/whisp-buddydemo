@@ -251,35 +251,33 @@ async def dictational_generate_simple(request: DictationalGenerateRequest):
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - build FUNCTIONAL React apps with state/interactivity!
+            system_message="""You are Whisp - build FUNCTIONAL React apps!
 
-🎨 DESIGN LIKE V0 + MAKE IT WORK!
+Generate Create React App structure (for StackBlitz compatibility).
 
-CRITICAL: Put ALL React code in ONE src/App.tsx file (no separate component files).
-
-Return JSON:
+Return JSON with these files:
 {
   "files": [
-    {"path": "package.json", "content": "{\\"name\\":\\"app\\",\\"private\\":true,\\"version\\":\\"1.0.0\\",\\"type\\":\\"module\\",\\"scripts\\":{\\"dev\\":\\"vite\\",\\"build\\":\\"vite build\\"},\\"dependencies\\":{\\"react\\":\\"^18.2.0\\",\\"react-dom\\":\\"^18.2.0\\"},\\"devDependencies\\":{\\"@types/react\\":\\"^18.2.0\\",\\"@types/react-dom\\":\\"^18.2.0\\",\\"@vitejs/plugin-react\\":\\"^4.2.0\\",\\"vite\\":\\"^5.0.0\\",\\"tailwindcss\\":\\"^3.4.0\\",\\"autoprefixer\\":\\"^10.4.16\\",\\"postcss\\":\\"^8.4.32\\",\\"typescript\\":\\"^5.2.2\\"}}"},
-    {"path": "vite.config.ts", "content": "import { defineConfig } from 'vite'\\nimport react from '@vitejs/plugin-react'\\n\\nexport default defineConfig({\\n  plugins: [react()]\\n})"},
-    {"path": "tailwind.config.js", "content": "export default {\\n  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],\\n  theme: { extend: {} },\\n  plugins: []\\n}"},
-    {"path": "postcss.config.js", "content": "export default {\\n  plugins: {\\n    tailwindcss: {},\\n    autoprefixer: {}\\n  }\\n}"},
-    {"path": "tsconfig.json", "content": "{\\"compilerOptions\\":{\\"target\\":\\"ES2020\\",\\"useDefineForClassFields\\":true,\\"lib\\":[\\"ES2020\\",\\"DOM\\",\\"DOM.Iterable\\"],\\"module\\":\\"ESNext\\",\\"skipLibCheck\\":true,\\"moduleResolution\\":\\"bundler\\",\\"allowImportingTsExtensions\\":true,\\"resolveJsonModule\\":true,\\"isolatedModules\\":true,\\"noEmit\\":true,\\"jsx\\":\\"react-jsx\\",\\"strict\\":true},\\"include\\":[\\"src\\"]}"},
-    {"path": "tsconfig.node.json", "content": "{\\"compilerOptions\\":{\\"composite\\":true,\\"skipLibCheck\\":true,\\"module\\":\\"ESNext\\",\\"moduleResolution\\":\\"bundler\\"},\\"include\\":[\\"vite.config.ts\\"]}"},
-    {"path": ".gitignore", "content": "node_modules\\ndist\\n*.local"},
-    {"path": "index.html", "content": "<!DOCTYPE html>\\n<html lang=\\"en\\">\\n  <head>\\n    <meta charset=\\"UTF-8\\" />\\n    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\" />\\n    <title>Whisp App</title>\\n  </head>\\n  <body>\\n    <div id=\\"root\\"></div>\\n    <script type=\\"module\\" src=\\"/src/main.tsx\\"></script>\\n  </body>\\n</html>"},
-    {"path": "src/main.tsx", "content": "import React from 'react'\\nimport ReactDOM from 'react-dom/client'\\nimport App from './App'\\nimport './index.css'\\n\\nReactDOM.createRoot(document.getElementById('root')!).render(\\n  <React.StrictMode>\\n    <App />\\n  </React.StrictMode>\\n)"},
-    {"path": "src/App.tsx", "content": "import React, { useState } from 'react'\\n\\nfunction App() {\\n  // PUT ALL COMPONENTS INLINE HERE\\n  return (\\n    <div className=\\"min-h-screen bg-[#faf8f5]\\">\\n      {/* Nav, Hero, Features, etc ALL IN THIS FILE */}\\n    </div>\\n  )\\n}\\n\\nexport default App"},
-    {"path": "src/index.css", "content": "@tailwind base;\\n@tailwind components;\\n@tailwind utilities;"}
+    {"path": "package.json", "content": "{\\"name\\":\\"app\\",\\"version\\":\\"1.0.0\\",\\"private\\":true,\\"dependencies\\":{\\"react\\":\\"^18.2.0\\",\\"react-dom\\":\\"^18.2.0\\",\\"react-scripts\\":\\"5.0.1\\"},\\"scripts\\":{\\"start\\":\\"react-scripts start\\",\\"build\\":\\"react-scripts build\\"}}"},
+    {"path": "public/index.html", "content": "<!DOCTYPE html>\\n<html lang=\\"en\\">\\n<head>\\n<meta charset=\\"utf-8\\" />\\n<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />\\n<title>App</title>\\n<script src=\\"https://cdn.tailwindcss.com\\"></script>\\n</head>\\n<body>\\n<div id=\\"root\\"></div>\\n</body>\\n</html>"},
+    {"path": "src/index.js", "content": "import React from 'react';\\nimport ReactDOM from 'react-dom/client';\\nimport App from './App';\\n\\nconst root = ReactDOM.createRoot(document.getElementById('root'));\\nroot.render(<App />);"},
+    {"path": "src/App.js", "content": "import React, { useState } from 'react';\\n\\nfunction App() {\\n  // ALL components inline here\\n  return (\\n    <div className=\\"min-h-screen bg-[#faf8f5]\\">\\n      {/* Your beautiful app */}\\n    </div>\\n  );\\n}\\n\\nexport default App;"}
   ],
-  "summary": "...",
-  "steps": [...]
+  "summary": "Absolutely! [4-5 sentence intro]...\\n\\n## What I've Built\\n- [Feature]\\n- [Feature]\\n- [Feature]\\n- [Feature]\\n\\n## Technical Stack\\n- React with hooks\\n- Tailwind CSS\\n\\n## Next Steps\\n[Suggestions]",
+  "steps": [
+    "Setting up React project structure",
+    "Creating App component with state",
+    "Designing UI with Tailwind",
+    "Adding interactivity with hooks",
+    "Styling with V0 design principles",
+    "Finalizing responsive design"
+  ]
 }
 
-DESIGN: Use Elegant Cream style (bg-[#faf8f5], font-serif, text-6xl, py-32, rounded-2xl).
-FUNCTIONALITY: Use useState, useEffect for interactivity.
-STRUCTURE: All components inline in App.tsx (const Header = () => {...} then use <Header />).
-NO separate files. Keep under 15000 chars."""
+DESIGN: Use bg-[#faf8f5], font-serif, text-6xl, py-32, rounded-2xl.
+FUNCTIONALITY: Use useState, useEffect.
+ALL code in src/App.js (inline components).
+NO markdown."""
         ).with_model("openai", "gpt-4o")
         
         # Get response
