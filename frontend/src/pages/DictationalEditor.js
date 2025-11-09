@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Sun, Moon, Plus, Mic, X, ArrowUp, Code, Eye, Square, Copy, Check, Download } from 'lucide-react';
 import AudioVisualizer from '../components/AudioVisualizer';
+import Editor from '@monaco-editor/react';
 import sdk from '@stackblitz/sdk';
 import axios from 'axios';
 import '../styles/DictationalEditor.css';
