@@ -21,6 +21,7 @@ const DictationalEditor = () => {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedFiles, setGeneratedFiles] = useState([]);
+  const [currentAppCode, setCurrentAppCode] = useState('');
   const [previewContent, setPreviewContent] = useState('');
   const [showCode, setShowCode] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
