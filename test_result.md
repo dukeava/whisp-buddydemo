@@ -186,3 +186,5 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Fixed conversational AI to be more natural (no numbered lists, greeting changed to 'Hey what would you like to build today', no app suggestions). Fixed sphere bouncing to be continuous while speaking and smoothly transition back. Ready for user testing."
+  - agent: "testing"
+    message: "Tested dictational endpoints as requested. Both /api/dictational/transcribe and /api/dictational/generate are working correctly. Transcribe endpoint successfully uses OpenAI Whisper to transcribe audio files. Generate endpoint successfully uses Claude Sonnet 4.5 to generate code with streaming progress messages and proper file structure (path and content fields). All 10 backend API tests passed (100% success rate)."
