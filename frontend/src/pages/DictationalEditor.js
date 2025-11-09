@@ -357,17 +357,27 @@ const DictationalEditor = () => {
     
     if (stackblitzRef.current) {
       try {
-        // Clear previous preview to force fresh reload
+        // If VM exists, update files instead of re-embedding
         if (window.stackblitzVM) {
-          console.log('🗑️ Clearing previous StackBlitz instance');
-          stackblitzRef.current.innerHTML = '';
-          window.stackblitzVM = null;
+          console.log('🔄 Updating existing StackBlitz files...');
+          
+          // Update each file in the existing project
+          for (const [path, content] of Object.entries(projectFiles)) {
+            console.log(`📝 Updating file: ${path}`);
+            await window.stackblitzVM.applyFsDiff({
+              create: {
+                [path]: content
+              },
+              destroy: []
+            });
+          }
+          
+          console.log('✅ Files updated! StackBlitz will auto-refresh.');
+          return;
         }
         
-        // Small delay to ensure clean state
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        console.log('🚀 Embedding fresh StackBlitz preview');
+        // First time - embed the project
+        console.log('🚀 Embedding initial StackBlitz preview');
         const vm = await sdk.embedProject(
           stackblitzRef.current,
           project,
@@ -376,12 +386,11 @@ const DictationalEditor = () => {
             view: showCode ? 'editor' : 'preview',
             height: '100%',
             hideNavigation: true,
-            terminalHeight: 0,
-            forceEmbedLayout: true  // Force fresh embed
+            terminalHeight: 0
           }
         );
         
-        // Store VM reference for reloading
+        // Store VM reference for file updates
         window.stackblitzVM = vm;
         console.log('✅ StackBlitz embedded!');
       } catch (error) {
