@@ -105,17 +105,101 @@
 user_problem_statement: "Fix Whisp conversational AI to be more natural and buddy-like, and ensure sphere bounces continuously while speaking with smooth transition back to stagnant state"
 
 backend:
-  - task: "Conversational AI Instructions"
+  - task: "API Health Check"
     implemented: true
-    working: "needs_testing"
-    file: "/app/frontend/src/services/RealtimeAudioChat.js"
+    working: true
+    file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
-      - working: "needs_testing"
-        agent: "main"
-        comment: "Updated AI instructions to be more natural, removed numbered lists, changed greeting to 'Hey what would you like to build today', removed app suggestions"
+      - working: true
+        agent: "testing"
+        comment: "Tested GET /api/ endpoint. Returns 200 status with message 'Whisp API Ready'. Health check working correctly."
+
+  - task: "Project Management - Create Project"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested POST /api/projects endpoint. Returns 200 status with project object containing id, name, description, code, created_at, updated_at. MongoDB integration working correctly."
+
+  - task: "Project Management - Get All Projects"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested GET /api/projects endpoint. Returns 200 status with array of project objects. Successfully retrieves all projects from MongoDB."
+
+  - task: "Project Management - Get Specific Project"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested GET /api/projects/{project_id} endpoint. Returns 200 status with specific project object. Successfully retrieves project by ID from MongoDB."
+
+  - task: "Conversation Management"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested POST /api/conversations endpoint. Returns 200 status with conversation object containing id, project_id, messages, created_at. MongoDB integration working correctly."
+
+  - task: "Code Generation with Conversation History"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested POST /api/generate-code endpoint. Returns 200 status with success:true, code field containing generated HTML, and message field. GPT-4o integration working correctly. Successfully generates complete HTML code based on conversation history and requirements."
+
+  - task: "OpenAI Realtime Session"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested POST /api/realtime/session endpoint. Returns 200 status with session object containing id, model, modalities, instructions. OpenAI Realtime API integration working correctly."
+
+  - task: "OpenAI Realtime Negotiate"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested POST /api/realtime/negotiate endpoint. Returns 200 status and endpoint is accessible. Properly handles SDP data for WebRTC negotiation."
 
   - task: "Dictational Transcribe Endpoint"
     implemented: true
@@ -127,9 +211,9 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "Tested /api/dictational/transcribe endpoint. Returns 200 status with success:true and text field. OpenAI Whisper integration working correctly. Accepts audio file upload (multipart/form-data) and returns transcribed text."
+        comment: "Tested POST /api/dictational/transcribe endpoint. Returns 200 status with success:true and text field. OpenAI Whisper integration working correctly. Accepts audio file upload (multipart/form-data) and returns transcribed text."
 
-  - task: "Dictational Generate Endpoint"
+  - task: "Dictational Generate Simple Endpoint"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -139,7 +223,31 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "Tested /api/dictational/generate endpoint. Returns 200 status with streaming response. Progress messages (type:'progress') stream correctly, followed by completion (type:'complete') with files array containing path and content fields, and summary field. Claude Sonnet 4.5 integration working correctly. Generated 2 files (App.tsx and styles.css) for test prompt."
+        comment: "Tested POST /api/dictational/generate-simple endpoint. Returns 200 status with success:true and result object containing files array (with path and content fields), summary, and steps. GPT-4o integration working correctly. Non-streaming endpoint successfully generates complete HTML applications."
+
+  - task: "Dictational Generate Streaming Endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested POST /api/dictational/generate endpoint. Returns 200 status with streaming response. Progress messages (type:'progress') stream correctly (5 progress messages received), followed by completion (type:'complete') with files array containing path and content fields, and summary field. Claude Sonnet 4.5 integration working correctly. Generated 2 files (App.tsx and styles.css) for test prompt."
+
+  - task: "Conversational AI Instructions"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/services/RealtimeAudioChat.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "This is a frontend/UI integration task that requires manual user testing with voice interaction. Cannot be tested via automated backend API tests. The backend realtime endpoints are working correctly. User needs to test the conversational AI personality and naturalness through the UI."
 
 frontend:
   - task: "Sphere Bouncing Animation"
