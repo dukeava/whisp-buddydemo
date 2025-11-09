@@ -210,42 +210,52 @@
 }
 
 /* Controls */
-.controls {
+/* Pill Bar - Same as homepage */
+.pill-bar {
   display: flex;
   align-items: center;
-  gap: 28px;
-  padding: 16px 44px;
-  border-radius: 60px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  gap: 12px;
+  padding: 6px;
+  width: 520px;
+  max-width: 90vw;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 48px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.control-btn {
-  width: 52px;
-  height: 52px;
+.pill-button {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   border-radius: 50%;
   border: none;
-  background: transparent;
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  position: relative;
+  transition: all 0.2s;
 }
 
-.control-btn:hover {
-  background: var(--border-color);
+.pill-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
 }
 
-.control-btn:disabled {
+.pill-button.mic-button {
+  background: white;
+  color: #000;
+}
+
+.pill-button.mic-button:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.pill-button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-}
-
-.control-btn svg {
-  width: 24px;
-  height: 24px;
 }
 
 .file-input {
