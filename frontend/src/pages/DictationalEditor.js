@@ -163,18 +163,19 @@ const DictationalEditor = () => {
               } else if (data.type === 'complete') {
                 console.log('✅ Generation complete:', data.result);
                 
-                // Remove progress message
-                setChatMessages(prev => prev.filter(m => m.id !== currentMessageId));
+                // Single state update: remove progress and add summary
+                setChatMessages(prev => {
+                  const filtered = prev.filter(m => m.id !== currentMessageId);
+                  return [...filtered, {
+                    id: `assistant-${Date.now()}`,
+                    role: 'assistant',
+                    content: result.summary,
+                    showPreviewButton: true
+                  }];
+                });
                 
                 const result = data.result;
                 setGeneratedFiles(result.files || []);
-                
-                // Add summary message
-                setChatMessages(prev => [...prev, {
-                  role: 'assistant',
-                  content: result.summary,
-                  showPreviewButton: true
-                }]);
                 
                 // Don't call renderPreview here - useEffect will handle it
                 
