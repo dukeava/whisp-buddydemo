@@ -318,6 +318,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Dictational Response Formatting"
     - "Dictational Chat History Persistence"
     - "Dictational Preview Auto-Refresh"
     - "Sphere Bouncing Animation"
