@@ -388,13 +388,13 @@ const DictationalEditor = () => {
         }
         
         // First time - embed the project
-        console.log('🚀 Embedding initial StackBlitz preview');
+        console.log('🚀 Embedding StackBlitz with view mode:', showCode ? 'editor' : 'preview');
         const vm = await sdk.embedProject(
           stackblitzRef.current,
           project,
           {
             openFile: hasViteConfig ? 'src/App.tsx' : 'index.html',
-            view: 'preview',  // Always start with preview
+            view: showCode ? 'editor' : 'preview',  // Respect current view mode
             height: '100%',
             hideNavigation: true,
             terminalHeight: 0
