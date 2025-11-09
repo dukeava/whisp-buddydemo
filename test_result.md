@@ -277,16 +277,13 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Conversational AI Instructions"
     - "Sphere Bouncing Animation"
     - "Speaking State Logic"
-    - "Dictational Transcribe Endpoint"
-    - "Dictational Generate Endpoint"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -296,3 +293,5 @@ agent_communication:
     message: "Fixed conversational AI to be more natural (no numbered lists, greeting changed to 'Hey what would you like to build today', no app suggestions). Fixed sphere bouncing to be continuous while speaking and smoothly transition back. Ready for user testing."
   - agent: "testing"
     message: "Tested dictational endpoints as requested. Both /api/dictational/transcribe and /api/dictational/generate are working correctly. Transcribe endpoint successfully uses OpenAI Whisper to transcribe audio files. Generate endpoint successfully uses Claude Sonnet 4.5 to generate code with streaming progress messages and proper file structure (path and content fields). All 10 backend API tests passed (100% success rate)."
+  - agent: "testing"
+    message: "Completed comprehensive backend API testing. All 11 backend endpoints tested and working correctly: 1) GET /api/ (health check), 2) POST /api/projects (create project), 3) GET /api/projects (get all projects), 4) GET /api/projects/{id} (get specific project), 5) POST /api/conversations (create conversation), 6) POST /api/generate-code (code generation with GPT-4o), 7) POST /api/realtime/session (OpenAI Realtime session), 8) POST /api/realtime/negotiate (WebRTC negotiation), 9) POST /api/dictational/transcribe (Whisper transcription), 10) POST /api/dictational/generate-simple (GPT-4o non-streaming code generation), 11) POST /api/dictational/generate (Claude Sonnet 4.5 streaming code generation). All integrations verified: MongoDB (CRUD operations working), OpenAI GPT-4o (code generation working), OpenAI Whisper (transcription working), Claude Sonnet 4.5 (streaming code generation working), OpenAI Realtime API (session and negotiation working). 100% success rate (11/11 tests passed). Backend is production-ready."
