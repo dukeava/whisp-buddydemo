@@ -43,19 +43,26 @@ const ConversationalEditor = () => {
     if (hasInitialized.current) return;
     hasInitialized.current = true;
     
+    const audioBlob = location.state?.audioBlob;
+    const initialImages = location.state?.attachedFiles || [];
+    
     console.log('🎬 ConversationalEditor mounted');
     console.log('📦 Location state:', location.state);
-    console.log('💬 Conversation history:', conversationHistory.length);
+    console.log('🎤 Audio blob:', audioBlob);
     
-    // Initialize voice
-    initializeVoice();
+    // Set attached images
+    if (initialImages.length > 0) {
+      setAttachedImages(initialImages.filter(f => f.type?.startsWith('image/')).map(f => ({
+        name: f.name,
+        data: f.preview || URL.createObjectURL(f),
+        type: f.type
+      })));
+    }
     
-    // If we have conversation history from landing page, generate immediately
-    if (conversationHistory.length > 0) {
-      console.log('✅ Conversation history found, generating app');
-      setTimeout(() => {
-        handleGenerateFromConversation();
-      }, 1500);
+    // If we have audio from landing page, transcribe and generate
+    if (audioBlob) {
+      console.log('✅ Audio blob found, starting generation');
+      handleGenerateFromAudio(audioBlob);
     }
   }, []);
   
