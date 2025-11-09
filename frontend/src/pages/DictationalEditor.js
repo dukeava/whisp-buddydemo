@@ -543,39 +543,39 @@ const DictationalEditor = () => {
     }
   };
   
-  const handleShowCode = () => {
-    console.log('Code button clicked');
-    setShowCode(true);
-    setShowPreview(false);
+  const handleReloadPreview = async () => {
+    if (generatedFiles.length === 0 || !window.stackblitzVM) return;
     
-    // If StackBlitz VM exists, toggle to editor view
-    if (window.stackblitzVM && generatedFiles.length > 0) {
-      console.log('📝 Switching StackBlitz to editor view');
-      // StackBlitz will show split view with editor on left, preview on right
-      window.stackblitzVM.editor.openFile(generatedFiles[0]?.path || 'index.html');
-    }
+    console.log('🔄 Reloading preview...');
+    
+    // Clear and re-embed to force fresh reload
+    stackblitzRef.current.innerHTML = '';
+    window.stackblitzVM = null;
+    
+    // Small delay
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Re-embed
+    await renderPreview(generatedFiles);
+    
+    console.log('✅ Preview reloaded');
   };
   
-  const handleShowPreview = async () => {
-    console.log('Preview button clicked');
-    setShowCode(false);
-    setShowPreview(true);
-    setPreviewCollapsed(false);
+  const handleOpenInNewTab = () => {
+    if (!generatedFiles.length) return;
     
-    // Re-embed to switch back to preview-only mode
-    if (generatedFiles.length > 0 && window.stackblitzVM) {
-      console.log('👁️ Switching StackBlitz back to preview-only mode');
-      
-      // Clear and re-embed with preview mode
-      stackblitzRef.current.innerHTML = '';
-      window.stackblitzVM = null;
-      
-      // Small delay to ensure clean state
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Re-embed with preview mode
-      await renderPreview(generatedFiles);
-    }
+    // Create a blob URL from the main HTML file
+    const htmlFile = generatedFiles.find(f => f.path === 'index.html') || generatedFiles[0];
+    const blob = new Blob([htmlFile.content], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    // Open in new tab
+    window.open(url, '_blank');
+    
+    console.log('🔗 Opened preview in new tab');
+    
+    // Clean up after a delay
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   
   return (
