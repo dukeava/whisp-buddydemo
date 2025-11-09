@@ -514,17 +514,33 @@ const DictationalEditor = () => {
     }
   };
   
-  const handleExportCode = () => {
+  const handleExportCode = async () => {
     if (generatedFiles.length === 0) return;
     
-    const mainFile = generatedFiles[0];
-    const blob = new Blob([mainFile.content], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = mainFile.path;
-    a.click();
-    URL.revokeObjectURL(url);
+    try {
+      // Create a new ZIP file
+      const zip = new JSZip();
+      
+      // Add all generated files to the ZIP
+      generatedFiles.forEach(file => {
+        zip.file(file.path, file.content);
+      });
+      
+      // Generate the ZIP file
+      const content = await zip.generateAsync({ type: 'blob' });
+      
+      // Download the ZIP
+      const url = URL.createObjectURL(content);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'whisp-app.zip';
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      console.log('✅ ZIP file exported successfully');
+    } catch (error) {
+      console.error('❌ Export failed:', error);
+    }
   };
   
   const handleShowCode = () => {
