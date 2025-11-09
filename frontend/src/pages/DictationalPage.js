@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Mic, ArrowUp, Settings } from 'lucide-react';
+import { Plus, Mic, MicOff, ArrowUp, Settings } from 'lucide-react';
+import AudioVisualizer from '../components/AudioVisualizer';
 import '../styles/DictationalPage.css';
 
 const DictationalPage = () => {
@@ -9,6 +10,7 @@ const DictationalPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   
   const phrases = ['build', 'imagine', 'create', 'design'];
 
