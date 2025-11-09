@@ -429,12 +429,10 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Conversational Audio Visualizer"
     - "Conversational Landing Page Image Attachments"
     - "Conversational Editor Implementation"
     - "Dictational Image Attachment"
-    - "Dictational Share Modal"
-    - "Dictational Export as ZIP"
-    - "Dictational Preview Controls"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
