@@ -11,10 +11,10 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('whisp-theme') || 'light';
+    const savedTheme = localStorage.getItem('whisp-theme') || 'dark';
     setTheme(savedTheme);
     document.documentElement.className = `${savedTheme}-theme`;
   }, []);
