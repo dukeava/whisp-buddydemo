@@ -793,16 +793,16 @@
 
 .share-modal-title {
   font-family: 'Instrument Serif', serif;
-  font-size: 28px;
+  font-size: 36px;
   font-weight: 400;
   text-align: center;
-  color: var(--text-primary);
+  color: white;
   margin: 0;
 }
 
 .share-modal-title em {
   font-style: italic;
-  color: #8b5cf6;
+  color: white;
 }
 
 .share-link-container {
