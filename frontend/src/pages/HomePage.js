@@ -89,7 +89,7 @@ const HomePage = () => {
         <nav className="nav-links">
           <a onClick={() => navigate('/features')} style={{ cursor: 'pointer' }}>Features</a>
           <a onClick={() => navigate('/pricing')} style={{ cursor: 'pointer' }}>Pricing</a>
-          <a href="#about">About</a>
+          <a onClick={() => navigate('/about')} style={{ cursor: 'pointer' }}>About</a>
         </nav>
 
         {/* Get Started - Far Right */}
