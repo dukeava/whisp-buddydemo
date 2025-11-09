@@ -238,6 +238,7 @@
 
 .assistant-summary {
   max-width: 100%;
+  font-family: 'Host Grotesk', sans-serif;
 }
 
 .summary-header {
@@ -246,6 +247,7 @@
   margin-top: 20px;
   margin-bottom: 12px;
   color: var(--text-primary);
+  font-family: 'Host Grotesk', sans-serif;
 }
 
 .summary-header:first-child {
@@ -257,6 +259,7 @@
   margin-bottom: 8px;
   line-height: 1.8;
   color: var(--text-primary);
+  font-family: 'Host Grotesk', sans-serif;
 }
 
 .summary-bullet {
@@ -265,6 +268,7 @@
   font-size: 15px;
   line-height: 1.7;
   color: var(--text-secondary);
+  font-family: 'Host Grotesk', sans-serif;
 }
 
 .chat-message.user .message-content {
