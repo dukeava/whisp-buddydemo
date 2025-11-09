@@ -260,7 +260,7 @@ frontend:
     status_history:
       - working: "needs_testing"
         agent: "main"
-        comment: "Implemented Code and Preview button functionality. Code button opens the file in StackBlitz editor (shows editor view). Preview button keeps preview-only view. Uses vm.editor.openFile() to trigger StackBlitz's built-in editor without re-embedding."
+        comment: "Implemented full Code/Preview toggle functionality. Code button uses vm.editor.openFile() to show editor. Preview button clears and re-embeds with view:'preview' to show preview-only mode. Both directions now work: Preview → Code (shows editor), Code → Preview (shows preview-only)."
 
   - task: "Dictational Response Formatting"
     implemented: true
