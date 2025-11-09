@@ -42,44 +42,51 @@ const ConversationalEditor = () => {
     if (hasInitialized.current) return;
     hasInitialized.current = true;
     
-    // Handle initial audio and images if coming from dictational page
-    const audioBlob = location.state?.audioBlob;
-    const testPrompt = location.state?.testPrompt;
-    const initialImages = location.state?.attachedImages || [];
-    
-    console.log('🎬 DictationalEditor mounted');
+    console.log('🎬 ConversationalEditor mounted');
     console.log('📦 Location state:', location.state);
-    console.log('🎤 Audio blob:', audioBlob);
-    console.log('📝 Test prompt:', testPrompt);
-    console.log('📸 Attached images:', initialImages.length);
+    console.log('💬 Conversation history:', conversationHistory.length);
     
-    // Set initial attached images
-    if (initialImages.length > 0) {
-      setAttachedImages(initialImages);
-    }
+    // Initialize voice
+    initializeVoice();
     
-    if (audioBlob) {
-      console.log('✅ Audio blob found, starting transcription');
-      handleAudioTranscription(audioBlob);
-    } else if (testPrompt) {
-      console.log('✅ Test prompt found, using directly');
-      // Add user message to EXISTING chat (don't replace)
-      setChatMessages(prev => [...prev, {
-        id: `user-${Date.now()}`,
-        role: 'user',
-        content: testPrompt
-      }]);
-      // Start generation
-      handleGenerateCode(testPrompt);
-    } else {
-      console.log('❌ No audio blob or test prompt in location state!');
+    // If we have conversation history from landing page, generate immediately
+    if (conversationHistory.length > 0) {
+      console.log('✅ Conversation history found, generating app');
+      setTimeout(() => {
+        handleGenerateFromConversation();
+      }, 1500);
     }
   }, []);
   
-  useEffect(() => {
-    // Auto scroll chat to bottom
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatMessages]);
+  const initializeVoice = async () => {
+    try {
+      realtimeChatRef.current = new RealtimeAudioChat();
+      
+      realtimeChatRef.current.onTranscript = (transcript, role) => {
+        console.log(`📝 ${role}: ${transcript}`);
+        setConversationHistory(prev => [...prev, { role, content: transcript }]);
+      };
+      
+      realtimeChatRef.current.onSpeakingStateChange = (state) => {
+        console.log('🗣️ Speaking state:', state);
+        if (state === 'user_speaking') {
+          setIsUserSpeaking(true);
+        } else if (state === 'user_stopped') {
+          setIsUserSpeaking(false);
+        } else if (state === 'assistant_speaking') {
+          setIsWhispTalking(true);
+        } else if (state === 'assistant_stopped') {
+          setIsWhispTalking(false);
+        }
+      };
+      
+      await realtimeChatRef.current.init('editor');
+      setIsVoiceConnected(true);
+      console.log('✅ Voice initialized');
+    } catch (error) {
+      console.error('❌ Voice initialization failed:', error);
+    }
+  };
   
   // Typing effect for pill bar
   useEffect(() => {
