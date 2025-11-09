@@ -428,10 +428,13 @@ const DictationalEditor = () => {
                 <div className="message-avatar">
                   {msg.role === 'user' ? '👤' : 
                    msg.role === 'error' ? '⚠️' : 
-                   msg.role === 'step' ? (msg.isLoading ? '⏳' : '✓') : '✦'}
+                   msg.role === 'thinking' ? '🤔' :
+                   msg.role === 'step' ? (msg.isLoading ? <div className="spinner">⚙️</div> : '✓') : '✦'}
                 </div>
                 <div className="message-content">
-                  {msg.role === 'assistant' ? (
+                  {msg.role === 'thinking' ? (
+                    <div className="thinking-shimmer">{msg.content}</div>
+                  ) : msg.role === 'assistant' ? (
                     /* Render summary with proper formatting */
                     <div className="assistant-summary">
                       {msg.content.split('\n').map((line, i) => (
