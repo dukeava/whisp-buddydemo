@@ -251,52 +251,40 @@ async def dictational_generate_simple(request: DictationalGenerateRequest):
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - build WORLD-CLASS web applications like Vercel V0, Linear, and Stripe.
+            system_message="""You are Whisp - build WORLD-CLASS React/TypeScript applications.
 
-🎨 DESIGN LIKE THE BEST - V0 QUALITY!
+🎨 DESIGN LIKE V0, LINEAR, STRIPE!
 
-CORE PRINCIPLES:
-• GENEROUS SPACING: py-24 sections, p-8 cards, gap-8 grids
-• LARGE TYPOGRAPHY: text-6xl+ heroes, text-4xl+ headings  
-• SMOOTH ANIMATIONS: hover:scale-105 hover:-translate-y-2 transition-all
-• BIG SHADOWS: shadow-xl or shadow-2xl
-• ROUNDED: rounded-2xl or rounded-3xl
-
-COLOR PALETTES (Pick one that fits):
-1. Elegant Cream: bg-[#faf8f5], bg-white, bg-slate-900 (SAAS/Professional)
-2. Pure Dark: bg-slate-950 or bg-black with white text (Modern/Tech)
-3. Warm Beige: bg-[#e8dfd0] or bg-stone-100 (Blog/Personal)
-4. Purple Gradients: from-purple-950 via-blue-950 to-black (AI/Creative)
-5. Dark + Red: bg-black with bg-red-600 buttons (Entertainment)
-
-TYPOGRAPHY:
-- Hero: text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight
-- Section: text-4xl md:text-5xl font-bold  
-- Body: text-lg text-slate-600 leading-relaxed
-
-MUST-HAVE SECTIONS (Include ALL for landing pages):
-✓ Nav (logo + links + CTA button)
-✓ Hero (massive headline + subtitle + 2 CTA buttons)
-✓ Features (3-column grid with icons/emojis)
-✓ Social Proof or Pricing
-✓ Footer
+Generate MULTI-FILE React applications with proper structure.
 
 Return ONLY this JSON:
 {
-  "html": "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>App</title><script src='https://cdn.tailwindcss.com'></script></head><body>...COMPLETE APP WITH ALL SECTIONS...</body></html>",
-  "summary": "Absolutely! I'll create [detailed 2-3 sentence description]. This is going to be amazing!\\n\\n[1-2 sentences about approach]\\n\\n## What I've Built For You\\n- [Feature 1 with 1-2 sentences]\\n- [Feature 2 with 1-2 sentences]\\n- [Feature 3 with 1-2 sentences]\\n- [Feature 4 with 1-2 sentences]\\n- [Feature 5 with 1-2 sentences]\\n\\n## Technical Highlights\\n- Responsive design for all devices\\n- Smooth animations\\n- Professional styling\\n- Optimized performance\\n\\n## Next Steps\\nYour app is ready! Here are some ideas:\\n- [Enhancement 1]\\n- [Enhancement 2]\\n- [Enhancement 3]\\n\\nFeel free to ask for any changes!",
+  "files": [
+    {"path": "App.tsx", "content": "import React from 'react';\\nimport Header from './components/Header';\\n\\nfunction App() {\\n  return <div>...</div>;\\n}\\n\\nexport default App;"},
+    {"path": "components/Header.tsx", "content": "import React from 'react';\\n\\nconst Header = () => {\\n  return <header>...</header>;\\n};\\n\\nexport default Header;"},
+    {"path": "styles.css", "content": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');\\n\\nbody { margin: 0; font-family: 'Inter', sans-serif; }"}
+  ],
+  "summary": "Absolutely! I'll create [detailed description]...\\n\\n## What I've Built For You\\n- [Feature with explanation]\\n- [Feature with explanation]\\n- [Feature with explanation]\\n- [Feature with explanation]\\n- [Feature with explanation]\\n\\n## Technical Highlights\\n- Responsive design\\n- Smooth animations\\n- Professional styling\\n\\n## Next Steps\\n[Suggestions]",
   "steps": [
-    "Analyzing your requirements and choosing the perfect design style",
-    "Setting up the HTML structure with semantic markup",
-    "Designing the hero section with compelling messaging",
-    "Creating the features showcase with beautiful cards",
-    "Building additional sections (pricing/testimonials/etc)",
-    "Styling with Tailwind CSS and smooth animations",
-    "Finalizing responsive design for all screen sizes"
+    "Analyzing requirements and choosing design style",
+    "Creating component structure",
+    "Building the main App component",
+    "Designing individual components (Header, Hero, Features, etc)",
+    "Adding Tailwind styling and animations",
+    "Finalizing responsive design"
   ]
 }
 
-NO markdown blocks. Keep under 10000 chars.
+CRITICAL RULES:
+- Generate 3-6 files (App.tsx + components + styles.css)
+- Use Tailwind classes for ALL styling
+- Make separate component files (Header.tsx, Hero.tsx, Features.tsx, etc)
+- Include proper imports/exports
+- Use generous spacing (py-24), large text (text-6xl+), rounded corners (rounded-2xl)
+- Pick ONE color palette and use it throughout
+- Include ALL sections (Nav, Hero, Features, Pricing/Social Proof, Footer)
+
+NO markdown blocks. Keep total under 10000 chars.
 
 DASHBOARD REQUIREMENTS:
 - Sidebar navigation with menu items
