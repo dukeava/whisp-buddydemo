@@ -105,55 +105,106 @@ const ConversationalEditor = () => {
   }, [generatedFiles, previewCollapsed]);
   
   const handleGenerateFromConversation = async () => {
-    console.log('🎤 Starting transcription...', audioBlob);
-    setIsTranscribing(true);
+    console.log('🚀 Starting code generation from conversation');
+    setIsGenerating(true);
+    
+    // Build prompt from conversation history
+    const conversationText = conversationHistory
+      .map(msg => `${msg.role}: ${msg.content}`)
+      .join('\n');
+    
+    console.log('💬 Conversation:', conversationText);
     
     try {
-      // Create form data with audio file
-      const formData = new FormData();
-      formData.append('file', audioBlob, 'audio.webm');
+      console.log('📡 Calling API:', `${API}/dictational/generate-simple`);
       
-      console.log('📤 Sending to transcription endpoint...');
-      
-      // Send to transcription endpoint
-      const response = await axios.post(`${API}/dictational/transcribe`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      const response = await axios.post(`${API}/dictational/generate-simple`, {
+        prompt: conversationText,
+        session_id: sessionId,
+        previous_code: currentAppCode || null,
+        attached_images: attachedImages,
+        conversation_history: conversationHistory
       });
       
-      console.log('📥 Transcription response:', response.data);
+      console.log('📥 Response received:', response.data);
+      
+      // Clear attached images after sending
+      setAttachedImages([]);
       
       if (response.data.success) {
-        const transcribedText = response.data.text;
+        const result = response.data.result;
         
-        console.log('✅ Transcribed text:', transcribedText);
+        setGeneratedFiles(result.files || []);
         
-        // ADD user message to EXISTING chat (don't replace)
-        setChatMessages(prev => [...prev, {
-          id: `user-${Date.now()}`,
-          role: 'user',
-          content: transcribedText
-        }]);
+        // Store current app code for future iterations
+        const htmlFile = result.files?.find(f => f.path === 'index.html');
+        if (htmlFile) {
+          setCurrentAppCode(htmlFile.content);
+        }
         
-        // Start code generation
-        handleGenerateCode(transcribedText);
+        // Refresh preview
+        if (result.files && result.files.length > 0 && !previewCollapsed) {
+          console.log('🔄 Auto-refreshing preview with new code');
+          setShowPreview(true);
+          await renderPreview(result.files);
+        }
+        
+        // Speak summary after generation
+        if (result.summary && realtimeChatRef.current) {
+          await handleVoiceSummary(result.summary);
+        }
+        
+        setIsGenerating(false);
       }
+      
     } catch (error) {
-      console.error('❌ Transcription error:', error);
-      console.error('Error response:', error.response?.data);
-      console.error('Error status:', error.response?.status);
+      console.error('❌ Generation error:', error);
+      setIsGenerating(false);
       
-      const errorMessage = error.response?.data?.detail || error.message || 'Failed to transcribe audio. Please try again.';
+      if (realtimeChatRef.current) {
+        realtimeChatRef.current.playElevenLabsAudio(
+          "Hmm, something went wrong with generating that. Uhh, wanna try again?"
+        );
+      }
+    }
+  };
+  
+  const handleVoiceSummary = async (summary) => {
+    if (!realtimeChatRef.current) return;
+    
+    // Extract intro from summary for conversational speaking
+    const summaryLines = summary.split('\n');
+    let intro = '';
+    
+    for (const line of summaryLines) {
+      if (line.startsWith('## ')) break;
+      if (line.trim()) {
+        intro += line + ' ';
+      }
+    }
+    
+    // Make it conversational
+    const conversationalIntro = intro.trim() || 
+      "Okay so I built that for you! Umm, check it out and let me know what you think!";
+    
+    console.log('🗣️ Speaking summary:', conversationalIntro);
+    await realtimeChatRef.current.playElevenLabsAudio(conversationalIntro);
+  };
+  
+  const toggleVoice = async () => {
+    if (!isVoiceConnected) {
+      await initializeVoice();
+    } else {
+      // Toggle listening
+      setIsUserSpeaking(!isUserSpeaking);
       
-      // Add error message to EXISTING chat (don't replace)
-      setChatMessages(prev => [...prev, {
-        id: `error-${Date.now()}`,
-        role: 'error',
-        content: `Transcription failed: ${errorMessage}`
-      }]);
-    } finally {
-      setIsTranscribing(false);
+      // If first time, greet
+      if (!hasGreeted && realtimeChatRef.current) {
+        setHasGreeted(true);
+        await realtimeChatRef.current.playElevenLabsAudio(
+          "Hey! Umm, are you looking to change anything?"
+        );
+      }
     }
   };
   
