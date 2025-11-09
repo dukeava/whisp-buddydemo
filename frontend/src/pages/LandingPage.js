@@ -17,6 +17,7 @@ const LandingPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [hasGreeted, setHasGreeted] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const fileInputRef = useRef(null);
   const realtimeChatRef = useRef(null);
 
