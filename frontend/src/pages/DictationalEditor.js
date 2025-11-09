@@ -144,29 +144,39 @@ const DictationalEditor = () => {
       if (response.data.success) {
         const result = response.data.result;
         const steps = result.steps || [
-          'Setting up the foundation',
-          'Designing the layout',
-          'Adding interactivity',
-          'Styling with modern design',
-          'Finalizing touches'
+          'Analyzing requirements',
+          'Setting up structure',
+          'Designing components',
+          'Adding styling',
+          'Finalizing build'
         ];
         
         console.log('✅ Generation complete with steps:', steps);
         
-        // Add step messages one by one with checkmarks
+        // Add step messages one by one with loading then checkmark
         for (let i = 0; i < steps.length; i++) {
-          await new Promise(resolve => setTimeout(resolve, 600));
+          const stepId = `step-${Date.now()}-${i}`;
           
+          // Add with loading icon first
           setChatMessages(prev => [...prev, {
-            id: `step-${Date.now()}-${i}`,
+            id: stepId,
             role: 'step',
             content: steps[i],
-            isCompleted: true
+            isLoading: true
           }]);
+          
+          // Wait then mark as completed
+          await new Promise(resolve => setTimeout(resolve, 600));
+          
+          setChatMessages(prev => prev.map(m =>
+            m.id === stepId
+              ? { ...m, isLoading: false, isCompleted: true }
+              : m
+          ));
         }
         
         // Wait a bit before showing summary
-        await new Promise(resolve => setTimeout(resolve, 400));
+        await new Promise(resolve => setTimeout(resolve, 500));
         
         // Add summary message
         setChatMessages(prev => [...prev, {
