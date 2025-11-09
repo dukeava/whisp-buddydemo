@@ -37,8 +37,8 @@ const DictationalPage = () => {
   }, [typedText, isDeleting, phraseIndex]);
 
   const handleGetStarted = () => {
-    // TODO: Implement dictational mode logic
-    console.log('Starting dictational mode...');
+    // Toggle recording and show visualizer
+    setIsRecording(!isRecording);
   };
 
   const handleConversational = () => {
