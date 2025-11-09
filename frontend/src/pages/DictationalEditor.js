@@ -101,12 +101,12 @@ const DictationalEditor = () => {
   }, [typedText, isDeleting, phraseIndex]);
   
   useEffect(() => {
-    // Render preview when files are generated
-    if (generatedFiles.length > 0 && !showCode) {
-      console.log('🎯 useEffect triggered - rendering preview');
+    // Render preview when files are generated or view changes
+    if (generatedFiles.length > 0 && !previewCollapsed) {
+      console.log('🎯 useEffect triggered - view:', showCode ? 'editor' : 'preview');
       renderPreview(generatedFiles);
     }
-  }, [generatedFiles, showCode]);
+  }, [generatedFiles, showCode, previewCollapsed]);
   
   const handleAudioTranscription = async (audioBlob) => {
     console.log('🎤 Starting transcription...', audioBlob);
