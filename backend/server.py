@@ -245,41 +245,31 @@ class DictationalGenerateRequest(BaseModel):
 
 @api_router.post("/dictational/generate-simple")
 async def dictational_generate_simple(request: DictationalGenerateRequest):
-    """Generate code using Claude - non-streaming version"""
+    """Generate code using GPT-4o - non-streaming version"""
     try:
-        # Initialize Claude
-        claude_chat = LlmChat(
-            api_key=CLAUDE_API_KEY,
+        # Initialize GPT-4o chat
+        gpt_chat = LlmChat(
+            api_key=OPENAI_API_KEY,
             session_id=request.session_id,
             system_message="""You are Whisp - generate beautiful web applications.
 
 Generate a SINGLE complete HTML file with inline styles and JavaScript.
 
-Return ONLY this JSON:
+Return ONLY this JSON (no markdown, no code blocks):
 {
   "html": "<!DOCTYPE html><html>...complete working HTML...</html>",
-  "summary": "## What I Built\\n- Feature 1\\n- Feature 2"
+  "summary": "## What I Built\\n- Feature 1\\n- Feature 2\\n\\n## Key Features\\n- Modern design\\n- Responsive layout"
 }
 
-Make it beautiful with Tailwind CDN. NO markdown blocks around JSON."""
-        ).with_model("anthropic", "claude-sonnet-4-20250514")
+Make it beautiful with Tailwind CDN. Keep it under 6000 characters."""
+        ).with_model("openai", "gpt-4o")
         
-        # Get response with retry
-        max_retries = 2
-        for attempt in range(max_retries):
-            try:
-                response = await claude_chat.send_message(UserMessage(text=request.prompt))
-                break
-            except Exception as e:
-                if "overloaded" in str(e).lower() and attempt < max_retries - 1:
-                    logging.warning(f"Claude overloaded, retrying in 2s... (attempt {attempt + 1})")
-                    await asyncio.sleep(2)
-                    continue
-                raise
-        
+        # Get response
+        response = await gpt_chat.send_message(UserMessage(text=request.prompt))
         response_text = str(response).strip()
         
-        logging.info(f"Response length: {len(response_text)}")
+        logging.info(f"GPT-4o response length: {len(response_text)}")
+        logging.info(f"First 300 chars: {response_text[:300]}")
         
         # Clean and parse
         cleaned = response_text
@@ -292,24 +282,24 @@ Make it beautiful with Tailwind CDN. NO markdown blocks around JSON."""
             start = cleaned.find("{")
             end = cleaned.rfind("}") + 1
             json_str = cleaned[start:end]
+            
+            logging.info(f"Parsing JSON, length: {len(json_str)}")
             result = json.loads(json_str)
             
-            # Convert to files format if needed
+            # Convert to files format
             if "html" in result:
                 result = {
                     "files": [{"path": "index.html", "content": result["html"]}],
                     "summary": result.get("summary", "App generated successfully")
                 }
             
-            logging.info(f"✅ Parsed: {len(result.get('files', []))} files")
+            logging.info(f"✅ Success: {len(result.get('files', []))} files")
             return {"success": True, "result": result}
         else:
             raise ValueError("No JSON in response")
             
     except Exception as e:
         error_msg = str(e)
-        if "overloaded" in error_msg.lower():
-            error_msg = "Claude API is currently overloaded. Please wait a moment and try again."
         logging.error(f"Generation error: {error_msg}")
         raise HTTPException(status_code=500, detail=error_msg)
 
