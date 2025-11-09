@@ -40,12 +40,21 @@ const DictationalEditor = () => {
   }, [chatMessages]);
   
   const handleAudioTranscription = async (audioBlob) => {
+    console.log('🎤 Starting transcription...', audioBlob);
     setIsTranscribing(true);
+    
+    // Add transcribing message to chat
+    setChatMessages(prev => [...prev, {
+      role: 'system',
+      content: 'Transcribing your voice...'
+    }]);
     
     try {
       // Create form data with audio file
       const formData = new FormData();
       formData.append('file', audioBlob, 'audio.webm');
+      
+      console.log('📤 Sending to transcription endpoint...');
       
       // Send to transcription endpoint
       const response = await axios.post(`${API}/dictational/transcribe`, formData, {
@@ -54,8 +63,15 @@ const DictationalEditor = () => {
         }
       });
       
+      console.log('📥 Transcription response:', response.data);
+      
       if (response.data.success) {
         const transcribedText = response.data.text;
+        
+        console.log('✅ Transcribed text:', transcribedText);
+        
+        // Remove transcribing message
+        setChatMessages(prev => prev.filter(m => m.content !== 'Transcribing your voice...'));
         
         // Add user message to chat
         setChatMessages(prev => [...prev, {
@@ -67,7 +83,7 @@ const DictationalEditor = () => {
         handleGenerateCode(transcribedText);
       }
     } catch (error) {
-      console.error('Transcription error:', error);
+      console.error('❌ Transcription error:', error);
       setChatMessages(prev => [...prev, {
         role: 'error',
         content: 'Failed to transcribe audio. Please try again.'
