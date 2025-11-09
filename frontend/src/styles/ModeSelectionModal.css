@@ -50,6 +50,8 @@
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .mode-card:hover {
