@@ -321,8 +321,12 @@ const ConversationalEditor = () => {
         }
         
         // Speak summary after generation
-        if (result.summary && realtimeChatRef.current) {
-          await handleVoiceSummary(result.summary);
+        if (result.summary) {
+          setTimeout(async () => {
+            setIsWhispTalking(true);
+            await speakWithElevenLabs(result.summary);
+            setIsWhispTalking(false);
+          }, 1000);
         }
         
         setIsGenerating(false);
