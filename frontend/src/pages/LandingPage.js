@@ -102,7 +102,7 @@ const LandingPage = () => {
   };
 
   const handleTransitionToEditor = () => {
-    navigate('/editor', { 
+    navigate('/conversational-editor', { 
       state: { 
         attachedFiles,
         conversationHistory
