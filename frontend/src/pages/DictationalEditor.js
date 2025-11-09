@@ -493,19 +493,18 @@ const DictationalEditor = () => {
             ) : generatedFiles.length > 0 ? (
               showCode ? (
                 <div className="code-display">
-                  {generatedFiles.map((file, idx) => (
-                    <div key={idx} className="code-file">
+                  {generatedFiles.map((file) => (
+                    <div key={file.path} className="code-file">
                       <div className="file-name">{file.path}</div>
                       <pre><code>{file.content}</code></pre>
                     </div>
                   ))}
                 </div>
               ) : (
-                <iframe
-                  ref={iframeRef}
-                  className="preview-iframe-dict"
-                  title="Preview"
-                  sandbox="allow-scripts allow-same-origin"
+                <div 
+                  ref={stackblitzRef}
+                  className="stackblitz-preview"
+                  style={{ width: '100%', height: '100%' }}
                 />
               )
             ) : (
