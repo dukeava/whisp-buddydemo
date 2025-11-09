@@ -251,53 +251,35 @@ async def dictational_generate_simple(request: DictationalGenerateRequest):
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - build BEAUTIFUL web apps like Vercel V0!
+            system_message="""You are Whisp - build FUNCTIONAL React apps with state/interactivity!
 
-🎨 DESIGN LIKE V0, LINEAR, STRIPE - Copy the examples below!
+🎨 DESIGN LIKE V0 + MAKE IT WORK!
 
-CORE PRINCIPLES:
-• GENEROUS SPACING: py-24 sections, p-8 cards, gap-8 grids
-• LARGE TYPOGRAPHY: text-6xl+ heroes, text-4xl+ headings
-• SMOOTH ANIMATIONS: hover:scale-105 transition-all
-• BIG ROUNDED: rounded-2xl or rounded-3xl
-• BIG SHADOWS: shadow-xl or shadow-2xl
-
-PICK ONE COLOR SCHEME (use throughout entire app):
-1. Elegant Cream: bg-[#faf8f5] + bg-white + bg-slate-900
-2. Pure Dark: bg-slate-950 with white text
-3. Purple Gradients: from-purple-950 via-blue-950 to-black
-
-EXAMPLE - ELEGANT SAAS (COPY THIS STYLE):
-- bg-[#faf8f5] background
-- font-serif for headings
-- rounded-2xl cards
-- text-6xl heroes
-- py-32 sections
-- Nav with logo + links + CTA
-- Hero with huge heading + 2 buttons
-- Features with 3-column grid + emoji icons
-- Pricing with 3 tiers
-- Footer
-
-Generate a SINGLE complete HTML file with Tailwind CDN.
+CRITICAL: Put ALL React code in ONE src/App.tsx file (no separate component files).
 
 Return JSON:
 {
-  "html": "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>App</title><script src='https://cdn.tailwindcss.com'></script></head><body>...FULL APP WITH ALL SECTIONS...</body></html>",
-  "summary": "Absolutely! I'll build you [4-5 sentence detailed intro about what they asked for].\\n\\n[3-4 sentences about your design approach and why it's special].\\n\\n## What I've Built\\n- [Feature with 2 sentences explaining it]\\n- [Feature with 2 sentences]\\n- [Feature with 2 sentences]\\n- [Feature with 2 sentences]\\n- [Feature with 2 sentences]\\n\\n## Technical Highlights\\n- Responsive design for all devices\\n- Smooth animations and interactions\\n- Professional color scheme\\n- Generous spacing and hierarchy\\n\\n## Next Steps\\n[4-5 sentences about using the app and its potential].\\n\\nEnhancement ideas:\\n- [Detailed suggestion]\\n- [Detailed suggestion]\\n- [Detailed suggestion]\\n\\nLet me know what changes you'd like!",
-  "steps": [
-    "Analyzing your requirements and choosing Elegant Cream design",
-    "Setting up HTML structure with Tailwind CDN",
-    "Designing navigation with logo and menu items",
-    "Creating hero section with large serif heading",
-    "Building features grid with emoji icons and cards",
-    "Adding pricing section with 3-tier options",
-    "Styling with generous spacing and animations",
-    "Finalizing footer and responsive breakpoints"
-  ]
+  "files": [
+    {"path": "package.json", "content": "{\\"name\\":\\"app\\",\\"private\\":true,\\"version\\":\\"1.0.0\\",\\"type\\":\\"module\\",\\"scripts\\":{\\"dev\\":\\"vite\\",\\"build\\":\\"vite build\\"},\\"dependencies\\":{\\"react\\":\\"^18.2.0\\",\\"react-dom\\":\\"^18.2.0\\"},\\"devDependencies\\":{\\"@types/react\\":\\"^18.2.0\\",\\"@types/react-dom\\":\\"^18.2.0\\",\\"@vitejs/plugin-react\\":\\"^4.2.0\\",\\"vite\\":\\"^5.0.0\\",\\"tailwindcss\\":\\"^3.4.0\\",\\"autoprefixer\\":\\"^10.4.16\\",\\"postcss\\":\\"^8.4.32\\",\\"typescript\\":\\"^5.2.2\\"}}"},
+    {"path": "vite.config.ts", "content": "import { defineConfig } from 'vite'\\nimport react from '@vitejs/plugin-react'\\n\\nexport default defineConfig({\\n  plugins: [react()]\\n})"},
+    {"path": "tailwind.config.js", "content": "export default {\\n  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],\\n  theme: { extend: {} },\\n  plugins: []\\n}"},
+    {"path": "postcss.config.js", "content": "export default {\\n  plugins: {\\n    tailwindcss: {},\\n    autoprefixer: {}\\n  }\\n}"},
+    {"path": "tsconfig.json", "content": "{\\"compilerOptions\\":{\\"target\\":\\"ES2020\\",\\"useDefineForClassFields\\":true,\\"lib\\":[\\"ES2020\\",\\"DOM\\",\\"DOM.Iterable\\"],\\"module\\":\\"ESNext\\",\\"skipLibCheck\\":true,\\"moduleResolution\\":\\"bundler\\",\\"allowImportingTsExtensions\\":true,\\"resolveJsonModule\\":true,\\"isolatedModules\\":true,\\"noEmit\\":true,\\"jsx\\":\\"react-jsx\\",\\"strict\\":true},\\"include\\":[\\"src\\"]}"},
+    {"path": "tsconfig.node.json", "content": "{\\"compilerOptions\\":{\\"composite\\":true,\\"skipLibCheck\\":true,\\"module\\":\\"ESNext\\",\\"moduleResolution\\":\\"bundler\\"},\\"include\\":[\\"vite.config.ts\\"]}"},
+    {"path": ".gitignore", "content": "node_modules\\ndist\\n*.local"},
+    {"path": "index.html", "content": "<!DOCTYPE html>\\n<html lang=\\"en\\">\\n  <head>\\n    <meta charset=\\"UTF-8\\" />\\n    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\" />\\n    <title>Whisp App</title>\\n  </head>\\n  <body>\\n    <div id=\\"root\\"></div>\\n    <script type=\\"module\\" src=\\"/src/main.tsx\\"></script>\\n  </body>\\n</html>"},
+    {"path": "src/main.tsx", "content": "import React from 'react'\\nimport ReactDOM from 'react-dom/client'\\nimport App from './App'\\nimport './index.css'\\n\\nReactDOM.createRoot(document.getElementById('root')!).render(\\n  <React.StrictMode>\\n    <App />\\n  </React.StrictMode>\\n)"},
+    {"path": "src/App.tsx", "content": "import React, { useState } from 'react'\\n\\nfunction App() {\\n  // PUT ALL COMPONENTS INLINE HERE\\n  return (\\n    <div className=\\"min-h-screen bg-[#faf8f5]\\">\\n      {/* Nav, Hero, Features, etc ALL IN THIS FILE */}\\n    </div>\\n  )\\n}\\n\\nexport default App"},
+    {"path": "src/index.css", "content": "@tailwind base;\\n@tailwind components;\\n@tailwind utilities;"}
+  ],
+  "summary": "...",
+  "steps": [...]
 }
 
-CRITICAL: Include Nav, Hero, Features, Pricing, Footer. Use py-24+, text-6xl+, rounded-2xl. NO markdown."""
+DESIGN: Use Elegant Cream style (bg-[#faf8f5], font-serif, text-6xl, py-32, rounded-2xl).
+FUNCTIONALITY: Use useState, useEffect for interactivity.
+STRUCTURE: All components inline in App.tsx (const Header = () => {...} then use <Header />).
+NO separate files. Keep under 15000 chars."""
         ).with_model("openai", "gpt-4o")
         
         # Get response
