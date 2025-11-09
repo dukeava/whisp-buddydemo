@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import AuthModal from '../components/AuthModal';
 import '../styles/FeaturesPage.css';
 
 const FeaturesPage = () => {
   const navigate = useNavigate();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const features = [
     {
