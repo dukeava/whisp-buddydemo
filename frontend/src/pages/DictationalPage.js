@@ -36,9 +36,26 @@ const DictationalPage = () => {
     return () => clearTimeout(timeout);
   }, [typedText, isDeleting, phraseIndex]);
 
-  const handleGetStarted = () => {
-    // Toggle recording and show visualizer
-    setIsRecording(!isRecording);
+  const handleGetStarted = async () => {
+    if (!isRecording) {
+      // Request microphone access
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Store the stream so we can stop it later
+        window.dictationalStream = stream;
+        setIsRecording(true);
+      } catch (error) {
+        console.error('Microphone access denied:', error);
+        alert('Microphone access is required to use voice input');
+      }
+    } else {
+      // Stop recording and release microphone
+      if (window.dictationalStream) {
+        window.dictationalStream.getTracks().forEach(track => track.stop());
+        window.dictationalStream = null;
+      }
+      setIsRecording(false);
+    }
   };
 
   const handleConversational = () => {
