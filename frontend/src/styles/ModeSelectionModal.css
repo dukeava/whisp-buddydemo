@@ -81,6 +81,7 @@
   height: 280px;
   overflow: hidden;
   flex-shrink: 0;
+  border-radius: 12px 12px 0 0;
 }
 
 .mode-card-image img {
