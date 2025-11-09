@@ -7,7 +7,7 @@ import wave
 import struct
 
 class WhispAPITester:
-    def __init__(self, base_url="https://whisp-buddy.preview.emergentagent.com"):
+    def __init__(self, base_url="https://code-explorer-106.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.tests_run = 0
