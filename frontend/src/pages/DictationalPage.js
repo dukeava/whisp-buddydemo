@@ -82,30 +82,35 @@ const DictationalPage = () => {
     }
   };
 
-  const handleGoToEditor = () => {
+  const handleGoToEditor = async () => {
     if (isRecording) {
       // Stop recording and navigate to editor
-      if (window.dictationalMediaRecorder && window.dictationalMediaRecorder.state === 'recording') {
-        // Stop the recorder - this will trigger onstop and save the audio
-        window.dictationalMediaRecorder.stop();
-        
-        // Wait a bit for the blob to be created, then navigate
-        setTimeout(() => {
-          if (window.dictationalStream) {
-            window.dictationalStream.getTracks().forEach(track => track.stop());
-            window.dictationalStream = null;
-          }
+      return new Promise((resolve) => {
+        if (window.dictationalMediaRecorder && window.dictationalMediaRecorder.state === 'recording') {
+          // Set up one-time handler for when recording stops
+          window.dictationalMediaRecorder.addEventListener('stop', () => {
+            const audioChunks = window.dictationalAudioChunks || [];
+            if (audioChunks.length > 0) {
+              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+              
+              // Stop stream
+              if (window.dictationalStream) {
+                window.dictationalStream.getTracks().forEach(track => track.stop());
+                window.dictationalStream = null;
+              }
+              
+              // Navigate with audio
+              navigate('/dictational-editor', { 
+                state: { audioBlob }
+              });
+            }
+            resolve();
+          }, { once: true });
           
-          // Get the recorded audio
-          const audioChunks = window.dictationalAudioChunks || [];
-          if (audioChunks.length > 0) {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-            navigate('/dictational-editor', { 
-              state: { audioBlob }
-            });
-          }
-        }, 500);
-      }
+          // Stop the recorder
+          window.dictationalMediaRecorder.stop();
+        }
+      });
     } else if (recordedAudio) {
       // Already have recorded audio, navigate to editor
       navigate('/dictational-editor', { 
