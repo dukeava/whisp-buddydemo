@@ -343,74 +343,56 @@ const ConversationalEditor = () => {
   
   const toggleVoice = async () => {
     if (!isVoiceConnected) {
-      // First click - initialize and greet
-      setIsUserSpeaking(true); // Show visualizer immediately
-      await initializeVoice();
+      // First click - greet and start recording for changes
+      setIsUserSpeaking(true);
+      setIsVoiceConnected(true);
       
-      // Greet with ElevenLabs
+      // Greet
       setTimeout(async () => {
         setIsWhispTalking(true);
         await speakWithElevenLabs("Hey! Umm, are you looking to change anything?");
         setIsWhispTalking(false);
         setHasGreeted(true);
         
-        // Start recording after greeting
-        startRecording();
+        // Start recording
+        await startChangeRecording();
       }, 500);
     } else {
-      // X button - Stop recording and disconnect
-      stopRecording();
+      // X button - stop
+      stopChangeRecording();
       setIsUserSpeaking(false);
-      setIsWhispTalking(false);
       setIsVoiceConnected(false);
     }
   };
   
-  const startRecording = async () => {
+  const startChangeRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
-      const audioChunks = [];
+      
+      audioChunksRef.current = [];
       
       mediaRecorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
-      };
-      
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        stream.getTracks().forEach(track => track.stop());
-        
-        // Process the audio
-        if (audioBlob.size > 0) {
-          await handleVoiceChat(audioBlob);
-        }
-        
-        // Restart recording if still connected
-        if (isVoiceConnected) {
-          setTimeout(() => startRecording(), 100);
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
         }
       };
       
-      window.convEditorRecorder = mediaRecorder;
+      mediaRecorderRef.current = mediaRecorder;
       window.convEditorStream = stream;
       
       mediaRecorder.start();
-      
-      // Auto-stop after 10 seconds to process
-      setTimeout(() => {
-        if (mediaRecorder.state === 'recording') {
-          mediaRecorder.stop();
-        }
-      }, 10000);
+      console.log('🎤 Recording changes');
       
     } catch (error) {
       console.error('❌ Recording error:', error);
+      alert('Microphone access required');
     }
   };
   
-  const stopRecording = () => {
-    if (window.convEditorRecorder && window.convEditorRecorder.state === 'recording') {
-      window.convEditorRecorder.stop();
+  const stopChangeRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
     }
     if (window.convEditorStream) {
       window.convEditorStream.getTracks().forEach(track => track.stop());
