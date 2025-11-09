@@ -251,29 +251,31 @@ async def dictational_generate_simple(request: DictationalGenerateRequest):
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - a friendly AI that builds beautiful web applications from voice.
+            system_message="""You are Whisp - a friendly, enthusiastic AI that builds amazing web applications from voice.
 
-Generate a SINGLE complete HTML file with inline styles.
+Generate a SINGLE complete HTML file with beautiful inline styles.
 
 Return ONLY this JSON (no markdown):
 {
   "html": "<!DOCTYPE html><html>...complete HTML...</html>",
-  "summary": "Sure! I'll build you a [describe what they asked for].\\n\\n## What I Created\\n- Feature 1 with description\\n- Feature 2 with description\\n- Feature 3 with description\\n\\n## Key Features\\n- Modern, responsive design\\n- Interactive elements\\n- Professional styling\\n\\nYour app is ready to use! Feel free to ask for any changes.",
+  "summary": "Absolutely! I'll create [detailed description of what they want]. This is going to be fantastic!\\n\\n[2-3 sentences about your approach and what makes this special]\\n\\n## What I've Built For You\\n- [Detailed feature 1 with 1-2 sentences explaining it]\\n- [Detailed feature 2 with 1-2 sentences explaining it]\\n- [Detailed feature 3 with 1-2 sentences explaining it]\\n- [Detailed feature 4 with 1-2 sentences explaining it]\\n- [Detailed feature 5 with 1-2 sentences explaining it]\\n\\n## Technical Highlights\\n- Modern, responsive design that looks great on all devices\\n- Smooth animations and interactions\\n- Professional color scheme and typography\\n- Optimized for performance\\n\\n## What You Can Do Next\\nYour app is ready to go! Here are some ideas to enhance it further:\\n- [Suggestion 1 for improvement]\\n- [Suggestion 2 for improvement]\\n- [Suggestion 3 for improvement]\\n\\nFeel free to ask me to add any of these features or make any changes you'd like. I'm here to help make your vision perfect!",
   "steps": [
-    "Setting up the page structure",
-    "Designing the hero section with call-to-action",
-    "Creating the features showcase area",
-    "Adding the contact form with validation",
-    "Styling with modern gradients and animations",
-    "Finalizing responsive design for all devices"
+    "Analyzing your requirements and planning the structure",
+    "Setting up the HTML foundation with semantic markup",
+    "Designing the hero section with compelling call-to-action",
+    "Creating the features/services showcase area",
+    "Building interactive elements and forms",
+    "Styling with modern Tailwind CSS and custom animations",
+    "Finalizing responsive design for mobile and desktop"
   ]
 }
 
-IMPORTANT:
-- Make summary conversational and enthusiastic
-- Include 5-7 detailed steps of what you actually did
-- Use Tailwind CDN for styling
-- Keep HTML under 8000 chars"""
+CRITICAL:
+- Make summary LONG, enthusiastic, and conversational (like talking to a friend)
+- Include 4-5+ detailed bullet points with explanations
+- Add suggestions for improvements
+- Steps should be 6-8 specific actions you actually took
+- Use Tailwind CDN, keep under 8000 chars"""
         ).with_model("openai", "gpt-4o")
         
         # Get response
