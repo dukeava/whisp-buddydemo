@@ -257,9 +257,9 @@ const LandingPage = () => {
             className="pill-button mic-button"
             onClick={toggleMic}
             data-testid="mic-control-btn"
-            aria-label={isRecording ? 'Stop recording' : 'Start recording'}
+            aria-label={isConnected ? 'Stop conversation' : 'Start conversation'}
           >
-            {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
+            {isConnected ? <X size={20} /> : <Mic size={20} />}
           </button>
 
           <button 
