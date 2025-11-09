@@ -78,13 +78,6 @@ const DictationalEditor = () => {
     console.log('🎤 Starting transcription...', audioBlob);
     setIsTranscribing(true);
     
-    // Add transcribing message to chat
-    setChatMessages(prev => [...prev, {
-      id: `system-transcribing-${Date.now()}`,
-      role: 'system',
-      content: 'Transcribing your voice...'
-    }]);
-    
     try {
       // Create form data with audio file
       const formData = new FormData();
@@ -106,15 +99,12 @@ const DictationalEditor = () => {
         
         console.log('✅ Transcribed text:', transcribedText);
         
-        // Remove transcribing message and add user message in one update
-        setChatMessages(prev => {
-          const filtered = prev.filter(m => m.content !== 'Transcribing your voice...');
-          return [...filtered, {
-            id: `user-${Date.now()}`,
-            role: 'user',
-            content: transcribedText
-          }];
-        });
+        // Add user message in one update
+        setChatMessages([{
+          id: `user-${Date.now()}`,
+          role: 'user',
+          content: transcribedText
+        }]);
         
         // Start code generation
         handleGenerateCode(transcribedText);
@@ -126,7 +116,7 @@ const DictationalEditor = () => {
       
       const errorMessage = error.response?.data?.detail || error.message || 'Failed to transcribe audio. Please try again.';
       
-      setChatMessages(prev => [...prev, {
+      setChatMessages([{
         id: `error-${Date.now()}`,
         role: 'error',
         content: `Transcription failed: ${errorMessage}`
