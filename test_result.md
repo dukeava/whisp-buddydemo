@@ -369,6 +369,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Dictational Share Modal"
     - "Dictational Export as ZIP"
     - "Dictational Preview Controls"
     - "Dictational Response Formatting"
