@@ -268,7 +268,7 @@ Important:
 - Include proper TypeScript types"""
             ).with_model("anthropic", "claude-sonnet-4-20250514")
             
-            # Send message with progress updates
+            # Send progress messages
             progress_messages = [
                 "🎨 Analyzing your idea...",
                 "⚙️ Creating app structure...",
@@ -311,10 +311,7 @@ Important:
             
             except json.JSONDecodeError:
                 # Fallback response
-                yield f"data: {json.dumps({'type': 'complete', 'result': {
-                    'files': [{'path': 'App.tsx', 'content': response}],
-                    'summary': 'Generated application based on your description'
-                }})}\n\n"
+                yield f"data: {json.dumps({'type': 'complete', 'result': {'files': [{'path': 'App.tsx', 'content': response}], 'summary': 'Generated application based on your description'}})}\n\n"
         
         return StreamingResponse(generate_stream(), media_type="text/event-stream")
     
