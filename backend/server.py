@@ -302,42 +302,57 @@ Important:
                 # Try to extract JSON from response
                 response_text = response if isinstance(response, str) else str(response)
                 
-                logging.info(f"Claude response (first 500 chars): {response_text[:500]}")
+                logging.info(f"Claude raw response (first 1000 chars): {response_text[:1000]}")
                 
-                # Remove markdown code blocks if present
-                if "```json" in response_text:
-                    response_text = response_text.split("```json")[1].split("```")[0].strip()
-                elif "```" in response_text:
-                    # Try to find JSON block
+                # Remove ALL markdown code blocks
+                response_text = response_text.strip()
+                
+                # Remove ```json and ``` markers
+                if "```json" in response_text.lower():
+                    # Find the json block
                     parts = response_text.split("```")
+                    for i, part in enumerate(parts):
+                        if "json" in part.lower():
+                            # Take the next part which should be the JSON
+                            if i + 1 < len(parts):
+                                response_text = parts[i + 1].strip()
+                                break
+                elif "```" in response_text:
+                    # Generic code block
+                    parts = response_text.split("```")
+                    # Find the part with JSON
                     for part in parts:
-                        if "{" in part and "}" in part:
-                            response_text = part.strip()
+                        part = part.strip()
+                        if part.startswith("{") and part.endswith("}"):
+                            response_text = part
                             break
                 
-                # Find JSON in the response
-                if "{" in response_text and "}" in response_text:
-                    start_idx = response_text.find("{")
-                    end_idx = response_text.rfind("}") + 1
-                    json_str = response_text[start_idx:end_idx]
-                    
-                    logging.info(f"Extracted JSON: {json_str[:200]}...")
-                    
-                    result = json.loads(json_str)
+                # Now extract JSON
+                response_text = response_text.strip()
+                
+                if response_text.startswith("{") and response_text.endswith("}"):
+                    logging.info(f"Parsing JSON (first 200 chars): {response_text[:200]}")
+                    result = json.loads(response_text)
                     
                     # Validate structure
                     if "files" not in result or not isinstance(result.get("files"), list):
                         raise ValueError("Invalid response structure - missing files array")
                     
+                    # Clean any remaining markdown from file contents
+                    for file in result.get("files", []):
+                        if "content" in file:
+                            # Remove any ``` markers from content
+                            file["content"] = file["content"].replace("```tsx", "").replace("```jsx", "").replace("```css", "").replace("```", "").strip()
+                    
                 else:
                     # Fallback: create default structure
-                    logging.warning("No JSON found in response, using fallback")
+                    logging.warning("No valid JSON found in response, using fallback")
                     result = {
-                        "files": [{"path": "App.tsx", "content": response_text}],
+                        "files": [{"path": "index.html", "content": response_text}],
                         "summary": "Generated application based on your description"
                     }
                 
-                logging.info(f"Final result: {len(result.get('files', []))} files, summary length: {len(result.get('summary', ''))}")
+                logging.info(f"Final result: {len(result.get('files', []))} files")
                 
                 # Send completion with files
                 yield f"data: {json.dumps({'type': 'complete', 'result': result})}\n\n"
