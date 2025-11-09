@@ -296,7 +296,19 @@ Return ONLY this JSON:
   ]
 }
 
-NO markdown blocks. Keep under 8000 chars."""
+NO markdown blocks. Keep under 10000 chars.
+
+DASHBOARD REQUIREMENTS:
+- Sidebar navigation with menu items
+- Top stats cards (4-6 metrics with icons, trend indicators)
+- Data tables with realistic data (10+ rows)
+- Charts/graphs showing trends
+- Action buttons (Add, Edit, Export)
+
+LANDING PAGE REQUIREMENTS:
+- Nav → Hero → Features (6+ cards) → Pricing (3 tiers) → Footer
+- Large typography, generous spacing, smooth animations
+- Consistent theme throughout entire app"""
         ).with_model("openai", "gpt-4o")
         
         # Get response
