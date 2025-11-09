@@ -492,4 +492,6 @@ agent_communication:
   - agent: "main"
     message: "Added AudioVisualizer to conversational pages. When mic is active, visualizer replaces placeholder text in pill bar. Imported AudioVisualizer component in both LandingPage and ConversationalEditor. Visualizer shows during isRecording (landing) and isUserSpeaking (editor). Matches dictational behavior."
   - agent: "main"
-    message: "Improved voice UX for single-click experience. Landing page: Click mic → setIsRecording(true) → init voice → greet, Mic becomes X, Click X → disconnect. Editor: Click mic → setIsUserSpeaking(true) → init voice → greet 'Hey! Umm, are you looking to change anything?', Mic becomes X. No double-clicking needed, visualizer shows immediately."te (11/11 tests passed). Backend is production-ready."
+    message: "Improved voice UX for single-click experience. Landing page: Click mic → setIsRecording(true) → init voice → greet, Mic becomes X, Click X → disconnect. Editor: Click mic → setIsUserSpeaking(true) → init voice → greet 'Hey! Umm, are you looking to change anything?', Mic becomes X. No double-clicking needed, visualizer shows immediately."
+  - agent: "main"
+    message: "Fixed visualizer to stay visible until X clicked. Landing: Shows when isConnected (not just isRecording). Editor: Shows when isVoiceConnected (not just isUserSpeaking). Visualizer animates during both user and Whisp speaking. Only disappears when X clicked to disconnect. Persistent visualizer behavior now working."te (11/11 tests passed). Backend is production-ready."
