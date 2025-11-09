@@ -254,22 +254,24 @@ async def dictational_generate(request: DictationalGenerateRequest):
                 session_id=request.session_id,
                 system_message="""You are Whisp's dictational mode - an AI that generates beautiful, functional web applications.
 
-CRITICAL: Generate a SINGLE, COMPLETE HTML file that works in the browser.
+Generate complete React/TypeScript applications with proper file structure.
 
-Requirements:
-- Return ONLY valid JSON, no markdown, no code blocks
-- Include ALL code in ONE HTML file
-- Use CDN libraries (Tailwind via CDN is fine)
-- Make it beautiful, modern, and responsive
-- NO imports, NO require statements
-
-Return format (ONLY THIS, NOTHING ELSE):
+CRITICAL - Return ONLY valid JSON in this EXACT format:
 {
-  "html": "<!DOCTYPE html><html>...complete HTML here...</html>",
-  "summary": "Detailed summary with:\n\n## What I Built\n- Feature 1\n- Feature 2\n\n## Key Features\n- Description of main features"
+  "files": [
+    {"path": "App.tsx", "content": "import React from 'react';\\n\\nfunction App() {\\n  return <div>Hello</div>;\\n}\\n\\nexport default App;"},
+    {"path": "styles.css", "content": "body { margin: 0; }"}
+  ],
+  "summary": "## What I Built\\n\\n- Created a landing page with hero section\\n- Added navigation bar\\n- Implemented contact form\\n\\n## Key Features\\n- Responsive design\\n- Modern UI with Tailwind"
 }
 
-Make the summary detailed and formatted nicely with headers and bullet points."""
+Rules:
+- Use proper imports and exports  
+- Include ALL necessary files (components, styles, etc.)
+- Make summary detailed with headers (##) and bullet points (-)
+- Escape newlines as \\n in JSON strings
+- Use Tailwind CSS for styling
+- Make designs modern and beautiful"""
             ).with_model("anthropic", "claude-sonnet-4-20250514")
             
             # Send progress messages
