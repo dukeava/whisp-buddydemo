@@ -133,14 +133,12 @@ const LandingPage = () => {
   };
   
   const handleConversation = async (audioBlob) => {
+    if (isProcessing) return; // Don't process if already processing
+    
     try {
-      // Only process if blob has meaningful audio (> 1KB)
-      if (audioBlob.size < 1000) {
-        console.log('⏭️ Skipping empty audio chunk');
-        return;
-      }
+      setIsProcessing(true);
       
-      console.log('🎧 Processing audio chunk:', audioBlob.size, 'bytes');
+      console.log('🎧 Processing audio:', audioBlob.size, 'bytes');
       
       // 1. Transcribe with Whisper
       const formData = new FormData();
@@ -151,7 +149,7 @@ const LandingPage = () => {
       });
       
       if (!transcribeResponse.data.success || !transcribeResponse.data.text.trim()) {
-        console.log('⏭️ No speech detected in chunk');
+        setIsProcessing(false);
         return;
       }
       
@@ -159,16 +157,20 @@ const LandingPage = () => {
       console.log('📝 User:', userText);
       
       // Add to conversation
-      setConversationHistory(prev => [...prev, { role: 'user', content: userText }]);
+      const newConversation = [...conversationHistory, { role: 'user', content: userText }];
+      setConversationHistory(newConversation);
       
-      // 2. Get GPT-4o response with YOUR prompt
+      // 2. Get GPT-4o response
       const chatResponse = await axios.post(`${API}/conversational/chat`, {
         message: userText,
         session_id: sessionId,
-        conversation_history: conversationHistory
+        conversation_history: newConversation
       });
       
-      if (!chatResponse.data.success) return;
+      if (!chatResponse.data.success) {
+        setIsProcessing(false);
+        return;
+      }
       
       const aiResponse = chatResponse.data.response;
       console.log('🤖 Whisp:', aiResponse);
@@ -181,8 +183,11 @@ const LandingPage = () => {
       await speakWithElevenLabs(aiResponse);
       setIsWhispTalking(false);
       
+      setIsProcessing(false);
+      
     } catch (error) {
       console.error('❌ Conversation error:', error);
+      setIsProcessing(false);
     }
   };
   
