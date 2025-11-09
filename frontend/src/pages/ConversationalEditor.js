@@ -275,69 +275,36 @@ const ConversationalEditor = () => {
   };
   
   const handleGenerateFromConversation = async () => {
-    console.log('🚀 Starting code generation from conversation');
-    setIsGenerating(true);
+    console.log('🚀 Generating changes from new recording');
     
-    // Build prompt from conversation history
-    const conversationText = conversationHistory
-      .map(msg => `${msg.role}: ${msg.content}`)
-      .join('\n');
+    // Stop recording and get audio
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+      
+      // Wait for final chunks
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
     
-    console.log('💬 Conversation:', conversationText);
+    // Get recorded audio
+    const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
     
-    try {
-      console.log('📡 Calling API:', `${API}/conversational/generate`);
-      
-      const response = await axios.post(`${API}/conversational/generate`, {
-        prompt: conversationText,
-        session_id: sessionId,
-        previous_code: currentAppCode || null,
-        attached_images: attachedImages,
-        conversation_history: conversationHistory
-      });
-      
-      console.log('📥 Response received:', response.data);
-      
-      // Clear attached images after sending
-      setAttachedImages([]);
-      
-      if (response.data.success) {
-        const result = response.data.result;
-        
-        setGeneratedFiles(result.files || []);
-        
-        // Store current app code for future iterations
-        const htmlFile = result.files?.find(f => f.path === 'index.html');
-        if (htmlFile) {
-          setCurrentAppCode(htmlFile.content);
-        }
-        
-        // Refresh preview
-        if (result.files && result.files.length > 0 && !previewCollapsed) {
-          console.log('🔄 Auto-refreshing preview with new code');
-          setShowPreview(true);
-          await renderPreview(result.files);
-        }
-        
-        // Speak summary after generation
-        if (result.summary) {
-          setTimeout(async () => {
-            setIsWhispTalking(true);
-            await speakWithElevenLabs(result.summary);
-            setIsWhispTalking(false);
-          }, 1000);
-        }
-        
-        setIsGenerating(false);
-      }
-      
-    } catch (error) {
-      console.error('❌ Generation error:', error);
-      setIsGenerating(false);
-      
+    if (audioBlob.size < 5000) {
+      console.log('❌ No audio recorded for changes');
       setIsWhispTalking(true);
-      await speakWithElevenLabs("Hmm, something went wrong with generating that. Uhh, wanna try again?");
+      await speakWithElevenLabs("Hmm, I didn't catch that. Uhh, can you say what you want to change?");
       setIsWhispTalking(false);
+      
+      // Restart recording
+      await startChangeRecording();
+      return;
+    }
+    
+    // Generate from this audio (reuse the same function)
+    await handleGenerateFromAudio(audioBlob);
+    
+    // Restart recording for next change
+    if (isVoiceConnected) {
+      setTimeout(() => startChangeRecording(), 1000);
     }
   };
   
