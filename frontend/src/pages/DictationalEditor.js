@@ -134,8 +134,8 @@ const DictationalEditor = () => {
         
         console.log('✅ Transcribed text:', transcribedText);
         
-        // Add user message in one update
-        setChatMessages([{
+        // ADD user message to EXISTING chat (don't replace)
+        setChatMessages(prev => [...prev, {
           id: `user-${Date.now()}`,
           role: 'user',
           content: transcribedText
