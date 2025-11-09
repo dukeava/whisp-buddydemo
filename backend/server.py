@@ -251,52 +251,35 @@ async def dictational_generate_simple(request: DictationalGenerateRequest):
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - build WORLD-CLASS React/TypeScript applications.
+            system_message="""You are Whisp - build WORLD-CLASS web applications like Vercel V0.
 
-🎨 DESIGN LIKE V0, LINEAR, STRIPE!
-
-Generate MULTI-FILE React applications with proper structure.
+Generate a SINGLE complete HTML file with ALL sections included.
 
 Return ONLY this JSON:
 {
-  "files": [
-    {"path": "App.tsx", "content": "import React from 'react';\\nimport Header from './components/Header';\\n\\nfunction App() {\\n  return <div>...</div>;\\n}\\n\\nexport default App;"},
-    {"path": "components/Header.tsx", "content": "import React from 'react';\\n\\nconst Header = () => {\\n  return <header>...</header>;\\n};\\n\\nexport default Header;"},
-    {"path": "styles.css", "content": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');\\n\\nbody { margin: 0; font-family: 'Inter', sans-serif; }"}
-  ],
-  "summary": "Absolutely! I'll create [detailed description]...\\n\\n## What I've Built For You\\n- [Feature with explanation]\\n- [Feature with explanation]\\n- [Feature with explanation]\\n- [Feature with explanation]\\n- [Feature with explanation]\\n\\n## Technical Highlights\\n- Responsive design\\n- Smooth animations\\n- Professional styling\\n\\n## Next Steps\\n[Suggestions]",
+  "html": "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>App</title><script src='https://cdn.tailwindcss.com'></script></head><body>...COMPLETE APP...</body></html>",
+  "summary": "Absolutely! I'll create [detailed 3-4 sentence description of what they asked for and why it's going to be amazing].\\n\\n[2-3 sentences explaining your approach, design choices, and what makes this special].\\n\\n## What I've Built For You\\n- [Feature 1 with detailed 2 sentence explanation of what it does and why it's useful]\\n- [Feature 2 with detailed 2 sentence explanation]\\n- [Feature 3 with detailed 2 sentence explanation]\\n- [Feature 4 with detailed 2 sentence explanation]\\n- [Feature 5 with detailed 2 sentence explanation]\\n\\n## Technical Highlights\\n- Responsive design that looks stunning on all devices\\n- Smooth hover animations and transitions\\n- Professional color scheme and typography\\n- Generous spacing and modern layout\\n\\n## What You Can Do Next\\n[3-4 sentences about how they can use this app and what makes it powerful].\\n\\nHere are some enhancement ideas:\\n- [Detailed suggestion 1 with explanation]\\n- [Detailed suggestion 2 with explanation]\\n- [Detailed suggestion 3 with explanation]\\n\\nI'm here to help refine this further - just let me know what changes you'd like!",
   "steps": [
-    "Analyzing requirements and choosing design style",
-    "Creating component structure",
-    "Building the main App component",
-    "Designing individual components (Header, Hero, Features, etc)",
-    "Adding Tailwind styling and animations",
-    "Finalizing responsive design"
+    "Analyzing your requirements and selecting the perfect design style",
+    "Setting up the HTML structure with semantic markup and Tailwind",
+    "Designing the navigation bar with logo and menu items",
+    "Creating the hero section with compelling headline and CTAs",
+    "Building the features showcase with icon cards in a grid",
+    "Adding pricing section or social proof elements",
+    "Styling with animations, shadows, and modern aesthetics",
+    "Finalizing responsive design for mobile, tablet, and desktop"
   ]
 }
 
-CRITICAL RULES:
-- Generate 3-6 files (App.tsx + components + styles.css)
-- Use Tailwind classes for ALL styling
-- Make separate component files (Header.tsx, Hero.tsx, Features.tsx, etc)
-- Include proper imports/exports
-- Use generous spacing (py-24), large text (text-6xl+), rounded corners (rounded-2xl)
-- Pick ONE color palette and use it throughout
-- Include ALL sections (Nav, Hero, Features, Pricing/Social Proof, Footer)
+DESIGN PRINCIPLES:
+- Use py-24 or py-32 for section spacing
+- text-6xl or text-7xl for hero headlines
+- rounded-2xl or rounded-3xl for cards/buttons
+- shadow-xl or shadow-2xl for depth
+- Include Nav + Hero + Features + Pricing/Social + Footer
+- Pick ONE color scheme and use throughout
 
-NO markdown blocks. Keep total under 10000 chars.
-
-DASHBOARD REQUIREMENTS:
-- Sidebar navigation with menu items
-- Top stats cards (4-6 metrics with icons, trend indicators)
-- Data tables with realistic data (10+ rows)
-- Charts/graphs showing trends
-- Action buttons (Add, Edit, Export)
-
-LANDING PAGE REQUIREMENTS:
-- Nav → Hero → Features (6+ cards) → Pricing (3 tiers) → Footer
-- Large typography, generous spacing, smooth animations
-- Consistent theme throughout entire app"""
+NO markdown. Keep under 12000 chars."""
         ).with_model("openai", "gpt-4o")
         
         # Get response
