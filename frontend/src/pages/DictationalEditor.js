@@ -23,6 +23,7 @@ const DictationalEditor = () => {
   const [previewContent, setPreviewContent] = useState('');
   const [showCode, setShowCode] = useState(false);
   const [sessionId] = useState(() => `session-${Date.now()}`);
+  const [generationCancelled, setGenerationCancelled] = useState(false);
   
   const iframeRef = useRef(null);
   const stackblitzRef = useRef(null);
