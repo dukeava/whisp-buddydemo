@@ -2,6 +2,9 @@ import requests
 import sys
 import json
 from datetime import datetime
+import io
+import wave
+import struct
 
 class WhispAPITester:
     def __init__(self, base_url="https://whisp-buddy.preview.emergentagent.com"):
