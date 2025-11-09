@@ -312,10 +312,10 @@ const DictationalEditor = () => {
     let project;
     
     if (hasPackageJson && hasViteConfig) {
-      console.log('🚀 Vite React project');
+      console.log('🚀 Vite React project - using create-react-app template');
       project = {
         title: 'Whisp App',
-        template: 'vite',  // ✅ CORRECT template for Vite React
+        template: 'create-react-app',  // ✅ Supported React template
         files: projectFiles
       };
     } else {
