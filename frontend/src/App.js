@@ -21,6 +21,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/features" element={<FeaturesPage />} />
             <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/workspace" element={<LandingPage />} />
             <Route path="/dictational" element={<DictationalPage />} />
             <Route path="/dictational-editor" element={<DictationalEditor />} />
