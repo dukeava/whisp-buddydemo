@@ -792,9 +792,9 @@
 }
 
 .share-modal-title {
-  font-family: 'Host Grotesk', sans-serif;
+  font-family: 'Instrument Serif', serif;
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 400;
   text-align: center;
   color: var(--text-primary);
   margin: 0;
