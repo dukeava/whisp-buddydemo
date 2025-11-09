@@ -81,72 +81,84 @@ const DictationalEditor = () => {
     setIsGenerating(true);
     
     try {
-      // Create EventSource for streaming
-      const eventSource = new EventSource(
-        `${API}/dictational/generate?prompt=${encodeURIComponent(prompt)}&session_id=${sessionId}`
-      );
+      // Use fetch with streaming
+      const response = await fetch(`${API}/dictational/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          session_id: sessionId
+        })
+      });
       
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
       let currentMessageId = Date.now();
       
-      eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
         
-        if (data.type === 'progress') {
-          // Update or add progress message
-          setChatMessages(prev => {
-            const existing = prev.find(m => m.id === currentMessageId);
-            if (existing) {
-              return prev.map(m => 
-                m.id === currentMessageId 
-                  ? { ...m, content: data.message }
-                  : m
-              );
-            } else {
-              return [...prev, {
-                id: currentMessageId,
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+        
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = JSON.parse(line.slice(6));
+            
+            if (data.type === 'progress') {
+              // Update or add progress message
+              setChatMessages(prev => {
+                const existing = prev.find(m => m.id === currentMessageId);
+                if (existing) {
+                  return prev.map(m => 
+                    m.id === currentMessageId 
+                      ? { ...m, content: data.message }
+                      : m
+                  );
+                } else {
+                  return [...prev, {
+                    id: currentMessageId,
+                    role: 'assistant',
+                    content: data.message,
+                    isProgress: true
+                  }];
+                }
+              });
+            } else if (data.type === 'complete') {
+              // Remove progress message and add final response
+              setChatMessages(prev => prev.filter(m => m.id !== currentMessageId));
+              
+              const result = data.result;
+              setGeneratedFiles(result.files || []);
+              
+              // Add summary message
+              setChatMessages(prev => [...prev, {
                 role: 'assistant',
-                content: data.message,
-                isProgress: true
-              }];
+                content: result.summary,
+                showPreviewButton: true
+              }]);
+              
+              // Render preview
+              if (result.files && result.files.length > 0) {
+                renderPreview(result.files);
+              }
+              
+              setIsGenerating(false);
             }
-          });
-        } else if (data.type === 'complete') {
-          // Remove progress message and add final response
-          setChatMessages(prev => prev.filter(m => m.id !== currentMessageId));
-          
-          const result = data.result;
-          setGeneratedFiles(result.files || []);
-          
-          // Add summary message
-          setChatMessages(prev => [...prev, {
-            role: 'assistant',
-            content: result.summary,
-            showPreviewButton: true
-          }]);
-          
-          // Render preview
-          if (result.files && result.files.length > 0) {
-            renderPreview(result.files);
           }
-          
-          eventSource.close();
-          setIsGenerating(false);
         }
-      };
-      
-      eventSource.onerror = (error) => {
-        console.error('EventSource error:', error);
-        eventSource.close();
-        setIsGenerating(false);
-        setChatMessages(prev => [...prev, {
-          role: 'error',
-          content: 'Failed to generate code. Please try again.'
-        }]);
-      };
+      }
       
     } catch (error) {
       console.error('Generation error:', error);
       setIsGenerating(false);
+      setChatMessages(prev => [...prev, {
+        role: 'error',
+        content: 'Failed to generate code. Please try again.'
+      }]);
     }
   };
   
