@@ -87,7 +87,7 @@ const HomePage = () => {
         
         {/* Nav - Centered */}
         <nav className="nav-links">
-          <a href="#features">Features</a>
+          <a onClick={() => navigate('/features')} style={{ cursor: 'pointer' }}>Features</a>
           <a href="#pricing">Pricing</a>
           <a href="#about">About</a>
         </nav>
