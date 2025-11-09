@@ -249,9 +249,37 @@ const DictationalPage = () => {
 
         {/* Pill Bar - Wide with typing effect or visualizer */}
         <div className="pill-bar">
-          <button className="pill-button" title="Attach file">
+          {/* Hidden file input */}
+          <input 
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileSelect}
+            style={{ display: 'none' }}
+          />
+          
+          <button className="pill-button" onClick={handleAttachImage} title="Attach images">
             <Plus size={20} />
           </button>
+          
+          {/* Show attached images preview */}
+          {attachedImages.length > 0 && !isRecording && (
+            <div className="attached-images-preview">
+              {attachedImages.map((img, index) => (
+                <div key={index} className="attached-image-item">
+                  <img src={img.data} alt={img.name} />
+                  <button 
+                    className="remove-image-btn" 
+                    onClick={() => handleRemoveImage(index)}
+                    title="Remove image"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
           
           {isRecording ? (
             <div className="pill-input-area">
