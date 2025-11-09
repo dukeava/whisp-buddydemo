@@ -29,15 +29,28 @@ const DictationalEditor = () => {
   useEffect(() => {
     // Handle initial audio if coming from dictational page
     const audioBlob = location.state?.audioBlob;
+    const testPrompt = location.state?.testPrompt;
+    
     console.log('🎬 DictationalEditor mounted');
     console.log('📦 Location state:', location.state);
     console.log('🎤 Audio blob:', audioBlob);
+    console.log('📝 Test prompt:', testPrompt);
     
     if (audioBlob) {
       console.log('✅ Audio blob found, starting transcription');
       handleAudioTranscription(audioBlob);
+    } else if (testPrompt) {
+      console.log('✅ Test prompt found, using directly');
+      // Add user message directly
+      setChatMessages([{
+        id: `user-${Date.now()}`,
+        role: 'user',
+        content: testPrompt
+      }]);
+      // Start generation
+      handleGenerateCode(testPrompt);
     } else {
-      console.log('❌ No audio blob in location state!');
+      console.log('❌ No audio blob or test prompt in location state!');
     }
   }, []);
   
