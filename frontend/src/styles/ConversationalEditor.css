@@ -1120,3 +1120,21 @@
   justify-content: center;
   min-height: 44px;
 }
+
+/* Light mode adjustments for voice pill bar */
+.conversational-editor.light .voice-pill-bar .pill-button.mic-button {
+  background: #000;
+  color: white;
+}
+
+.conversational-editor.light .voice-pill-bar .pill-button.mic-button:hover {
+  background: #1a1a1a;
+}
+
+.conversational-editor.light .pill-placeholder {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.conversational-editor.light .pill-placeholder .cursor {
+  color: #0071e3;
+}
