@@ -256,10 +256,12 @@ async def dictational_generate_simple(request: DictationalGenerateRequest):
 EXISTING APP CODE:
 {request.previous_code[:3000]}
 
-TASK: Modify the existing app based on the user's request. Return the COMPLETE updated HTML.
-If they say "change the button color", update the button styles in the existing code.
-If they say "add a feature", add it to the existing app.
-Keep all existing functionality unless asked to remove it."""
+TASK: Modify the existing app based on the user's request. Return the COMPLETE updated HTML with ALL changes applied.
+- If they say "change the button color", update the button styles in the existing code
+- If they say "add a feature", add it to the existing app
+- Keep all existing functionality unless asked to remove it
+
+IMPORTANT: Return a detailed summary and step-by-step list showing what you changed/added/modified, just like when creating a new app."""
         else:
             context_prompt = f"""USER REQUEST: {request.prompt}
 
