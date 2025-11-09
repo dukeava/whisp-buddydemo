@@ -524,7 +524,13 @@ const ConversationalEditor = () => {
               </div>
             )}
             
-            <div className="pill-spacer"></div>
+            {isUserSpeaking ? (
+              <div className="pill-input-area">
+                <AudioVisualizer isActive={isUserSpeaking} isDark={theme === 'dark'} />
+              </div>
+            ) : (
+              <div className="pill-spacer"></div>
+            )}
             
             <button 
               className="pill-button mic-button" 
