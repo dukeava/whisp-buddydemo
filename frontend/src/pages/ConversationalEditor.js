@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Plus, Mic, X, ArrowUp, Eye, Square, Copy, Check, Download, RefreshCw, ExternalLink, Share2 } from 'lucide-react';
-import AudioVisualizer from '../components/AudioVisualizer';
-import Editor from '@monaco-editor/react';
+import { Sun, Moon, Plus, Mic, X, ArrowUp, Eye, Square, Download, RefreshCw, ExternalLink, Share2, MicOff } from 'lucide-react';
+import RealtimeAudioChat from '@/services/RealtimeAudioChat';
 import sdk from '@stackblitz/sdk';
 import axios from 'axios';
 import JSZip from 'jszip';
-import '../styles/DictationalEditor.css';
+import '../styles/ConversationalEditor.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
