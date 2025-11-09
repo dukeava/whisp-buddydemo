@@ -135,7 +135,7 @@ const LandingPage = () => {
         {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
       </button>
 
-      <div className="logo">
+      <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
         <span>Whisp</span>
         <span className="beta-tag">BETA</span>
       </div>
