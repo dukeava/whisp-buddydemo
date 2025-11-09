@@ -270,6 +270,9 @@
 .chat-message.user .message-content {
   background: rgba(128, 128, 128, 0.15);
   border: 1px solid rgba(128, 128, 128, 0.2);
+  border-radius: 16px;
+  font-size: 16px;
+  padding: 14px 18px;
 }
 
 .chat-message.error .message-content {
