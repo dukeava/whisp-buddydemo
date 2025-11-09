@@ -54,8 +54,8 @@ const DictationalPage = () => {
           // Create audio blob
           const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
           
-          // Navigate to editor with audio data
-          navigate('/editor?mode=dictational', { 
+          // Navigate to dictational editor with audio data
+          navigate('/dictational-editor', { 
             state: { audioBlob }
           });
         };
