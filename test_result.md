@@ -177,6 +177,8 @@ test_plan:
     - "Conversational AI Instructions"
     - "Sphere Bouncing Animation"
     - "Speaking State Logic"
+    - "Dictational Transcribe Endpoint"
+    - "Dictational Generate Endpoint"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
