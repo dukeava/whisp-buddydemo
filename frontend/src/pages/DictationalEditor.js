@@ -39,6 +39,14 @@ const DictationalEditor = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
   
+  useEffect(() => {
+    // Render preview when files are generated and iframe is ready
+    if (generatedFiles.length > 0 && !showCode && iframeRef.current) {
+      console.log('🎯 useEffect triggered - rendering preview');
+      renderPreview(generatedFiles);
+    }
+  }, [generatedFiles, showCode]);
+  
   const handleAudioTranscription = async (audioBlob) => {
     console.log('🎤 Starting transcription...', audioBlob);
     setIsTranscribing(true);
