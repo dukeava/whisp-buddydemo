@@ -250,6 +250,18 @@ backend:
         comment: "This is a frontend/UI integration task that requires manual user testing with voice interaction. Cannot be tested via automated backend API tests. The backend realtime endpoints are working correctly. User needs to test the conversational AI personality and naturalness through the UI."
 
 frontend:
+  - task: "Dictational Response Formatting"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/backend/server.py, /app/frontend/src/pages/DictationalEditor.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Enhanced backend system prompt to ALWAYS return detailed summary and steps for both new apps and modifications. Updated context prompt for subsequent requests to explicitly request detailed steps. Added frontend fallback handling for missing steps/summary. Now subsequent prompts will show the same beautiful green checkmark flow and detailed conclusion as the first prompt."
+
   - task: "Dictational Chat History Persistence"
     implemented: true
     working: "needs_testing"
