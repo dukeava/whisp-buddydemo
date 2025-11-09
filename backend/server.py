@@ -242,6 +242,8 @@ async def transcribe_audio(file: UploadFile = File(...)):
 class DictationalGenerateRequest(BaseModel):
     prompt: str
     session_id: str
+    previous_code: Optional[str] = None
+    conversation_history: Optional[List[dict]] = None
 
 @api_router.post("/dictational/generate-simple")
 async def dictational_generate_simple(request: DictationalGenerateRequest):
