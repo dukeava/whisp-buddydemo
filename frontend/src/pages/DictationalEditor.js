@@ -553,7 +553,7 @@ const DictationalEditor = () => {
             
             {isRecording ? (
               <div className="pill-input-area">
-                <AudioVisualizer isActive={isRecording} />
+                <AudioVisualizer isActive={isRecording} isDark={theme === 'dark'} />
               </div>
             ) : (
               <div className="pill-input-area">
