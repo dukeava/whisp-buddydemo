@@ -5,6 +5,7 @@ import HomePage from "@/pages/HomePage";
 import LandingPage from "@/pages/LandingPage";
 import EditorPage from "@/pages/EditorPage";
 import DictationalPage from "@/pages/DictationalPage";
+import DictationalEditor from "@/pages/DictationalEditor";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/workspace" element={<LandingPage />} />
             <Route path="/dictational" element={<DictationalPage />} />
+            <Route path="/dictational-editor" element={<DictationalEditor />} />
             <Route path="/editor" element={<EditorPage />} />
           </Routes>
         </BrowserRouter>
