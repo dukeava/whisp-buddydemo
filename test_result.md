@@ -262,6 +262,18 @@ frontend:
         agent: "main"
         comment: "Implemented ZIP export using JSZip library. Export button now creates 'whisp-app.zip' containing all generated files instead of single file download. Added jszip package to dependencies."
 
+  - task: "Conversational Voice UX - Single Click"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/LandingPage.js, /app/frontend/src/pages/ConversationalEditor.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Improved voice UX: Single mic click now immediately shows visualizer AND greets. Landing page sets isRecording=true immediately, greets after init. Editor sets isUserSpeaking=true, greets after init. Mic button changes to X when connected. Click X to stop/disconnect conversation. No more double-clicking needed."
+
   - task: "Conversational Audio Visualizer"
     implemented: true
     working: "needs_testing"
