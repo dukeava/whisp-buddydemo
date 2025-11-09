@@ -260,12 +260,6 @@ const LandingPage = () => {
             <ArrowUp size={20} />
           </button>
         </div>
-
-        {attachedFiles.length > 0 && (
-          <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '16px' }}>
-            {attachedFiles.length} file{attachedFiles.length > 1 ? 's' : ''} attached
-          </p>
-        )}
       </div>
 
       <div className="bg-grid"></div>
