@@ -272,7 +272,7 @@ frontend:
     status_history:
       - working: "needs_testing"
         agent: "main"
-        comment: "Enhanced preview auto-refresh to explicitly reload after every code generation. Added: 1) Explicit renderPreview() call after generation completes, 2) Clear previous StackBlitz instance before embedding new preview, 3) Force fresh embed with forceEmbedLayout flag. Preview now guaranteed to refresh and show new changes after each prompt."
+        comment: "Complete rewrite of preview refresh logic. Changed from re-embedding entire project to using StackBlitz applyFsDiff() API. First prompt embeds project, subsequent prompts UPDATE files in existing project using vm.applyFsDiff(). This allows StackBlitz to auto-refresh with changes without reloading entire iframe. Also forces preview mode (not code mode) when updates happen. Should now properly reflect code changes immediately."
 
   - task: "Sphere Bouncing Animation"
     implemented: true
