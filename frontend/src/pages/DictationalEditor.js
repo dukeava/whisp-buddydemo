@@ -130,6 +130,38 @@ const DictationalEditor = () => {
     console.log('🚀 Starting code generation with prompt:', prompt);
     setIsGenerating(true);
     
+    // Add progress messages
+    const progressMessages = [
+      '🎨 Analyzing your idea...',
+      '⚙️ Creating app structure...',
+      '✨ Generating components...',
+      '🎯 Adding styles and interactions...',
+      '🔧 Finalizing the build...'
+    ];
+    
+    let progressIndex = 0;
+    const progressId = `progress-${Date.now()}`;
+    
+    // Show first progress message
+    setChatMessages(prev => [...prev, {
+      id: progressId,
+      role: 'assistant',
+      content: progressMessages[0],
+      isProgress: true
+    }]);
+    
+    // Update progress messages every 800ms
+    const progressInterval = setInterval(() => {
+      progressIndex++;
+      if (progressIndex < progressMessages.length) {
+        setChatMessages(prev => prev.map(m =>
+          m.id === progressId
+            ? { ...m, content: progressMessages[progressIndex] }
+            : m
+        ));
+      }
+    }, 800);
+    
     try {
       console.log('📡 Calling API:', `${API}/dictational/generate-simple`);
       
@@ -138,6 +170,9 @@ const DictationalEditor = () => {
         prompt: prompt,
         session_id: sessionId
       });
+      
+      // Clear progress interval
+      clearInterval(progressInterval);
       
       console.log('📥 Response received:', response.data);
       
@@ -148,27 +183,36 @@ const DictationalEditor = () => {
         console.log('📂 Files received:', result.files);
         console.log('📝 Summary:', result.summary);
         
-        // Add summary message
-        setChatMessages(prev => [...prev, {
-          id: `assistant-${Date.now()}`,
-          role: 'assistant',
-          content: result.summary,
-          showPreviewButton: true
-        }]);
+        // Remove progress message and add summary
+        setChatMessages(prev => {
+          const filtered = prev.filter(m => m.id !== progressId);
+          return [...filtered, {
+            id: `assistant-${Date.now()}`,
+            role: 'assistant',
+            content: result.summary,
+            showPreviewButton: true
+          }];
+        });
         
         setGeneratedFiles(result.files || []);
         setIsGenerating(false);
       }
       
     } catch (error) {
+      clearInterval(progressInterval);
       console.error('❌ Generation error:', error);
       console.error('Error details:', error.message, error.response?.data);
       setIsGenerating(false);
-      setChatMessages(prev => [...prev, {
-        id: `error-${Date.now()}`,
-        role: 'error',
-        content: `Failed to generate code: ${error.message}`
-      }]);
+      
+      // Remove progress and show error
+      setChatMessages(prev => {
+        const filtered = prev.filter(m => m.id !== progressId);
+        return [...filtered, {
+          id: `error-${Date.now()}`,
+          role: 'error',
+          content: `Failed to generate code: ${error.response?.data?.detail || error.message}`
+        }];
+      });
     }
   };
   
