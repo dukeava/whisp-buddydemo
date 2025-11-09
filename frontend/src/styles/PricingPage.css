@@ -1,0 +1,220 @@
+/* Pricing Page - Dark Theme */
+.pricing-page {
+  min-height: 100vh;
+  background: #000;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.pricing-header {
+  padding: 24px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pricing-header .logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+}
+
+.pricing-header .beta-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+/* Main Content */
+.pricing-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 48px 120px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.pricing-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 64px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 80px;
+  line-height: 1.2;
+  color: white;
+}
+
+.pricing-title em {
+  font-style: italic;
+  color: white;
+}
+
+/* Pricing Grid */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  width: 100%;
+}
+
+.pricing-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 40px 32px;
+  position: relative;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.pricing-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.pricing-card.popular {
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(167, 139, 250, 0.05);
+}
+
+.popular-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  background: #a78bfa;
+  color: white;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.pricing-image-container {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.pricing-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pricing-tier-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.pricing-price {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 32px;
+}
+
+.price-amount {
+  font-family: 'Instrument Serif', serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: white;
+}
+
+.price-period {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 4px;
+}
+
+.pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px 0;
+  width: 100%;
+}
+
+.pricing-feature {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pricing-feature:last-child {
+  border-bottom: none;
+}
+
+.check-icon {
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+
+.pricing-button {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 14px 28px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: auto;
+}
+
+.pricing-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+}
+
+.pricing-card.popular .pricing-button {
+  background: #a78bfa;
+  color: white;
+}
+
+.pricing-card.popular .pricing-button:hover {
+  box-shadow: 0 8px 24px rgba(167, 139, 250, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    max-width: 500px;
+  }
+  
+  .pricing-title {
+    font-size: 48px;
+  }
+}
