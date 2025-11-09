@@ -11,6 +11,7 @@ const DictationalPage = () => {
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [recordedAudio, setRecordedAudio] = useState(null);
   
   const phrases = ['build', 'imagine', 'create', 'design'];
 
