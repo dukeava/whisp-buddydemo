@@ -526,6 +526,29 @@ const DictationalEditor = () => {
     URL.revokeObjectURL(url);
   };
   
+  const handleShowCode = () => {
+    console.log('Code button clicked');
+    setShowCode(true);
+    setShowPreview(false);
+    
+    // If StackBlitz VM exists, toggle to editor view
+    if (window.stackblitzVM) {
+      console.log('📝 Switching StackBlitz to editor view');
+      // StackBlitz will show split view with editor on left, preview on right
+      window.stackblitzVM.editor.openFile(generatedFiles[0]?.path || 'index.html');
+    }
+  };
+  
+  const handleShowPreview = () => {
+    console.log('Preview button clicked');
+    setShowCode(false);
+    setShowPreview(true);
+    setPreviewCollapsed(false);
+    
+    // Keep the StackBlitz preview as-is, it's already showing preview
+    console.log('👁️ Preview mode active');
+  };
+  
   return (
     <div className={`dictational-editor ${theme}`}>
       {/* Header */}
