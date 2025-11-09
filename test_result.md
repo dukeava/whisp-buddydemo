@@ -265,7 +265,7 @@ frontend:
   - task: "Dictational Image Attachment"
     implemented: true
     working: "needs_testing"
-    file: "/app/frontend/src/pages/DictationalEditor.js, /app/backend/server.py, /app/frontend/src/styles/DictationalEditor.css"
+    file: "/app/frontend/src/pages/DictationalEditor.js, /app/backend/server.py, /app/frontend/src/styles/DictationalEditor.css, /app/frontend/src/pages/DictationalPage.js, /app/frontend/src/styles/DictationalPage.css"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -273,6 +273,9 @@ frontend:
       - working: "needs_testing"
         agent: "main"
         comment: "Implemented image attachment feature. Plus button opens file picker for images, converts to base64, shows thumbnail previews with remove buttons. Images sent to backend with prompt. Backend updated to receive attached_images and add context to GPT-4o prompt. GPT-4o uses images as design inspiration."
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Updated image attachment UI to show as compact tags above pill bar instead of inside. Tags show circular thumbnail (28px), filename, and remove button. Doesn't affect pill bar size. Works on both DictationalPage and DictationalEditor. Clean, modern tag design with glassmorphism."
 
   - task: "Dictational Share Modal"
     implemented: true
