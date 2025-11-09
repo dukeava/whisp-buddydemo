@@ -418,6 +418,24 @@
   color: rgba(0, 0, 0, 0.5);
 }
 
+.dictational-editor.light .pill-button {
+  background: rgba(0, 0, 0, 0.08);
+  color: #000;
+}
+
+.dictational-editor.light .pill-button:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.dictational-editor.light .pill-button.mic-button {
+  background: #000;
+  color: white;
+}
+
+.dictational-editor.light .pill-button.mic-button:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.85);
+}
+
 .export-btn {
   margin-top: 12px;
   padding: 12px 24px;
