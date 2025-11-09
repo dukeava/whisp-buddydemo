@@ -632,10 +632,30 @@ const DictationalEditor = () => {
         <div className="preview-panel-dict">
           <div className="preview-header-dict">
             <span>Preview</span>
+            {!previewCollapsed && generatedFiles.length > 0 && (
+              <div className="preview-controls">
+                <button className="preview-control-btn" onClick={handleReloadPreview} title="Reload">
+                  <RefreshCw size={16} />
+                </button>
+                <button className="preview-control-btn" onClick={handleOpenInNewTab} title="Open in new tab">
+                  <ExternalLink size={16} />
+                </button>
+                <button className="preview-control-btn" onClick={() => setPreviewCollapsed(true)} title="Collapse">
+                  <X size={16} />
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="preview-content-dict">
-            {isGenerating ? (
+            {previewCollapsed ? (
+              <div className="preview-collapsed">
+                <button className="preview-btn" onClick={() => setPreviewCollapsed(false)}>
+                  <Eye size={18} />
+                  Show Preview
+                </button>
+              </div>
+            ) : isGenerating ? (
               <div className="preview-loading-dict">
                 <div className="loading-spinner">✦</div>
                 <p>Building your app...</p>
