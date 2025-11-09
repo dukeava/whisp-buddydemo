@@ -9,6 +9,7 @@ import DictationalEditor from "@/pages/DictationalEditor";
 import ConversationalEditor from "@/pages/ConversationalEditor";
 import FeaturesPage from "@/pages/FeaturesPage";
 import PricingPage from "@/pages/PricingPage";
+import AboutPage from "@/pages/AboutPage";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 function App() {
