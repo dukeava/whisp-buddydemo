@@ -284,20 +284,44 @@
 
 .preview-btn {
   margin-top: 12px;
-  padding: 8px 16px;
-  background: rgba(74, 158, 255, 0.2);
-  border: 1px solid rgba(74, 158, 255, 0.4);
-  border-radius: 8px;
-  color: #6BB3FF;
+  padding: 12px 24px;
+  background: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #000;
   font-family: 'Host Grotesk', sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .preview-btn:hover {
-  background: rgba(74, 158, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.copy-btn {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-btn:hover {
+  background: var(--border-color);
+  color: var(--text-primary);
 }
 
 /* Pill Bar */
