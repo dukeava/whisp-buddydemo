@@ -276,6 +276,9 @@ frontend:
       - working: "needs_testing"
         agent: "main"
         comment: "Updated image attachment UI to show as compact tags above pill bar instead of inside. Tags show circular thumbnail (28px), filename, and remove button. Doesn't affect pill bar size. Works on both DictationalPage and DictationalEditor. Clean, modern tag design with glassmorphism."
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Redesigned to show tiny thumbnails (32x32px) INSIDE pill bar instead of above. Images appear between Plus button and input area. Small red X button (16px) in top-right corner of each thumbnail. Minimal space usage, doesn't affect pill bar size at all. Works on both pages."
 
   - task: "Dictational Share Modal"
     implemented: true
