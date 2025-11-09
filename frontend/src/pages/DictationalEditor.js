@@ -29,6 +29,7 @@ const DictationalEditor = () => {
   const [typedText, setTypedText] = useState('');
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(0);
   
   const phrases = ['build', 'imagine', 'create', 'design'];
   
