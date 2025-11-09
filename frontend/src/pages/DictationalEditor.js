@@ -52,14 +52,21 @@ const DictationalEditor = () => {
     if (hasInitialized.current) return;
     hasInitialized.current = true;
     
-    // Handle initial audio if coming from dictational page
+    // Handle initial audio and images if coming from dictational page
     const audioBlob = location.state?.audioBlob;
     const testPrompt = location.state?.testPrompt;
+    const initialImages = location.state?.attachedImages || [];
     
     console.log('🎬 DictationalEditor mounted');
     console.log('📦 Location state:', location.state);
     console.log('🎤 Audio blob:', audioBlob);
     console.log('📝 Test prompt:', testPrompt);
+    console.log('📸 Attached images:', initialImages.length);
+    
+    // Set initial attached images
+    if (initialImages.length > 0) {
+      setAttachedImages(initialImages);
+    }
     
     if (audioBlob) {
       console.log('✅ Audio blob found, starting transcription');
