@@ -421,7 +421,7 @@ const DictationalEditor = () => {
   
   const handleSubmitVoice = async () => {
     if (isRecording) {
-      // Stop recording and submit
+      // Stop recording and submit (DON'T navigate, stay in editor)
       console.log('✅ Stopping recording and submitting...');
       
       return new Promise((resolve) => {
@@ -437,7 +437,7 @@ const DictationalEditor = () => {
                 window.dictationalEditorStream = null;
               }
               
-              // Transcribe and generate
+              // Transcribe and generate (adds to existing chat)
               await handleAudioTranscription(audioBlob);
             }
             resolve();
