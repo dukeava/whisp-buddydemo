@@ -25,6 +25,11 @@ const DictationalEditor = () => {
   const [sessionId] = useState(() => `session-${Date.now()}`);
   const [generationCancelled, setGenerationCancelled] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
+  const [typedText, setTypedText] = useState('');
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
+  const phrases = ['build', 'imagine', 'create', 'design'];
   
   const iframeRef = useRef(null);
   const stackblitzRef = useRef(null);
