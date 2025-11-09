@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException, WebSocket
+from fastapi import FastAPI, APIRouter, HTTPException, WebSocket, UploadFile, File
+from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -9,11 +10,13 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
-from emergentintegrations.llm.openai import OpenAIChatRealtime
+from emergentintegrations.llm.openai import OpenAIChatRealtime, OpenAISpeechToText
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 import openai
 import json
 from elevenlabs.client import ElevenLabs
 import base64
+import asyncio
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
