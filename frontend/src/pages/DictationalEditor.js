@@ -789,6 +789,57 @@ const DictationalEditor = () => {
           </div>
         </div>
       </div>
+      
+      {/* Share Modal */}
+      {isShareModalOpen && (
+        <div className="share-modal-overlay" onClick={handleCloseShareModal}>
+          <div className="share-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="share-modal-close" onClick={handleCloseShareModal}>
+              <X size={20} />
+            </button>
+            
+            <div className="share-modal-image">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_b4891fc0-0141-4191-9e12-b5b08cb6a810/artifacts/o6bugclp_u3752894846_a_staircase_in_a_flowery_area_and_greenery_area_w_f9ef8c9b-7271-46c6-8d9b-e37dd397080a_2.png" 
+                alt="Share"
+                className="share-image"
+              />
+            </div>
+            
+            <div className="share-modal-content">
+              <h2 className="share-modal-title">
+                Share to the <em>world</em>
+              </h2>
+              
+              <div className="share-link-container">
+                <input 
+                  type="text" 
+                  value={shareUrl} 
+                  readOnly 
+                  className="share-link-input"
+                />
+              </div>
+              
+              <button 
+                className="share-copy-btn" 
+                onClick={handleCopyShareLink}
+              >
+                {linkCopied ? (
+                  <>
+                    <Check size={18} />
+                    <span>Link Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy size={18} />
+                    <span>Copy Link</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
