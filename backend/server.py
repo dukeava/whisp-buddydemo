@@ -421,6 +421,134 @@ When user asks for dashboard/analytics/CRM, use these patterns with realistic da
         logging.error(f"Generation error: {error_msg}")
         raise HTTPException(status_code=500, detail=error_msg)
 
+@api_router.post("/conversational/generate")
+async def conversational_generate(request: DictationalGenerateRequest):
+    """Generate code for conversational mode - natural voice-friendly responses"""
+    try:
+        # Build context-aware prompt
+        if request.previous_code:
+            context_prompt = f"""USER REQUEST (from voice conversation): {request.prompt}
+
+EXISTING APP CODE:
+{request.previous_code[:3000]}
+
+TASK: Modify the existing app based on the voice conversation. Return the COMPLETE updated HTML with ALL changes applied.
+- Apply all changes discussed in the conversation
+- Keep all existing functionality unless asked to remove it
+- Make it match what they described in the conversation"""
+        else:
+            context_prompt = f"""USER CONVERSATION: {request.prompt}
+
+TASK: Create a new app based on this voice conversation.
+- Extract the key requirements from their conversation
+- Pick the best design style that matches what they described
+- Build exactly what they talked about"""
+        
+        # Initialize GPT-4o chat
+        gpt_chat = LlmChat(
+            api_key=OPENAI_API_KEY,
+            session_id=request.session_id,
+            system_message="""You are Whisp - build beautiful web apps from voice conversations.
+
+Generate ONE complete HTML file with Tailwind CDN.
+
+Return ONLY this JSON (no markdown, no explanation):
+{
+  "html": "<!DOCTYPE html>...COMPLETE APP...</html>",
+  "summary": "Alright! So I built this [describe what you built] for you. Umm, it's got [mention 2-3 key features in a conversational way]. I think you're gonna love how [mention something cool about it]. Like, [add enthusiastic detail about the design or functionality]. You know what's cool? [Mention another feature or detail]. Anyway, check it out and let me know what you think!",
+  "steps": [
+    "Figuring out what you wanted from the conversation",
+    "Picking the perfect design style for this",
+    "Building out the main features you described",
+    "Adding the interactions and functionality",
+    "Making it look awesome with the styling",
+    "Double-checking everything works smoothly"
+  ]
+}
+
+SUMMARY RULES (CRITICAL):
+- Write like you're SPEAKING to a friend, not writing
+- Use natural fillers: "umm", "like", "you know", "honestly"
+- NO bullet points, NO headers, NO lists
+- Just flowing conversational sentences
+- Keep it enthusiastic but natural: "So I built this...", "It's got...", "I think you're gonna love..."
+- Talk about the app like you're excited to show it to them
+- 4-6 sentences total, all flowing together
+
+DESIGN RULES:
+- bg-[#faf8f5] for landing pages
+- bg-slate-50 with white cards for dashboards
+- Beautiful, modern, responsive
+- Include Navigation + Hero + Features + Pricing + Footer (landing pages)
+- Include Sidebar + Stats + Tables (dashboards)
+- Add JavaScript for interactivity
+- Keep under 15000 characters"""
+        ).with_model("openai", "gpt-4o")
+        
+        # Prepare message with images if provided
+        if request.attached_images and len(request.attached_images) > 0:
+            image_context = "\n\nATTACHED IMAGES: The user provided reference images. Use these as design inspiration."
+            context_prompt += image_context
+            logging.info(f"📸 User attached {len(request.attached_images)} images")
+        
+        # Get response
+        user_message = UserMessage(text=context_prompt)
+        response = await gpt_chat.send_message(user_message)
+        response_text = str(response).strip()
+        
+        logging.info(f"GPT-4o response length: {len(response_text)}")
+        
+        # Parse JSON response
+        cleaned = response_text.strip()
+        
+        if "```json" in cleaned:
+            cleaned = cleaned.split("```json", 1)[1]
+            if "```" in cleaned:
+                cleaned = cleaned.split("```", 1)[0]
+        elif "```" in cleaned:
+            parts = cleaned.split("```")
+            for part in parts:
+                if part.strip().startswith("{"):
+                    cleaned = part
+                    break
+        
+        if "{" in cleaned:
+            start = cleaned.find("{")
+            brace_count = 0
+            end = start
+            for i in range(start, len(cleaned)):
+                if cleaned[i] == '{':
+                    brace_count += 1
+                elif cleaned[i] == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        end = i + 1
+                        break
+            
+            json_str = cleaned[start:end]
+            result = json.loads(json_str)
+            
+            # Convert format if needed
+            if "html" in result:
+                result = {
+                    "files": [{"path": "index.html", "content": result["html"]}],
+                    "summary": result.get("summary", "App generated"),
+                    "steps": result.get("steps", [])
+                }
+            elif "files" in result:
+                if "steps" not in result:
+                    result["steps"] = []
+            
+            logging.info(f"✅ Conversational generation success")
+            return {"success": True, "result": result}
+        else:
+            raise ValueError("No valid JSON found in response")
+            
+    except Exception as e:
+        error_msg = str(e)
+        logging.error(f"Conversational generation error: {error_msg}")
+        raise HTTPException(status_code=500, detail=error_msg)
+
 @api_router.post("/dictational/generate")
 async def dictational_generate(request: DictationalGenerateRequest):
     """Generate code using Claude Sonnet 4.5 with streaming"""
