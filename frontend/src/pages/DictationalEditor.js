@@ -174,11 +174,7 @@ const DictationalEditor = () => {
                   showPreviewButton: true
                 }]);
                 
-                // Render preview immediately
-                if (result.files && result.files.length > 0) {
-                  console.log('🎨 Rendering preview with files:', result.files);
-                  renderPreview(result.files);
-                }
+                // Don't call renderPreview here - useEffect will handle it
                 
                 setIsGenerating(false);
               }
