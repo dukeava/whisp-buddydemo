@@ -25,8 +25,13 @@ const DictationalEditor = () => {
   
   const iframeRef = useRef(null);
   const chatEndRef = useRef(null);
+  const hasInitialized = useRef(false);
   
   useEffect(() => {
+    // Prevent double initialization from React StrictMode
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+    
     // Handle initial audio if coming from dictational page
     const audioBlob = location.state?.audioBlob;
     const testPrompt = location.state?.testPrompt;
