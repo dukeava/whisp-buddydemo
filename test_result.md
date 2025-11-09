@@ -356,4 +356,6 @@ agent_communication:
   - agent: "main"
     message: "Enhanced backend to always return detailed summary and steps for modifications (not just new apps). Updated system prompt to specify format for modification responses. Added frontend fallback handling. Subsequent prompts will now show the same green checkmark flow and detailed conclusion as first prompt."
   - agent: "main"
-    message: "Implemented Code and Preview button functionality. Code button triggers vm.editor.openFile() to show StackBlitz's built-in editor view. Preview button maintains preview-only view. Both buttons now functional without re-embedding project."te (11/11 tests passed). Backend is production-ready."
+    message: "Implemented Code and Preview button functionality. Code button triggers vm.editor.openFile() to show StackBlitz's built-in editor view. Preview button maintains preview-only view. Both buttons now functional without re-embedding project."
+  - agent: "main"
+    message: "Enhanced Preview button to properly switch back from Code view. Now clears and re-embeds StackBlitz with view:'preview' mode when switching from Code to Preview. Full bidirectional toggle working: Code shows editor, Preview shows preview-only."te (11/11 tests passed). Backend is production-ready."
