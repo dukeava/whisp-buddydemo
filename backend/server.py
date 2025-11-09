@@ -307,12 +307,12 @@ DESIGN RULES (Follow exactly):
 - rounded-2xl for cards and buttons
 - shadow-lg or shadow-xl for depth
 - Include: Navigation + Hero + Features (3-column grid) + Pricing (3 tiers) + Footer
-- NO JavaScript needed unless functional
+- Add JavaScript for interactivity if needed (todo lists, calculators, forms, etc.)
 - Keep under 12000 characters"""
         ).with_model("openai", "gpt-4o")
         
         # Get response
-        response = await gpt_chat.send_message(UserMessage(text=request.prompt))
+        user_message = UserMessage(text=context_prompt)
         response_text = str(response).strip()
         
         logging.info(f"GPT-4o response length: {len(response_text)}")
