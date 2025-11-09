@@ -167,6 +167,226 @@ class WhispAPITester:
             print(f"❌ Failed - Error: {str(e)}")
             return False
 
+    def create_test_audio_file(self):
+        """Create a simple test audio file (WAV format)"""
+        # Create a simple 1-second audio file with a sine wave
+        sample_rate = 16000
+        duration = 1  # seconds
+        frequency = 440  # Hz (A4 note)
+        
+        # Generate sine wave
+        samples = []
+        for i in range(sample_rate * duration):
+            value = int(32767 * 0.3 * (i % (sample_rate // frequency)) / (sample_rate // frequency))
+            samples.append(value)
+        
+        # Create WAV file in memory
+        audio_buffer = io.BytesIO()
+        with wave.open(audio_buffer, 'wb') as wav_file:
+            wav_file.setnchannels(1)  # Mono
+            wav_file.setsampwidth(2)  # 16-bit
+            wav_file.setframerate(sample_rate)
+            wav_file.writeframes(struct.pack('h' * len(samples), *samples))
+        
+        audio_buffer.seek(0)
+        return audio_buffer
+
+    def test_dictational_transcribe(self):
+        """Test dictational transcribe endpoint"""
+        url = f"{self.api_url}/dictational/transcribe"
+        self.tests_run += 1
+        print(f"\n🔍 Testing Dictational Transcribe...")
+        print(f"   URL: {url}")
+        
+        try:
+            # Create test audio file
+            audio_file = self.create_test_audio_file()
+            
+            # Send as multipart/form-data
+            files = {'file': ('test_audio.wav', audio_file, 'audio/wav')}
+            response = requests.post(url, files=files, timeout=30)
+            
+            print(f"   Status Code: {response.status_code}")
+            print(f"   Response: {response.text}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                
+                # Check for required fields
+                if 'success' in response_data and 'text' in response_data:
+                    if response_data['success'] == True:
+                        self.tests_passed += 1
+                        print(f"✅ Passed - Transcription successful")
+                        print(f"   Transcribed text: {response_data['text']}")
+                        self.test_results.append({
+                            "name": "Dictational Transcribe",
+                            "success": True,
+                            "status_code": 200,
+                            "transcribed_text": response_data['text']
+                        })
+                        return True
+                    else:
+                        print(f"❌ Failed - success field is False")
+                        self.test_results.append({
+                            "name": "Dictational Transcribe",
+                            "success": False,
+                            "error": "success field is False"
+                        })
+                        return False
+                else:
+                    print(f"❌ Failed - Missing required fields (success, text)")
+                    self.test_results.append({
+                        "name": "Dictational Transcribe",
+                        "success": False,
+                        "error": "Missing required fields"
+                    })
+                    return False
+            else:
+                print(f"❌ Failed - Expected 200, got {response.status_code}")
+                self.test_results.append({
+                    "name": "Dictational Transcribe",
+                    "success": False,
+                    "status_code": response.status_code,
+                    "response": response.text[:200]
+                })
+                return False
+                
+        except Exception as e:
+            print(f"❌ Failed - Error: {str(e)}")
+            self.test_results.append({
+                "name": "Dictational Transcribe",
+                "success": False,
+                "error": str(e)
+            })
+            return False
+
+    def test_dictational_generate(self):
+        """Test dictational generate endpoint with streaming response"""
+        url = f"{self.api_url}/dictational/generate"
+        self.tests_run += 1
+        print(f"\n🔍 Testing Dictational Generate...")
+        print(f"   URL: {url}")
+        
+        try:
+            # Prepare request data
+            request_data = {
+                "prompt": "create a simple hello world app with a button",
+                "session_id": "test-session-123"
+            }
+            
+            # Send request with streaming enabled
+            response = requests.post(
+                url, 
+                json=request_data, 
+                headers={'Content-Type': 'application/json'},
+                stream=True,
+                timeout=60
+            )
+            
+            print(f"   Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                # Parse streaming response
+                progress_messages = []
+                completion_data = None
+                
+                print(f"   Streaming response:")
+                for line in response.iter_lines():
+                    if line:
+                        line_str = line.decode('utf-8')
+                        print(f"     {line_str[:100]}...")
+                        
+                        # Parse SSE format (data: {...})
+                        if line_str.startswith('data: '):
+                            json_str = line_str[6:]  # Remove 'data: ' prefix
+                            try:
+                                data = json.loads(json_str)
+                                
+                                if data.get('type') == 'progress':
+                                    progress_messages.append(data.get('message'))
+                                    print(f"     📝 Progress: {data.get('message')}")
+                                elif data.get('type') == 'complete':
+                                    completion_data = data.get('result')
+                                    print(f"     ✅ Complete: {json.dumps(completion_data, indent=2)[:200]}...")
+                            except json.JSONDecodeError:
+                                print(f"     ⚠️  Could not parse JSON: {json_str[:100]}")
+                
+                # Validate response
+                if completion_data:
+                    if 'files' in completion_data and 'summary' in completion_data:
+                        # Check files structure
+                        files = completion_data['files']
+                        if isinstance(files, list) and len(files) > 0:
+                            # Check first file has path and content
+                            first_file = files[0]
+                            if 'path' in first_file and 'content' in first_file:
+                                self.tests_passed += 1
+                                print(f"✅ Passed - Generate endpoint working correctly")
+                                print(f"   Progress messages: {len(progress_messages)}")
+                                print(f"   Files generated: {len(files)}")
+                                print(f"   Summary: {completion_data['summary']}")
+                                self.test_results.append({
+                                    "name": "Dictational Generate",
+                                    "success": True,
+                                    "status_code": 200,
+                                    "progress_count": len(progress_messages),
+                                    "files_count": len(files)
+                                })
+                                return True
+                            else:
+                                print(f"❌ Failed - Files missing path or content fields")
+                                self.test_results.append({
+                                    "name": "Dictational Generate",
+                                    "success": False,
+                                    "error": "Files missing required fields"
+                                })
+                                return False
+                        else:
+                            print(f"❌ Failed - Files array is empty or invalid")
+                            self.test_results.append({
+                                "name": "Dictational Generate",
+                                "success": False,
+                                "error": "Files array is empty"
+                            })
+                            return False
+                    else:
+                        print(f"❌ Failed - Missing files or summary in completion data")
+                        self.test_results.append({
+                            "name": "Dictational Generate",
+                            "success": False,
+                            "error": "Missing files or summary"
+                        })
+                        return False
+                else:
+                    print(f"❌ Failed - No completion data received")
+                    self.test_results.append({
+                        "name": "Dictational Generate",
+                        "success": False,
+                        "error": "No completion data"
+                    })
+                    return False
+            else:
+                print(f"❌ Failed - Expected 200, got {response.status_code}")
+                print(f"   Response: {response.text[:200]}")
+                self.test_results.append({
+                    "name": "Dictational Generate",
+                    "success": False,
+                    "status_code": response.status_code,
+                    "response": response.text[:200]
+                })
+                return False
+                
+        except Exception as e:
+            print(f"❌ Failed - Error: {str(e)}")
+            import traceback
+            print(f"   Traceback: {traceback.format_exc()}")
+            self.test_results.append({
+                "name": "Dictational Generate",
+                "success": False,
+                "error": str(e)
+            })
+            return False
+
 def main():
     print("🚀 Starting Whisp API Testing...")
     print("=" * 50)
