@@ -321,14 +321,18 @@ LANDING PAGE REQUIREMENTS:
             logging.info(f"Parsing JSON, length: {len(json_str)}")
             result = json.loads(json_str)
             
-            # Convert to files format
+            # Convert to files format if needed
             if "html" in result:
+                # Old HTML format - convert
                 steps = result.get("steps", [])
                 result = {
                     "files": [{"path": "index.html", "content": result["html"]}],
                     "summary": result.get("summary", "App generated successfully"),
                     "steps": steps
                 }
+            elif "files" in result:
+                # New multi-file format - keep as is
+                result["steps"] = result.get("steps", [])
             
             logging.info(f"✅ Success: {len(result.get('files', []))} files, {len(result.get('steps', []))} steps")
             return {"success": True, "result": result}
