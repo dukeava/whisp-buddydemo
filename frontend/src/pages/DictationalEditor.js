@@ -395,15 +395,32 @@ const DictationalEditor = () => {
                   {msg.role === 'user' ? '👤' : msg.role === 'error' ? '⚠️' : '✦'}
                 </div>
                 <div className="message-content">
-                  {msg.content}
-                  {msg.showPreviewButton && generatedFiles.length > 0 && (
-                    <button className="preview-btn" onClick={() => renderPreview(generatedFiles)}>
-                      Preview
-                    </button>
-                  )}
+                  {/* Render summary with proper formatting */}
+                  {msg.content.split('\n').map((line, i) => (
+                    <div key={i}>
+                      {line.startsWith('## ') ? (
+                        <h3 style={{ fontSize: '16px', fontWeight: '600', marginTop: i > 0 ? '12px' : '0', marginBottom: '8px' }}>
+                          {line.replace('## ', '')}
+                        </h3>
+                      ) : line.startsWith('- ') ? (
+                        <div style={{ marginLeft: '16px', marginBottom: '4px' }}>• {line.replace('- ', '')}</div>
+                      ) : line ? (
+                        <div style={{ marginBottom: '4px' }}>{line}</div>
+                      ) : null}
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
+            
+            {/* Preview Button - Below last message if available */}
+            {chatMessages.some(m => m.showPreviewButton) && generatedFiles.length > 0 && (
+              <div style={{ padding: '0 48px 8px 48px' }}>
+                <button className="preview-btn" onClick={() => renderPreview(generatedFiles)}>
+                  Preview
+                </button>
+              </div>
+            )}
             
             <div ref={chatEndRef} />
           </div>
