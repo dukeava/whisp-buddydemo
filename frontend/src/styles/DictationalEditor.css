@@ -410,6 +410,16 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+.cursor {
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 /* Preview Panel */
 .preview-panel-dict {
   flex: 1;
