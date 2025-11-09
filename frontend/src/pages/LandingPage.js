@@ -52,58 +52,148 @@ const LandingPage = () => {
 
   const toggleMic = async () => {
     if (!isConnected) {
-      // First click - initialize voice chat and greet
-      try {
-        // Immediately show visualizer
-        setIsRecording(true);
+      // First click - greet and start recording
+      setIsRecording(true);
+      setIsConnected(true);
+      
+      // Greet with ElevenLabs
+      setTimeout(async () => {
+        setIsWhispTalking(true);
+        await speakWithElevenLabs("Hey I'm Dan, um what will you like to build or imagine today");
+        setIsWhispTalking(false);
+        setHasGreeted(true);
         
-        realtimeChatRef.current = new RealtimeAudioChat();
-        
-        realtimeChatRef.current.onTranscript = (text, isUser) => {
-          console.log(isUser ? 'User:' : 'Whisp:', text);
-          setConversationHistory(prev => [...prev, { role: isUser ? 'user' : 'assistant', content: text }]);
-        };
-
-        realtimeChatRef.current.onSpeakingStateChange = (state) => {
-          if (state === 'assistant_speaking') {
-            setIsWhispTalking(true);
-            setIsRecording(false);
-          } else if (state === 'assistant_stopped') {
-            setTimeout(() => setIsWhispTalking(false), 100);
-          } else if (state === 'user_speaking') {
-            setIsWhispTalking(false);
-            setIsRecording(true);
-          }
-        };
-
-        await realtimeChatRef.current.init('landing');
-        setIsConnected(true);
-        console.log('✅ Voice chat initialized');
-        
-        // Play exact greeting with ElevenLabs
-        if (!hasGreeted) {
-          setTimeout(async () => {
-            if (realtimeChatRef.current) {
-              await realtimeChatRef.current.playElevenLabsAudio(
-                "Hey I'm Dan, um what will you like to build or imagine today"
-              );
-              setHasGreeted(true);
-            }
-          }, 500);
-        }
-      } catch (error) {
-        console.error('Error starting voice chat:', error);
-        setIsRecording(false);
-        alert('Could not start voice chat. Please check microphone permissions.');
-      }
+        // Start recording after greeting
+        startRecording();
+      }, 300);
     } else {
-      // X button - Stop and disconnect
+      // X button - Stop everything
+      stopRecording();
       setIsRecording(false);
       setIsWhispTalking(false);
       setIsConnected(false);
-      if (realtimeChatRef.current) {
-        realtimeChatRef.current.disconnect();
+    }
+  };
+  
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      const audioChunks = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        stream.getTracks().forEach(track => track.stop());
+        
+        // Process if has audio
+        if (audioBlob.size > 0) {
+          await handleConversation(audioBlob);
+        }
+        
+        // Restart recording if still connected
+        if (isConnected) {
+          setTimeout(() => startRecording(), 100);
+        }
+      };
+      
+      window.landingRecorder = mediaRecorder;
+      window.landingStream = stream;
+      
+      mediaRecorder.start();
+      
+      // Auto-stop after 10 seconds to process
+      setTimeout(() => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        }
+      }, 10000);
+      
+    } catch (error) {
+      console.error('❌ Recording error:', error);
+      alert('Microphone access required');
+    }
+  };
+  
+  const stopRecording = () => {
+    if (window.landingRecorder && window.landingRecorder.state === 'recording') {
+      window.landingRecorder.stop();
+    }
+    if (window.landingStream) {
+      window.landingStream.getTracks().forEach(track => track.stop());
+    }
+  };
+  
+  const handleConversation = async (audioBlob) => {
+    try {
+      // 1. Transcribe with Whisper
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'audio.webm');
+      
+      const transcribeResponse = await axios.post(`${API}/dictational/transcribe`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      
+      if (!transcribeResponse.data.success) return;
+      
+      const userText = transcribeResponse.data.text;
+      console.log('📝 User:', userText);
+      
+      // Add to conversation
+      setConversationHistory(prev => [...prev, { role: 'user', content: userText }]);
+      
+      // 2. Get GPT-4o response with YOUR prompt
+      const chatResponse = await axios.post(`${API}/conversational/chat`, {
+        message: userText,
+        session_id: sessionId,
+        conversation_history: conversationHistory
+      });
+      
+      if (!chatResponse.data.success) return;
+      
+      const aiResponse = chatResponse.data.response;
+      console.log('🤖 Whisp:', aiResponse);
+      
+      // Add to conversation
+      setConversationHistory(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+      
+      // 3. Speak with ElevenLabs
+      setIsWhispTalking(true);
+      await speakWithElevenLabs(aiResponse);
+      setIsWhispTalking(false);
+      
+    } catch (error) {
+      console.error('❌ Conversation error:', error);
+    }
+  };
+  
+  const speakWithElevenLabs = async (text) => {
+    try {
+      const response = await axios.post(`${API}/elevenlabs/tts`, { text });
+      
+      if (response.data.success && response.data.audio) {
+        const binaryString = atob(response.data.audio);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        const audioUrl = URL.createObjectURL(blob);
+        const audio = new Audio(audioUrl);
+        
+        await new Promise((resolve) => {
+          audio.onended = resolve;
+          audio.play();
+        });
+        
+        URL.revokeObjectURL(audioUrl);
       }
+    } catch (error) {
+      console.error('❌ ElevenLabs error:', error);
     }
   };
 
