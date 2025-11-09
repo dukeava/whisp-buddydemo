@@ -141,106 +141,38 @@ const DictationalEditor = () => {
     setIsGenerating(true);
     
     try {
-      console.log('📡 Calling API:', `${API}/dictational/generate`);
+      console.log('📡 Calling API:', `${API}/dictational/generate-simple`);
       
-      // Use fetch with streaming
-      const response = await fetch(`${API}/dictational/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          prompt: prompt,
-          session_id: sessionId
-        })
+      // Use simple POST request
+      const response = await axios.post(`${API}/dictational/generate-simple`, {
+        prompt: prompt,
+        session_id: sessionId
       });
       
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      console.log('📥 Response received:', response.data);
       
-      console.log('📡 Streaming response received, status:', response.status);
-      
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let currentMessageId = Date.now();
-      let buffer = '';
-      let messageCount = 0;
-      
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          console.log('✅ Stream finished, total messages:', messageCount);
-          break;
-        }
+      if (response.data.success) {
+        const result = response.data.result;
         
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
+        console.log('✅ Generation complete:', result);
+        console.log('📂 Files received:', result.files);
+        console.log('📝 Summary:', result.summary);
         
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              messageCount++;
-              console.log(`📨 Stream data #${messageCount}:`, data);
-              
-              if (data.type === 'progress') {
-                console.log('➡️ Adding/updating progress message:', data.message);
-                // Update or add progress message
-                setChatMessages(prev => {
-                  const existing = prev.find(m => m.id === currentMessageId);
-                  if (existing) {
-                    console.log('  Updating existing progress message');
-                    return prev.map(m => 
-                      m.id === currentMessageId 
-                        ? { ...m, content: data.message }
-                        : m
-                    );
-                  } else {
-                    console.log('  Adding new progress message with id:', currentMessageId);
-                    return [...prev, {
-                      id: currentMessageId,
-                      role: 'assistant',
-                      content: data.message,
-                      isProgress: true
-                    }];
-                  }
-                });
-              } else if (data.type === 'complete') {
-                console.log('✅ Generation complete:', data.result);
-                console.log('📂 Files received:', data.result.files);
-                console.log('📝 Summary:', data.result.summary);
-                
-                const result = data.result;
-                
-                // Single state update: remove progress and add summary
-                setChatMessages(prev => {
-                  const filtered = prev.filter(m => m.id !== currentMessageId);
-                  return [...filtered, {
-                    id: `assistant-${Date.now()}`,
-                    role: 'assistant',
-                    content: result.summary,
-                    showPreviewButton: true
-                  }];
-                });
-                
-                setGeneratedFiles(result.files || []);
-                
-                // Don't call renderPreview here - useEffect will handle it
-                
-                setIsGenerating(false);
-              }
-            } catch (parseError) {
-              console.error('❌ Failed to parse stream data:', parseError, 'Line:', line);
-            }
-          }
-        }
+        // Add summary message
+        setChatMessages(prev => [...prev, {
+          id: `assistant-${Date.now()}`,
+          role: 'assistant',
+          content: result.summary,
+          showPreviewButton: true
+        }]);
+        
+        setGeneratedFiles(result.files || []);
+        setIsGenerating(false);
       }
       
     } catch (error) {
       console.error('❌ Generation error:', error);
-      console.error('Error details:', error.message, error.stack);
+      console.error('Error details:', error.message, error.response?.data);
       setIsGenerating(false);
       setChatMessages(prev => [...prev, {
         id: `error-${Date.now()}`,
