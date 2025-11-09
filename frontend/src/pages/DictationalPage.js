@@ -103,7 +103,7 @@ const DictationalPage = () => {
             
             console.log('✅ Audio saved, navigating to editor');
             navigate('/dictational-editor', { 
-              state: { audioBlob }
+              state: { audioBlob, attachedImages }
             });
           }
           resolve();
@@ -115,16 +115,16 @@ const DictationalPage = () => {
       // Already have audio
       console.log('✅ Using previously recorded audio');
       navigate('/dictational-editor', { 
-        state: { audioBlob: recordedAudio }
+        state: { audioBlob: recordedAudio, attachedImages }
       });
     } else {
       // No audio - for testing, create a dummy blob with text
       console.log('⚠️ No audio recorded - creating test prompt');
       const testPrompt = "create a simple hello world button app";
       
-      // Navigate directly with test text
+      // Navigate directly with test text and images
       navigate('/dictational-editor', { 
-        state: { testPrompt }
+        state: { testPrompt, attachedImages }
       });
     }
   };
