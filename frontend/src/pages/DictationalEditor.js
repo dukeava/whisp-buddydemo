@@ -661,46 +661,11 @@ const DictationalEditor = () => {
                 <p>Building your app...</p>
               </div>
             ) : generatedFiles.length > 0 ? (
-              showCode ? (
-                <div className="monaco-editor-container">
-                  {/* File tabs */}
-                  {generatedFiles.length > 1 && (
-                    <div className="file-tabs">
-                      {generatedFiles.map((file, idx) => (
-                        <button
-                          key={idx}
-                          className={`file-tab ${selectedFile === idx ? 'active' : ''}`}
-                          onClick={() => setSelectedFile(idx)}
-                        >
-                          {file.path}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  {/* Monaco Editor */}
-                  <Editor
-                    height="100%"
-                    language={generatedFiles[selectedFile]?.path.endsWith('.css') ? 'css' : 
-                             generatedFiles[selectedFile]?.path.endsWith('.html') ? 'html' : 'typescript'}
-                    theme={theme === 'dark' ? 'vs-dark' : 'light'}
-                    value={generatedFiles[selectedFile]?.content || ''}
-                    options={{
-                      readOnly: false,
-                      minimap: { enabled: true },
-                      fontSize: 14,
-                      lineNumbers: 'on',
-                      scrollBeyondLastLine: false,
-                      automaticLayout: true
-                    }}
-                  />
-                </div>
-              ) : (
-                <div 
-                  ref={stackblitzRef}
-                  className="stackblitz-preview"
-                  style={{ width: '100%', height: '100%' }}
-                />
-              )
+              <div 
+                ref={stackblitzRef}
+                className="stackblitz-preview"
+                style={{ width: '100%', height: '100%' }}
+              />
             ) : (
               <div className="preview-empty-dict">
                 <span className="empty-icon">✦</span>
