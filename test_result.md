@@ -387,6 +387,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Dictational Image Attachment"
     - "Dictational Share Modal"
     - "Dictational Export as ZIP"
     - "Dictational Preview Controls"
