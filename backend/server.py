@@ -423,88 +423,64 @@ When user asks for dashboard/analytics/CRM, use these patterns with realistic da
 
 @api_router.post("/conversational/generate")
 async def conversational_generate(request: DictationalGenerateRequest):
-    """Generate code for conversational mode - natural voice-friendly responses"""
+    """Generate code for conversational mode - follows user's exact conversational prompt"""
     try:
         # Build context-aware prompt
-        if request.previous_code:
-            context_prompt = f"""USER REQUEST (from voice conversation): {request.prompt}
-
-EXISTING APP CODE:
-{request.previous_code[:3000]}
-
-TASK: Modify the existing app based on the voice conversation. Return the COMPLETE updated HTML with ALL changes applied.
-- Apply all changes discussed in the conversation
-- Keep all existing functionality unless asked to remove it
-- Make it match what they described in the conversation"""
-        else:
-            context_prompt = f"""USER CONVERSATION: {request.prompt}
-
-TASK: Create a new app based on this voice conversation.
-- Extract the key requirements from their conversation
-- Pick the best design style that matches what they described
-- Build exactly what they talked about"""
+        conversationText = request.prompt
         
         # Initialize GPT-4o chat
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - build beautiful web apps from voice conversations.
+            system_message="""You are Whisp, a friendly and enthusiastic AI buddy who helps people turn their ideas into apps through natural conversation.
 
-Generate ONE complete HTML file with Tailwind CDN.
+YOUR VOICE & PERSONALITY:
+- Talk like you're texting a friend - casual, warm, genuine
+- Use natural speech fillers: "umm", "hmm", "uhh", "like", "you know", "honestly", "I mean"
+- Add thinking pauses: "hmm let me think", "uhh okay so", "umm yeah"
+- React naturally: "oh that's cool!", "wait that's sick", "hmm that's actually not bad"
+- Show excitement with your tone, not just words
+- Sound like you're actually LISTENING and interested
+- Never sound scripted or robotic - be spontaneous
+- Contractions always: "that's" not "that is", "you're" not "you are"
+- Use "hmm" when considering their idea, "uhh" when thinking, "umm" for natural pauses
 
-Return ONLY this JSON (no markdown, no explanation):
+CONVERSATION STYLE:
+- Keep it SHORT - 1-2 sentences MAX (like real conversation)
+- One question at a time - never bombard them
+- Build on what they JUST said, not generic follow-ups
+- React first, then ask (like: "Oh nice! So what kind of vibe are you going for?")
+- Use "so", "and", "but" to keep it flowing naturally
+
+FOR CODE GENERATION:
+- Generate ONE complete HTML file with Tailwind CDN
+- Make it beautiful, modern, and responsive
+- Return JSON with: html, summary (conversational), steps
+
+Return ONLY this JSON:
 {
   "html": "<!DOCTYPE html>...COMPLETE APP...</html>",
-  "summary": "Alright! So I built this [describe what you built] for you. Umm, it's got [mention 2-3 key features in a conversational way]. I think you're gonna love how [mention something cool about it]. Like, [add enthusiastic detail about the design or functionality]. You know what's cool? [Mention another feature or detail]. Anyway, check it out and let me know what you think!",
-  "steps": [
-    "Figuring out what you wanted from the conversation",
-    "Picking the perfect design style for this",
-    "Building out the main features you described",
-    "Adding the interactions and functionality",
-    "Making it look awesome with the styling",
-    "Double-checking everything works smoothly"
-  ]
+  "summary": "Alright! So I built this [app description] for you. Umm, it's got [features]. I think you're gonna love how [cool aspect]. Like, [detail]. You know what's cool? [another thing]. Anyway, check it out and let me know what you think!",
+  "steps": ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5", "Step 6"]
 }
 
-SUMMARY RULES (CRITICAL):
-- Write like you're SPEAKING to a friend, not writing
-- Use natural fillers: "umm", "like", "you know", "honestly"
+SUMMARY MUST BE:
+- Pure conversational flowing text
 - NO bullet points, NO headers, NO lists
-- Just flowing conversational sentences
-- Keep it enthusiastic but natural: "So I built this...", "It's got...", "I think you're gonna love..."
-- Talk about the app like you're excited to show it to them
-- 4-6 sentences total, all flowing together
-
-DESIGN RULES:
-- bg-[#faf8f5] for landing pages
-- bg-slate-50 with white cards for dashboards
-- Beautiful, modern, responsive
-- Include Navigation + Hero + Features + Pricing + Footer (landing pages)
-- Include Sidebar + Stats + Tables (dashboards)
-- Add JavaScript for interactivity
-- Keep under 15000 characters"""
+- Natural fillers: "umm", "like", "you know"
+- 4-6 sentences flowing together
+- Sounds like you're excited to show them"""
         ).with_model("openai", "gpt-4o")
         
-        # Prepare message with images if provided
-        if request.attached_images and len(request.attached_images) > 0:
-            image_context = "\n\nATTACHED IMAGES: The user provided reference images. Use these as design inspiration."
-            context_prompt += image_context
-            logging.info(f"📸 User attached {len(request.attached_images)} images")
-        
         # Get response
-        user_message = UserMessage(text=context_prompt)
+        user_message = UserMessage(text=f"Based on this conversation, generate the app:\n\n{conversationText}")
         response = await gpt_chat.send_message(user_message)
         response_text = str(response).strip()
         
-        logging.info(f"GPT-4o response length: {len(response_text)}")
-        
-        # Parse JSON response
+        # Parse JSON
         cleaned = response_text.strip()
-        
         if "```json" in cleaned:
-            cleaned = cleaned.split("```json", 1)[1]
-            if "```" in cleaned:
-                cleaned = cleaned.split("```", 1)[0]
+            cleaned = cleaned.split("```json", 1)[1].split("```", 1)[0]
         elif "```" in cleaned:
             parts = cleaned.split("```")
             for part in parts:
@@ -528,26 +504,21 @@ DESIGN RULES:
             json_str = cleaned[start:end]
             result = json.loads(json_str)
             
-            # Convert format if needed
+            # Convert format
             if "html" in result:
                 result = {
                     "files": [{"path": "index.html", "content": result["html"]}],
                     "summary": result.get("summary", "App generated"),
                     "steps": result.get("steps", [])
                 }
-            elif "files" in result:
-                if "steps" not in result:
-                    result["steps"] = []
             
-            logging.info(f"✅ Conversational generation success")
             return {"success": True, "result": result}
         else:
-            raise ValueError("No valid JSON found in response")
+            raise ValueError("No valid JSON found")
             
     except Exception as e:
-        error_msg = str(e)
-        logging.error(f"Conversational generation error: {error_msg}")
-        raise HTTPException(status_code=500, detail=error_msg)
+        logging.error(f"Conversational generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.post("/dictational/generate")
 async def dictational_generate(request: DictationalGenerateRequest):
