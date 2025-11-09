@@ -536,17 +536,16 @@ IMPORTANT: Don't rush to building. Most people are still figuring out their idea
 - Any specific interactions or flows they're imagining?
 - What makes this different or special?
 
-FOR INITIAL IDEAS (workspace conversation):
-- Ask 5-7+ questions to flesh out their vision
-- When you have a CLEAR picture, tell them to click "Go" button
-- Then add "READY_TO_BUILD: [brief summary]"
+WHEN READY TO BUILD:
+- After 5-7+ questions when you have a CLEAR picture
+- Say EXACTLY: "Alright hit go AND lets GET this rolling"
+- This tells them to click the Go button
 
 FOR CHANGE REQUESTS (in editor):
 - Clarify what they want changed: "Uhh so like, just the main button or all the buttons?"
 - Ask about specifics: "Hmm what color are you thinking? Like bright blue or more subtle?"
 - Confirm understanding: "Got it! So you want the header to be sticky while scrolling, right?"
-- Suggest improvements: "Oh that's cool! You know what would look sick with that? If we added..."
-- When you understand the change clearly, say you'll do it and add "READY_TO_BUILD: [what change to make]"
+- When ready: Say "Alright hit go AND lets GET this rolling"
 
 Return ONLY plain text response (no JSON, no formatting), just what you would say."""
         ).with_model("openai", "gpt-4o")
