@@ -236,11 +236,17 @@ const LandingPage = () => {
             </div>
           )}
 
-          <div className="pill-input-area">
-            <span className="pill-placeholder">
-              Start speaking to {typedText}<span className="cursor">|</span>
-            </span>
-          </div>
+          {isRecording ? (
+            <div className="pill-input-area">
+              <AudioVisualizer isActive={isRecording} />
+            </div>
+          ) : (
+            <div className="pill-input-area">
+              <span className="pill-placeholder">
+                Start speaking to {typedText}<span className="cursor">|</span>
+              </span>
+            </div>
+          )}
 
           <button 
             className="pill-button mic-button"
