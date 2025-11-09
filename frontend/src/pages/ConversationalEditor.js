@@ -466,79 +466,29 @@ const ConversationalEditor = () => {
       
       {/* Main Content */}
       <div className="dict-editor-content">
-        {/* Left Panel - Chat */}
-        <div className="chat-panel">
-          <div className="chat-messages">
-            {isTranscribing && (
-              <div className="chat-message system">
-                <div className="message-avatar">⏳</div>
-                <div className="message-content">Transcribing your voice...</div>
-              </div>
+        {/* Left Panel - Sphere */}
+        <div className="sphere-panel-conv">
+          <div className="sphere-container-conv">
+            <div 
+              className={`sphere-conv ${
+                isWhispTalking ? 'talking' : 
+                isUserSpeaking ? 'listening' : 
+                isGenerating ? 'generating' : ''
+              }`}
+            >
+              <div className="sphere-glow-conv"></div>
+            </div>
+            
+            {isGenerating && (
+              <p className="sphere-status">Building your app...</p>
             )}
-            
-            {chatMessages.map((msg) => (
-              <div key={msg.id || `msg-${Date.now()}-${Math.random()}`} className={`chat-message ${msg.role}`}>
-                {msg.role !== 'thinking' && (
-                  <div className="message-avatar">
-                    {msg.role === 'user' ? '👤' : 
-                     msg.role === 'error' ? '⚠️' : 
-                     msg.role === 'step' ? (msg.isLoading ? <div className="loading-spinner-small"></div> : '✓') : '✦'}
-                  </div>
-                )}
-                <div className="message-content" style={msg.role === 'thinking' ? { paddingLeft: 0 } : {}}>
-                  {msg.role === 'thinking' ? (
-                    <div className="thinking-shimmer">{msg.content}</div>
-                  ) : msg.role === 'assistant' ? (
-                    <>
-                      {/* Render summary with proper formatting */}
-                      <div className="assistant-summary">
-                        {msg.content.replace(/\*\*/g, '').split('\n').map((line, i) => (
-                          <div key={i}>
-                            {line.startsWith('## ') ? (
-                              <h3 className="summary-header">{line.replace('## ', '')}</h3>
-                            ) : line.startsWith('- ') ? (
-                              <div className="summary-bullet">• {line.replace('- ', '')}</div>
-                            ) : line ? (
-                              <div className="summary-text">{line}</div>
-                            ) : <div style={{ height: '8px' }} />}
-                          </div>
-                        ))}
-                      </div>
-                      {/* Copy button */}
-                      <button 
-                        className="copy-btn" 
-                        onClick={() => handleCopyResponse(msg.id, msg.content)}
-                      >
-                        {copiedMessageId === msg.id ? <Check size={16} /> : <Copy size={16} />}
-                        {copiedMessageId === msg.id ? 'Copied!' : 'Copy'}
-                      </button>
-                    </>
-                  ) : (
-                    msg.content
-                  )}
-                </div>
-              </div>
-            ))}
-            
-            {/* Preview Button - Below last message if available */}
-            {chatMessages.some(m => m.showPreviewButton) && generatedFiles.length > 0 && (
-              <div style={{ padding: '0 48px 8px 48px', display: 'flex', gap: '12px' }}>
-                <button className="preview-btn" onClick={() => renderPreview(generatedFiles)}>
-                  <Eye size={18} />
-                  Preview
-                </button>
-                <button className="export-btn" onClick={handleExportCode}>
-                  <Download size={18} />
-                  Export
-                </button>
-              </div>
+            {isWhispTalking && (
+              <p className="sphere-status">Speaking...</p>
             )}
-            
-            <div ref={chatEndRef} />
           </div>
           
           {/* Bottom Pill Bar */}
-          <div className="dict-pill-bar">
+          <div className="voice-pill-bar">
             {/* Hidden file input */}
             <input 
               ref={fileInputRef}
@@ -573,30 +523,20 @@ const ConversationalEditor = () => {
               </div>
             )}
             
-            {isRecording ? (
-              <div className="pill-input-area">
-                <AudioVisualizer isActive={isRecording} isDark={theme === 'dark'} />
-              </div>
-            ) : (
-              <div className="pill-input-area">
-                <span className="pill-placeholder">
-                  Continue speaking to {typedText}<span className="cursor">|</span>
-                </span>
-              </div>
-            )}
+            <div className="pill-spacer"></div>
             
             <button 
               className="pill-button mic-button" 
-              onClick={handleVoiceInput}
-              disabled={isGenerating || isTranscribing}
+              onClick={toggleVoice}
+              disabled={isGenerating}
             >
-              {isRecording ? <X size={20} /> : <Mic size={20} />}
+              {isVoiceConnected && isUserSpeaking ? <MicOff size={20} /> : <Mic size={20} />}
             </button>
             
             <button 
               className="pill-button" 
-              onClick={isGenerating ? handleStopGeneration : handleSubmitVoice}
-              disabled={isTranscribing || (!isRecording && !isGenerating)}
+              onClick={handleGenerateFromConversation}
+              disabled={!isVoiceConnected || isGenerating}
             >
               {isGenerating ? <Square size={20} fill="currentColor" /> : <ArrowUp size={20} />}
             </button>
