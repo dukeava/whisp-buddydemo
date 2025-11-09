@@ -94,10 +94,15 @@ const DictationalEditor = () => {
       }
     } catch (error) {
       console.error('❌ Transcription error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      
+      const errorMessage = error.response?.data?.detail || error.message || 'Failed to transcribe audio. Please try again.';
+      
       setChatMessages(prev => [...prev, {
         id: `error-${Date.now()}`,
         role: 'error',
-        content: 'Failed to transcribe audio. Please try again.'
+        content: `Transcription failed: ${errorMessage}`
       }]);
     } finally {
       setIsTranscribing(false);
