@@ -102,9 +102,9 @@ const DictationalEditor = () => {
   }, [typedText, isDeleting, phraseIndex]);
   
   useEffect(() => {
-    // Render preview when files are generated or view changes
+    // Render/reload preview when files are generated or updated
     if (generatedFiles.length > 0 && !previewCollapsed) {
-      console.log('🎯 useEffect triggered - view:', showCode ? 'editor' : 'preview');
+      console.log('🎯 useEffect triggered - rendering/reloading preview');
       renderPreview(generatedFiles);
     }
   }, [generatedFiles, showCode, previewCollapsed]);
