@@ -51,6 +51,9 @@ const LandingPage = () => {
     if (!isConnected) {
       // First click - initialize voice chat and greet
       try {
+        // Immediately show visualizer
+        setIsRecording(true);
+        
         realtimeChatRef.current = new RealtimeAudioChat();
         
         realtimeChatRef.current.onTranscript = (text, isUser) => {
@@ -66,6 +69,7 @@ const LandingPage = () => {
             setTimeout(() => setIsWhispTalking(false), 100);
           } else if (state === 'user_speaking') {
             setIsWhispTalking(false);
+            setIsRecording(true);
           }
         };
 
@@ -84,15 +88,16 @@ const LandingPage = () => {
         }
       } catch (error) {
         console.error('Error starting voice chat:', error);
+        setIsRecording(false);
         alert('Could not start voice chat. Please check microphone permissions.');
       }
     } else {
-      // Toggle recording
-      if (isRecording) {
-        setIsRecording(false);
-      } else {
-        setIsRecording(true);
-        setIsWhispTalking(false);
+      // X button - Stop and disconnect
+      setIsRecording(false);
+      setIsWhispTalking(false);
+      setIsConnected(false);
+      if (realtimeChatRef.current) {
+        realtimeChatRef.current.disconnect();
       }
     }
   };
