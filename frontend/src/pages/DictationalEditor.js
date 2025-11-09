@@ -411,23 +411,6 @@ const DictationalEditor = () => {
     }
   };
   
-  const handleReloadPreview = () => {
-    if (window.stackblitzVM) {
-      window.stackblitzVM.editor.openFile('index.html');
-      console.log('🔄 Preview reloaded');
-    }
-  };
-  
-  const handleOpenInNewTab = () => {
-    if (window.stackblitzVM) {
-      // StackBlitz provides a URL we can open
-      const previewUrl = window.stackblitzVM.url || stackblitzRef.current?.src;
-      if (previewUrl) {
-        window.open(previewUrl, '_blank');
-      }
-    }
-  };
-  
   const handleVoiceInput = async () => {
     if (!isRecording) {
       // Start recording
