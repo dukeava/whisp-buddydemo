@@ -152,6 +152,31 @@ const LandingPage = () => {
         {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
       </button>
 
+      {/* Settings Icon */}
+      <div className="settings-container-voice">
+        <button 
+          className="settings-toggle-voice"
+          onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+          aria-label="Settings"
+        >
+          <Settings size={20} />
+        </button>
+
+        {isSettingsOpen && (
+          <div className="settings-dropdown-voice">
+            <button className="settings-item-voice" onClick={handleDictational}>
+              Dictational
+            </button>
+            <button className="settings-item-voice" onClick={handleHome}>
+              Home
+            </button>
+            <button className="settings-item-voice" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
         <span>Whisp</span>
         <span className="beta-tag">BETA</span>
