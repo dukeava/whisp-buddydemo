@@ -465,7 +465,7 @@ const ConversationalEditor = () => {
       </header>
       
       {/* Main Content */}
-      <div className="dict-editor-content">
+      <div className="conv-editor-content">
         {/* Left Panel - Sphere */}
         <div className="sphere-panel-conv">
           <div className="sphere-container-conv">
