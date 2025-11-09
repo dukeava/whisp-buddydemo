@@ -490,7 +490,7 @@ const DictationalEditor = () => {
                 <div className="message-avatar">
                   {msg.role === 'user' ? '👤' : 
                    msg.role === 'error' ? '⚠️' : 
-                   msg.role === 'thinking' ? '🤔' :
+                   msg.role === 'thinking' ? '✦' :
                    msg.role === 'step' ? (msg.isLoading ? <div className="spinner">⚙️</div> : '✓') : '✦'}
                 </div>
                 <div className="message-content">
