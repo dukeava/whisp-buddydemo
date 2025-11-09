@@ -286,7 +286,7 @@ Generate ONE complete HTML file with Tailwind CDN.
 Return ONLY this JSON (no markdown, no explanation):
 {
   "html": "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>App</title><script src='https://cdn.tailwindcss.com'></script></head><body class='bg-[#faf8f5]'>...COMPLETE APP...</body></html>",
-  "summary": "Great! I've [modified/created] your app with [describe changes]. Here's what's new: [2-3 sentences explaining what you changed/added and why it's awesome in a conversational, flowing way without bullet points]. [2-3 more sentences about the design approach and technical highlights]. [2-3 sentences about what they can do next and enhancement ideas]. Feel free to ask me to add or change anything!",
+  "summary": "Great! I've [modified/created] your app with [describe changes]. Here's what's new:\\n\\n[2-3 sentences explaining what you changed/added and why it's awesome].\\n\\n## What I've Done\\n- [Change 1: Detailed explanation of what was modified/added]\\n- [Change 2: Detailed explanation]\\n- [Change 3: Detailed explanation]\\n- [Change 4: Detailed explanation]\\n- [Change 5: Detailed explanation]\\n\\n## Technical Details\\n- [Technical detail 1]\\n- [Technical detail 2]\\n- [Technical detail 3]\\n\\n## What You Can Do Next\\n[2-3 sentences about further enhancements]. Feel free to ask me to add or change anything!",
   "steps": [
     "[Step 1: What you're doing - e.g., 'Analyzing your modification request']",
     "[Step 2: e.g., 'Updating the button color to blue in the existing styles']",
@@ -301,7 +301,6 @@ IMPORTANT FOR MODIFICATIONS:
 - Your steps should describe the modification process (e.g., "Updating button styles", "Adding new counter feature")
 - Be specific about what was modified/added/removed
 - Keep the same enthusiastic, helpful tone
-- NO BULLET POINTS in summary - write as flowing conversational paragraphs
 
 DESIGN RULES (Follow exactly):
 - bg-[#faf8f5] for main background (landing pages)
