@@ -449,8 +449,12 @@ const DictationalEditor = () => {
               {isRecording ? <X size={20} /> : <Mic size={20} />}
             </button>
             
-            <button className="pill-button">
-              <ArrowUp size={20} />
+            <button 
+              className="pill-button" 
+              onClick={isGenerating ? handleStopGeneration : handleVoiceInput}
+              disabled={isTranscribing}
+            >
+              {isGenerating ? <Square size={20} fill="currentColor" /> : <ArrowUp size={20} />}
             </button>
           </div>
         </div>
