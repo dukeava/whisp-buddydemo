@@ -2,9 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Sun, Moon, Mic, MicOff, ArrowUp, Plus, Settings, X } from 'lucide-react';
-import RealtimeAudioChat from '@/services/RealtimeAudioChat';
 import AudioVisualizer from '../components/AudioVisualizer';
+import axios from 'axios';
 import '../styles/LandingPage.css';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -19,8 +22,8 @@ const LandingPage = () => {
   const [conversationHistory, setConversationHistory] = useState([]);
   const [hasGreeted, setHasGreeted] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [sessionId] = useState(() => `session-${Date.now()}`);
   const fileInputRef = useRef(null);
-  const realtimeChatRef = useRef(null);
 
   const phrases = ['build', 'imagine', 'create', 'design'];
 
