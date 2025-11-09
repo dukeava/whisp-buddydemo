@@ -456,9 +456,9 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Conversational Voice System Prompts"
     - "Conversational Voice UX - Single Click"
     - "Conversational Audio Visualizer"
-    - "Conversational Landing Page Image Attachments"
     - "Conversational Editor Implementation"
   stuck_tasks: []
   test_all: false
