@@ -34,21 +34,21 @@
 
 /* Grey variant for light mode or different states */
 .visualizer-bar.grey {
-  background: rgba(128, 128, 128, 0.3);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .visualizer-bar.grey.active {
-  background: rgba(128, 128, 128, 0.8);
+  background: rgba(0, 0, 0, 0.7);
   animation: pulseGrey infinite ease-in-out;
 }
 
 @keyframes pulseGrey {
   0%, 100% {
     height: 6px;
-    background: rgba(128, 128, 128, 0.5);
+    background: rgba(0, 0, 0, 0.4);
   }
   50% {
     height: 20px;
-    background: rgba(128, 128, 128, 0.9);
+    background: rgba(0, 0, 0, 0.8);
   }
 }
