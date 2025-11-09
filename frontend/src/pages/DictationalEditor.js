@@ -192,6 +192,7 @@ const DictationalEditor = () => {
       console.error('❌ Generation error:', error);
       setIsGenerating(false);
       setChatMessages(prev => [...prev, {
+        id: `error-${Date.now()}`,
         role: 'error',
         content: 'Failed to generate code. Please try again.'
       }]);
