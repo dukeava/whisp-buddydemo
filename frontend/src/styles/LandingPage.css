@@ -296,3 +296,31 @@
   opacity: 0.1;
   z-index: 1;
 }
+
+/* Light Mode Styles */
+.landing-page.light .beta-tag {
+  background: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.landing-page.light .pill-placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.landing-page.light .pill-button {
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
+}
+
+.landing-page.light .pill-button:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+.landing-page.light .pill-button.mic-button {
+  background: #000;
+  color: white;
+}
+
+.landing-page.light .pill-button.mic-button:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
