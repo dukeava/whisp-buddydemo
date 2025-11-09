@@ -301,6 +301,9 @@ const DictationalEditor = () => {
         // Explicitly refresh preview to show new changes
         if (result.files && result.files.length > 0 && !previewCollapsed) {
           console.log('🔄 Auto-refreshing preview with new code');
+          // Ensure we're in preview mode, not code mode
+          setShowPreview(true);
+          setShowCode(false);
           await renderPreview(result.files);
         }
         
