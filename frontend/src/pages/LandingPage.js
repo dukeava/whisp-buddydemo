@@ -226,7 +226,7 @@ const LandingPage = () => {
 
   const handleTransitionToEditor = () => {
     // Stop recording and get all audio
-    stopFakeConversation();
+    stopAdaptiveConversation();
     
     if (window.landingRecorder && window.landingRecorder.state === 'recording') {
       window.landingRecorder.stop();
