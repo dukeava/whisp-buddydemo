@@ -311,7 +311,14 @@ Important:
             
             except json.JSONDecodeError:
                 # Fallback response
-                yield f"data: {json.dumps({'type': 'complete', 'result': {'files': [{'path': 'App.tsx', 'content': response}], 'summary': 'Generated application based on your description'}})}\n\n"
+                fallback_result = {
+                    'type': 'complete', 
+                    'result': {
+                        'files': [{'path': 'App.tsx', 'content': response}], 
+                        'summary': 'Generated application based on your description'
+                    }
+                }
+                yield f"data: {json.dumps(fallback_result)}\n\n"
         
         return StreamingResponse(generate_stream(), media_type="text/event-stream")
     
