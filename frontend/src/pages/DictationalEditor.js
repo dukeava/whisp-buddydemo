@@ -37,6 +37,7 @@ const DictationalEditor = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [linkCopied, setLinkCopied] = useState(false);
+  const [attachedImages, setAttachedImages] = useState([]);
   
   const phrases = ['build', 'imagine', 'create', 'design'];
   
@@ -44,6 +45,7 @@ const DictationalEditor = () => {
   const stackblitzRef = useRef(null);
   const chatEndRef = useRef(null);
   const hasInitialized = useRef(false);
+  const fileInputRef = useRef(null);
   
   useEffect(() => {
     // Prevent double initialization from React StrictMode
