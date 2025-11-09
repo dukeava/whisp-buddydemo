@@ -70,8 +70,8 @@ const LandingPage = () => {
         // Start recording (will be used as prompt later)
         await startSimpleRecording();
         
-        // Fake conversation flow with pre-scripted responses
-        startFakeConversation();
+        // Start adaptive conversation
+        startAdaptiveConversation();
       }, 300);
     } else {
       // Stop everything
