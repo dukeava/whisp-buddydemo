@@ -411,6 +411,13 @@ def main():
     tester.test_realtime_session()
     tester.test_realtime_negotiate()
     
+    # Test Dictational Mode endpoints
+    print("\n" + "=" * 50)
+    print("🎤 Testing Dictational Mode Endpoints...")
+    print("=" * 50)
+    tester.test_dictational_transcribe()
+    tester.test_dictational_generate()
+    
     # Print final results
     print("\n" + "=" * 50)
     print(f"📊 Final Results: {tester.tests_passed}/{tester.tests_run} tests passed")
