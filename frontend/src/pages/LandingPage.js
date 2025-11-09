@@ -124,6 +124,14 @@ const LandingPage = () => {
   
   const handleConversation = async (audioBlob) => {
     try {
+      // Only process if blob has meaningful audio (> 1KB)
+      if (audioBlob.size < 1000) {
+        console.log('⏭️ Skipping empty audio chunk');
+        return;
+      }
+      
+      console.log('🎧 Processing audio chunk:', audioBlob.size, 'bytes');
+      
       // 1. Transcribe with Whisper
       const formData = new FormData();
       formData.append('file', audioBlob, 'audio.webm');
@@ -132,9 +140,12 @@ const LandingPage = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       
-      if (!transcribeResponse.data.success) return;
+      if (!transcribeResponse.data.success || !transcribeResponse.data.text.trim()) {
+        console.log('⏭️ No speech detected in chunk');
+        return;
+      }
       
-      const userText = transcribeResponse.data.text;
+      const userText = transcribeResponse.data.text.trim();
       console.log('📝 User:', userText);
       
       // Add to conversation
