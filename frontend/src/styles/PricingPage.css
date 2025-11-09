@@ -108,10 +108,10 @@
 
 .pricing-image-container {
   width: 100%;
-  aspect-ratio: 1;
+  height: 200px;
   border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .pricing-image {
