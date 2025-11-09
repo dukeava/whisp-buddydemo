@@ -312,11 +312,27 @@ LANDING PAGE REQUIREMENTS:
             parts = cleaned.split("```", 2)
             cleaned = parts[0] + (parts[2] if len(parts) > 2 else "")
         
-        # Extract JSON
+        # Extract ONLY the JSON object (nothing after closing brace)
         if "{" in cleaned:
             start = cleaned.find("{")
             end = cleaned.rfind("}") + 1
             json_str = cleaned[start:end]
+            
+            # Remove any trailing content after the JSON
+            # Count braces to find true end
+            brace_count = 0
+            actual_end = 0
+            for i, char in enumerate(json_str):
+                if char == '{':
+                    brace_count += 1
+                elif char == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        actual_end = i + 1
+                        break
+            
+            if actual_end > 0:
+                json_str = json_str[:actual_end]
             
             logging.info(f"Parsing JSON, length: {len(json_str)}")
             result = json.loads(json_str)
