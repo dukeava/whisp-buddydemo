@@ -296,69 +296,44 @@ Rules:
             
             # Parse the response
             try:
-                # Try to extract JSON from response
                 response_text = response if isinstance(response, str) else str(response)
                 
-                logging.info(f"Claude raw response (first 1000 chars): {response_text[:1000]}")
+                logging.info(f"📥 Claude response length: {len(response_text)}")
+                logging.info(f"📥 First 500 chars: {response_text[:500]}")
                 
-                # Remove ALL markdown code blocks
-                response_text = response_text.strip()
+                # AGGRESSIVE markdown removal
+                cleaned = response_text.strip()
                 
-                # Remove ```json and ``` markers - IMPROVED
-                if "```" in response_text:
-                    # Split by ``` and find the JSON content
-                    parts = response_text.split("```")
-                    for part in parts:
-                        part = part.strip()
-                        # Skip labels like "json", "tsx", etc
-                        if part.lower() in ['json', 'tsx', 'jsx', 'javascript', 'js']:
-                            continue
-                        # Check if this part is valid JSON
-                        if part.startswith("{") and "}" in part:
-                            response_text = part
-                            break
-                
-                # Now extract JSON
-                response_text = response_text.strip()
-                
-                if "{" in response_text and "}" in response_text:
-                    start_idx = response_text.find("{")
-                    end_idx = response_text.rfind("}") + 1
-                    json_str = response_text[start_idx:end_idx]
+                # Remove ALL variations of code blocks
+                while "```" in cleaned:
+                    parts = cleaned.split("```", 2)
+                    if len(parts) >= 3:
+                        # Remove first marker and content type (json, tsx, etc)
+                        cleaned = parts[0] + parts[2]
+                    else:
+                        # Just remove the markers
+                        cleaned = cleaned.replace("```", "")
                     
-                    logging.info(f"Attempting to parse JSON (length: {len(json_str)}, first 300 chars): {json_str[:300]}")
+                # Extract JSON object
+                if "{" in cleaned and "}" in cleaned:
+                    start = cleaned.find("{")
+                    end = cleaned.rfind("}") + 1
+                    json_str = cleaned[start:end]
                     
-                    try:
-                        result = json.loads(json_str)
-                        logging.info(f"✅ JSON parsed successfully! Keys: {list(result.keys())}")
-                    except json.JSONDecodeError as je:
-                        logging.error(f"❌ JSON decode error: {je}")
-                        logging.error(f"Problem at position {je.pos}")
-                        logging.error(f"Context: ...{json_str[max(0,je.pos-100):min(len(json_str),je.pos+100)]}...")
-                        raise
+                    logging.info(f"📄 Extracted JSON length: {len(json_str)}")
                     
-                    # Validate structure
-                    if "files" not in result:
-                        logging.error(f"❌ Missing 'files'. Keys: {list(result.keys())}")
-                        raise ValueError("Missing files key")
+                    result = json.loads(json_str)
                     
-                    if not isinstance(result.get("files"), list):
-                        logging.error(f"❌ 'files' is not list: {type(result.get('files'))}")
-                        raise ValueError("files must be array")
-                    
-                    logging.info(f"✅ Valid structure with {len(result.get('files', []))} files")
-                    logging.info(f"✅ Summary: {result.get('summary', 'NO SUMMARY')[:200]}...")
-                    
+                    if "files" in result and isinstance(result["files"], list):
+                        logging.info(f"✅ SUCCESS: {len(result['files'])} files")
+                        logging.info(f"✅ Summary length: {len(result.get('summary', ''))}")
+                    else:
+                        raise ValueError("Invalid structure")
+                        
                 else:
-                    logging.warning("❌ No JSON braces found")
-                    result = {
-                        "files": [{"path": "index.html", "content": response_text}],
-                        "summary": "Generated application"
-                    }
+                    raise ValueError("No JSON found")
                 
-                logging.info(f"Final result: {len(result.get('files', []))} files")
-                
-                # Send completion with files
+                # Send completion
                 yield f"data: {json.dumps({'type': 'complete', 'result': result})}\n\n"
             
             except json.JSONDecodeError:
