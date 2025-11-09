@@ -533,9 +533,9 @@ const ConversationalEditor = () => {
               </div>
             )}
             
-            {isUserSpeaking ? (
+            {isVoiceConnected ? (
               <div className="pill-input-area">
-                <AudioVisualizer isActive={isUserSpeaking} isDark={theme === 'dark'} />
+                <AudioVisualizer isActive={isUserSpeaking || isWhispTalking} isDark={theme === 'dark'} />
               </div>
             ) : (
               <div className="pill-spacer"></div>
