@@ -6,6 +6,7 @@ import LandingPage from "@/pages/LandingPage";
 import EditorPage from "@/pages/EditorPage";
 import DictationalPage from "@/pages/DictationalPage";
 import DictationalEditor from "@/pages/DictationalEditor";
+import ConversationalEditor from "@/pages/ConversationalEditor";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 function App() {
