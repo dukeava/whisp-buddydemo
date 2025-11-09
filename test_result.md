@@ -339,4 +339,6 @@ agent_communication:
   - agent: "main"
     message: "Enhanced preview auto-refresh to force reload after every code generation. Added explicit renderPreview() call after generation completes, clear previous StackBlitz instance before new embed, and forceEmbedLayout flag. Preview now guaranteed to refresh with new changes after each prompt."
   - agent: "main"
-    message: "Rewrote preview update mechanism to properly edit files instead of re-embedding. First prompt creates StackBlitz project, subsequent prompts use vm.applyFsDiff() to UPDATE existing files. This allows StackBlitz to hot-reload changes automatically. Forces preview mode on updates. Should now properly reflect all code modifications in real-time."te (11/11 tests passed). Backend is production-ready."
+    message: "Rewrote preview update mechanism to properly edit files instead of re-embedding. First prompt creates StackBlitz project, subsequent prompts use vm.applyFsDiff() to UPDATE existing files. This allows StackBlitz to hot-reload changes automatically. Forces preview mode on updates. Should now properly reflect all code modifications in real-time."
+  - agent: "main"
+    message: "Enhanced backend to always return detailed summary and steps for modifications (not just new apps). Updated system prompt to specify format for modification responses. Added frontend fallback handling. Subsequent prompts will now show the same green checkmark flow and detailed conclusion as first prompt."te (11/11 tests passed). Backend is production-ready."
