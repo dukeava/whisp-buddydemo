@@ -241,9 +241,9 @@ const LandingPage = () => {
             </div>
           )}
 
-          {isRecording ? (
+          {isConnected ? (
             <div className="pill-input-area">
-              <AudioVisualizer isActive={isRecording} />
+              <AudioVisualizer isActive={isRecording || isWhispTalking} />
             </div>
           ) : (
             <div className="pill-input-area">
