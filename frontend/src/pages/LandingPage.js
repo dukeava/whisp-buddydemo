@@ -79,31 +79,20 @@ const LandingPage = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
-      const audioChunks = [];
       
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunks.push(event.data);
-        }
-      };
-      
-      mediaRecorder.onstop = async () => {
-        if (audioChunks.length > 0) {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          
-          // Process this chunk
+      mediaRecorder.ondataavailable = async (event) => {
+        if (event.data.size > 1000) {
+          // Process this chunk immediately without stopping recording
+          const audioBlob = new Blob([event.data], { type: 'audio/webm' });
           await handleConversation(audioBlob);
         }
-        
-        stream.getTracks().forEach(track => track.stop());
       };
       
       window.landingRecorder = mediaRecorder;
       window.landingStream = stream;
-      window.landingAudioChunks = audioChunks;
       
       // Start continuous recording with 5-second chunks
-      mediaRecorder.start(5000); // 5-second timeslices
+      mediaRecorder.start(5000);
       
       console.log('🎤 Continuous recording started');
       
