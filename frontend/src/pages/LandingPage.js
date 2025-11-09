@@ -153,10 +153,6 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <p className="main-text" data-testid="landing-text">
-          {typedText}<span className="cursor">|</span>
-        </p>
-
         <div className="pill-bar">
           <input
             ref={fileInputRef}
@@ -175,6 +171,12 @@ const LandingPage = () => {
           >
             <Plus size={20} />
           </button>
+
+          <div className="pill-input-area">
+            <span className="pill-placeholder">
+              {typedText}<span className="cursor">|</span>
+            </span>
+          </div>
 
           <button 
             className="pill-button mic-button"
@@ -197,7 +199,7 @@ const LandingPage = () => {
         </div>
 
         {attachedFiles.length > 0 && (
-          <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '16px' }}>
             {attachedFiles.length} file{attachedFiles.length > 1 ? 's' : ''} attached
           </p>
         )}
