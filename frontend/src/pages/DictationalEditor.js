@@ -386,6 +386,16 @@ const DictationalEditor = () => {
     setIsGenerating(false);
   };
   
+  const handleCopyResponse = async (messageId, content) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch (error) {
+      console.error('Copy failed:', error);
+    }
+  };
+  
   return (
     <div className={`dictational-editor ${theme}`}>
       {/* Header */}
