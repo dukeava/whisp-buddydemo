@@ -41,15 +41,40 @@ const DictationalPage = () => {
       // Request microphone access
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        // Store the stream so we can stop it later
+        
+        // Start recording
+        const mediaRecorder = new MediaRecorder(stream);
+        const audioChunks = [];
+        
+        mediaRecorder.ondataavailable = (event) => {
+          audioChunks.push(event.data);
+        };
+        
+        mediaRecorder.onstop = async () => {
+          // Create audio blob
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          
+          // Navigate to editor with audio data
+          navigate('/editor?mode=dictational', { 
+            state: { audioBlob }
+          });
+        };
+        
+        // Store media recorder and stream
+        window.dictationalMediaRecorder = mediaRecorder;
         window.dictationalStream = stream;
+        
+        mediaRecorder.start();
         setIsRecording(true);
       } catch (error) {
         console.error('Microphone access denied:', error);
         alert('Microphone access is required to use voice input');
       }
     } else {
-      // Stop recording and release microphone
+      // Stop recording
+      if (window.dictationalMediaRecorder) {
+        window.dictationalMediaRecorder.stop();
+      }
       if (window.dictationalStream) {
         window.dictationalStream.getTracks().forEach(track => track.stop());
         window.dictationalStream = null;
