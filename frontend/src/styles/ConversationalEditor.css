@@ -953,8 +953,8 @@
 
 /* Sphere - Smaller for editor */
 .sphere-conv {
-  width: 160px;
-  height: 160px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
@@ -967,7 +967,7 @@
     rgba(0, 80, 230, 1) 100%
   );
   will-change: transform;
-  box-shadow: 0 0 50px rgba(0, 100, 230, 0.6);
+  box-shadow: 0 0 60px rgba(0, 100, 230, 0.6);
 }
 
 .sphere-conv::before {
