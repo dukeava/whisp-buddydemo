@@ -564,6 +564,41 @@ const DictationalEditor = () => {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   
+  const handleShare = () => {
+    if (!generatedFiles.length) return;
+    
+    // Create a blob URL for sharing
+    const htmlFile = generatedFiles.find(f => f.path === 'index.html') || generatedFiles[0];
+    const blob = new Blob([htmlFile.content], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    setShareUrl(url);
+    setIsShareModalOpen(true);
+    setLinkCopied(false);
+    
+    console.log('📤 Share modal opened');
+  };
+  
+  const handleCopyShareLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+      console.log('✅ Link copied to clipboard');
+    } catch (error) {
+      console.error('❌ Copy failed:', error);
+    }
+  };
+  
+  const handleCloseShareModal = () => {
+    setIsShareModalOpen(false);
+    // Clean up blob URL
+    if (shareUrl) {
+      URL.revokeObjectURL(shareUrl);
+      setShareUrl('');
+    }
+  };
+  
   return (
     <div className={`dictational-editor ${theme}`}>
       {/* Header */}
