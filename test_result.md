@@ -117,6 +117,30 @@ backend:
         agent: "main"
         comment: "Updated AI instructions to be more natural, removed numbered lists, changed greeting to 'Hey what would you like to build today', removed app suggestions"
 
+  - task: "Dictational Transcribe Endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested /api/dictational/transcribe endpoint. Returns 200 status with success:true and text field. OpenAI Whisper integration working correctly. Accepts audio file upload (multipart/form-data) and returns transcribed text."
+
+  - task: "Dictational Generate Endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Tested /api/dictational/generate endpoint. Returns 200 status with streaming response. Progress messages (type:'progress') stream correctly, followed by completion (type:'complete') with files array containing path and content fields, and summary field. Claude Sonnet 4.5 integration working correctly. Generated 2 files (App.tsx and styles.css) for test prompt."
+
 frontend:
   - task: "Sphere Bouncing Animation"
     implemented: true
