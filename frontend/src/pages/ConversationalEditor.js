@@ -342,14 +342,6 @@ const ConversationalEditor = () => {
     }
   };
   
-  const handleVoiceSummary = async (summary) => {
-    if (!realtimeChatRef.current) return;
-    
-    // Summary is already conversational from backend - just speak it!
-    console.log('🗣️ Speaking summary:', summary);
-    await realtimeChatRef.current.playElevenLabsAudio(summary);
-  };
-  
   const toggleVoice = async () => {
     if (!isVoiceConnected) {
       // First click - initialize and greet
