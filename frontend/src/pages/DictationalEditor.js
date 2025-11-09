@@ -520,9 +520,14 @@ const DictationalEditor = () => {
             
             {/* Preview Button - Below last message if available */}
             {chatMessages.some(m => m.showPreviewButton) && generatedFiles.length > 0 && (
-              <div style={{ padding: '0 48px 8px 48px' }}>
+              <div style={{ padding: '0 48px 8px 48px', display: 'flex', gap: '12px' }}>
                 <button className="preview-btn" onClick={() => renderPreview(generatedFiles)}>
+                  <Eye size={18} />
                   Preview
+                </button>
+                <button className="export-btn" onClick={handleExportCode}>
+                  <Download size={18} />
+                  Export
                 </button>
               </div>
             )}
