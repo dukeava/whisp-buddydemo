@@ -436,4 +436,6 @@ agent_communication:
   - agent: "main"
     message: "Implemented image attachment feature for Plus button. Users can upload images as inspiration/reference. Features: file picker for multiple images, base64 conversion, thumbnail preview (60x60) with remove buttons, sends images to backend with prompt. Backend adds image context to GPT-4o prompt so AI uses images as design inspiration. CSS styling for image previews added."
   - agent: "main"
-    message: "Redesigned image attachment UI to show as compact tags above pill bar. Tags display circular thumbnail (28px), truncated filename, and remove button. Glassmorphism design with backdrop blur. Doesn't affect pill bar size at all. Implemented on both DictationalPage and DictationalEditor. Clean, modern appearance."te (11/11 tests passed). Backend is production-ready."
+    message: "Redesigned image attachment UI to show as compact tags above pill bar. Tags display circular thumbnail (28px), truncated filename, and remove button. Glassmorphism design with backdrop blur. Doesn't affect pill bar size at all. Implemented on both DictationalPage and DictationalEditor. Clean, modern appearance."
+  - agent: "main"
+    message: "Final image attachment design: tiny thumbnails (32x32px) show INSIDE pill bar between Plus button and input. Small red X button (16px) in corner for removal. Minimal space, doesn't affect pill bar size. Clean and compact on both pages."te (11/11 tests passed). Backend is production-ready."
