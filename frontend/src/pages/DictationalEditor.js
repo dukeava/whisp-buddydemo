@@ -180,7 +180,12 @@ const DictationalEditor = () => {
       // Use simple POST request
       const response = await axios.post(`${API}/dictational/generate-simple`, {
         prompt: prompt,
-        session_id: sessionId
+        session_id: sessionId,
+        previous_code: currentAppCode || null,
+        conversation_history: chatMessages.map(m => ({
+          role: m.role === 'user' ? 'user' : 'assistant',
+          content: m.content
+        }))
       });
       
       console.log('📥 Response received:', response.data);
