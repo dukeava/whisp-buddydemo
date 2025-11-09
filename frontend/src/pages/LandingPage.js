@@ -22,8 +22,11 @@ const LandingPage = () => {
   const [conversationHistory, setConversationHistory] = useState([]);
   const [hasGreeted, setHasGreeted] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [sessionId] = useState(() => `session-${Date.now()}`);
   const fileInputRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   const phrases = ['build', 'imagine', 'create', 'design'];
 
