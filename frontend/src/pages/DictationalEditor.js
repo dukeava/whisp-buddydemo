@@ -766,6 +766,25 @@ const DictationalEditor = () => {
           </div>
           
           {/* Bottom Pill Bar */}
+          {/* Show attached images above pill bar */}
+          {attachedImages.length > 0 && (
+            <div className="attached-images-tags-editor">
+              {attachedImages.map((img, index) => (
+                <div key={index} className="image-tag-editor">
+                  <img src={img.data} alt={img.name} />
+                  <span className="image-name-editor">{img.name}</span>
+                  <button 
+                    className="remove-tag-btn-editor" 
+                    onClick={() => handleRemoveImage(index)}
+                    title="Remove"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          
           <div className="dict-pill-bar">
             {/* Hidden file input */}
             <input 
@@ -780,24 +799,6 @@ const DictationalEditor = () => {
             <button className="pill-button" onClick={handleAttachImage} title="Attach images">
               <Plus size={20} />
             </button>
-            
-            {/* Show attached images preview */}
-            {attachedImages.length > 0 && !isRecording && (
-              <div className="attached-images-preview">
-                {attachedImages.map((img, index) => (
-                  <div key={index} className="attached-image-item">
-                    <img src={img.data} alt={img.name} />
-                    <button 
-                      className="remove-image-btn" 
-                      onClick={() => handleRemoveImage(index)}
-                      title="Remove image"
-                    >
-                      <X size={12} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
             
             {isRecording ? (
               <div className="pill-input-area">
