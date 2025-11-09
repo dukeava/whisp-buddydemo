@@ -39,7 +39,7 @@ const DictationalPage = () => {
 
   const handleGetStarted = async () => {
     if (!isRecording) {
-      // Request microphone access
+      // Request microphone access and start recording
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         
@@ -54,11 +54,7 @@ const DictationalPage = () => {
         mediaRecorder.onstop = async () => {
           // Create audio blob
           const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          
-          // Navigate to dictational editor with audio data
-          navigate('/dictational-editor', { 
-            state: { audioBlob }
-          });
+          setRecordedAudio(audioBlob);
         };
         
         // Store media recorder and stream
@@ -72,7 +68,7 @@ const DictationalPage = () => {
         alert('Microphone access is required to use voice input');
       }
     } else {
-      // Stop recording
+      // Stop recording (X button clicked)
       if (window.dictationalMediaRecorder) {
         window.dictationalMediaRecorder.stop();
       }
@@ -81,6 +77,17 @@ const DictationalPage = () => {
         window.dictationalStream = null;
       }
       setIsRecording(false);
+    }
+  };
+
+  const handleGoToEditor = () => {
+    if (recordedAudio) {
+      // Navigate to dictational editor with audio data
+      navigate('/dictational-editor', { 
+        state: { audioBlob: recordedAudio }
+      });
+    } else {
+      alert('Please record your voice first');
     }
   };
 
