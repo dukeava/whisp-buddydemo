@@ -250,7 +250,7 @@ backend:
         comment: "This is a frontend/UI integration task that requires manual user testing with voice interaction. Cannot be tested via automated backend API tests. The backend realtime endpoints are working correctly. User needs to test the conversational AI personality and naturalness through the UI."
 
 frontend:
-  - task: "Dictational Code/Preview Toggle Buttons"
+  - task: "Dictational Export as ZIP"
     implemented: true
     working: "needs_testing"
     file: "/app/frontend/src/pages/DictationalEditor.js"
@@ -260,7 +260,31 @@ frontend:
     status_history:
       - working: "needs_testing"
         agent: "main"
-        comment: "Implemented full Code/Preview toggle functionality. Code button uses vm.editor.openFile() to show editor. Preview button clears and re-embeds with view:'preview' to show preview-only mode. Both directions now work: Preview → Code (shows editor), Code → Preview (shows preview-only)."
+        comment: "Implemented ZIP export using JSZip library. Export button now creates 'whisp-app.zip' containing all generated files instead of single file download. Added jszip package to dependencies."
+
+  - task: "Dictational Preview Controls"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/DictationalEditor.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Removed Code button. Implemented functional preview controls: Reload icon clears and re-embeds preview for fresh reload, External link icon opens preview in new tab using blob URL, X button collapses preview, Preview button (header and collapsed state) expands preview back."
+
+  - task: "Dictational Code/Preview Toggle Buttons"
+    implemented: false
+    working: "NA"
+    file: "/app/frontend/src/pages/DictationalEditor.js"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Removed Code button as per user request. Only Preview button remains for collapsing/expanding preview panel."
 
   - task: "Dictational Response Formatting"
     implemented: true
