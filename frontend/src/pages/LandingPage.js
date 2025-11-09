@@ -92,23 +92,28 @@ const LandingPage = () => {
         }
       };
       
-      // Start recording - no time limit, just continuous
+      // Start recording - continuous
       mediaRecorder.start();
       console.log('🎤 Recording started');
       
-      // Process audio every 3 seconds
+      // Process audio every 8 seconds (gives you time to speak full thoughts)
       const processInterval = setInterval(async () => {
-        if (!isConnected || isWhispTalking || isProcessing) return;
+        // Skip if Whisp is talking or already processing
+        if (isWhispTalking || isProcessing) {
+          console.log('⏭️ Skipping - Whisp talking or processing');
+          return;
+        }
         
         if (audioChunksRef.current.length > 0) {
           const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-          audioChunksRef.current = []; // Clear chunks
+          audioChunksRef.current = []; // Clear for next batch
           
-          if (audioBlob.size > 5000) { // Only process if meaningful audio
+          if (audioBlob.size > 5000) {
+            console.log('🎧 Processing audio batch:', audioBlob.size);
             await handleConversation(audioBlob);
           }
         }
-      }, 3000);
+      }, 8000); // Process every 8 seconds
       
       window.landingProcessInterval = processInterval;
       window.landingStream = stream;
