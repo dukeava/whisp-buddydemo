@@ -441,10 +441,10 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Conversational Voice UX - Single Click"
     - "Conversational Audio Visualizer"
     - "Conversational Landing Page Image Attachments"
     - "Conversational Editor Implementation"
-    - "Dictational Image Attachment"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
