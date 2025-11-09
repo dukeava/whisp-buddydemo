@@ -251,7 +251,7 @@ const LandingPage = () => {
   useEffect(() => {
     return () => {
       // Cleanup recording on unmount
-      stopRecording();
+      stopContinuousRecording();
     };
   }, []);
 
