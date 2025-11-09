@@ -77,11 +77,13 @@ const LandingPage = () => {
         setIsConnected(true);
         console.log('✅ Voice chat initialized');
         
-        // Trigger greeting after initialization
+        // Play exact greeting with ElevenLabs
         if (!hasGreeted) {
-          setTimeout(() => {
+          setTimeout(async () => {
             if (realtimeChatRef.current) {
-              realtimeChatRef.current.triggerResponse();
+              await realtimeChatRef.current.playElevenLabsAudio(
+                "Hey I'm Dan, um what will you like to build or imagine today"
+              );
               setHasGreeted(true);
             }
           }, 500);
