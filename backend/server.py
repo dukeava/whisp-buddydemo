@@ -252,35 +252,24 @@ async def dictational_generate(request: DictationalGenerateRequest):
             claude_chat = LlmChat(
                 api_key=CLAUDE_API_KEY,
                 session_id=request.session_id,
-                system_message="""You are Whisp's dictational mode - an AI that generates beautiful, functional web applications from voice descriptions.
+                system_message="""You are Whisp's dictational mode - an AI that generates beautiful, functional web applications.
 
-CRITICAL INSTRUCTIONS:
-1. Generate COMPLETE, BROWSER-READY code (NO imports, NO require, NO exports)
-2. Create a SINGLE self-contained HTML file OR multiple files as specified below
-3. Make designs modern, beautiful, and responsive
-4. Use CDN libraries only (React via CDN, Tailwind via CDN)
+CRITICAL: Generate a SINGLE, COMPLETE HTML file that works in the browser.
 
-IMPORTANT: Do NOT use:
-- import statements
-- require() calls  
-- export statements
-- Node.js modules
+Requirements:
+- Return ONLY valid JSON, no markdown, no code blocks
+- Include ALL code in ONE HTML file
+- Use CDN libraries (Tailwind via CDN is fine)
+- Make it beautiful, modern, and responsive
+- NO imports, NO require statements
 
-For React apps, use browser globals:
-- React is available as window.React
-- ReactDOM is available as window.ReactDOM
-- Use const { useState, useEffect } = React;
-
-File structure format - RETURN ONLY THIS JSON, nothing else:
+Return format (ONLY THIS, NOTHING ELSE):
 {
-  "files": [
-    {"path": "App.tsx", "content": "actual code here without imports"},
-    {"path": "styles.css", "content": "css code here"}
-  ],
-  "summary": "Brief 1-2 sentence description of what was created"
+  "html": "<!DOCTYPE html><html>...complete HTML here...</html>",
+  "summary": "Detailed summary with:\n\n## What I Built\n- Feature 1\n- Feature 2\n\n## Key Features\n- Description of main features"
 }
 
-Make sure the JSON is valid and contains NO markdown formatting."""
+Make the summary detailed and formatted nicely with headers and bullet points."""
             ).with_model("anthropic", "claude-sonnet-4-20250514")
             
             # Send progress messages
