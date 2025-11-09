@@ -233,13 +233,12 @@ const DictationalEditor = () => {
   const renderPreview = (files) => {
     console.log('🖼️ Rendering preview with files:', files);
     
-    // Find the main file (App.tsx, index.html, etc.)
+    // Find the main file
     const mainFile = files.find(f => 
-      f.path.includes('App.tsx') || 
-      f.path.includes('index.html') ||
-      f.path.includes('App.jsx') ||
-      f.path.includes('app.tsx') ||
-      f.path.includes('app.jsx')
+      f.path.toLowerCase().includes('app.tsx') || 
+      f.path.toLowerCase().includes('index.html') ||
+      f.path.toLowerCase().includes('app.jsx') ||
+      f.path.toLowerCase().includes('app.js')
     ) || files[0];
     
     if (!mainFile) {
@@ -252,10 +251,16 @@ const DictationalEditor = () => {
     // Create HTML content
     let htmlContent = '';
     
-    if (mainFile.path.endsWith('.tsx') || mainFile.path.endsWith('.jsx')) {
+    if (mainFile.path.endsWith('.tsx') || mainFile.path.endsWith('.jsx') || mainFile.path.endsWith('.js')) {
       // React component - wrap in HTML
       const styleFile = files.find(f => f.path.endsWith('.css'));
       const styles = styleFile ? styleFile.content : '';
+      
+      // Clean the React code - remove import/export statements
+      let cleanCode = mainFile.content
+        .replace(/import\s+.*?from\s+['"].*?['"];?\s*/g, '')
+        .replace(/export\s+default\s+/g, '')
+        .replace(/export\s+/g, '');
       
       htmlContent = `
         <!DOCTYPE html>
@@ -268,12 +273,17 @@ const DictationalEditor = () => {
             <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
             <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
             <script src="https://cdn.tailwindcss.com"></script>
-            <style>${styles}</style>
+            <style>
+              body { margin: 0; padding: 0; }
+              ${styles}
+            </style>
           </head>
           <body>
             <div id="root"></div>
             <script type="text/babel">
-              ${mainFile.content}
+              const { useState, useEffect, useRef } = React;
+              
+              ${cleanCode}
               
               const root = ReactDOM.createRoot(document.getElementById('root'));
               root.render(<App />);
