@@ -457,6 +457,14 @@ const DictationalEditor = () => {
             {showCode ? <Eye size={18} /> : <Code size={18} />}
             <span>{showCode ? 'Preview' : 'Code'}</span>
           </button>
+          <button 
+            className="header-btn"
+            onClick={handleExportCode}
+            disabled={!generatedFiles.length}
+          >
+            <Download size={18} />
+            <span>Export</span>
+          </button>
           <button className="theme-toggle-header" onClick={toggleTheme}>
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
