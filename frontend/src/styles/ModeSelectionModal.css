@@ -19,7 +19,9 @@
   border-radius: 16px;
   padding: 48px;
   max-width: 1000px;
+  max-height: 90vh;
   width: 100%;
+  overflow-y: auto;
 }
 
 .mode-modal-title {
