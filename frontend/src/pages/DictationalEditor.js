@@ -359,8 +359,8 @@ const DictationalEditor = () => {
               </div>
             )}
             
-            {chatMessages.map((msg, idx) => (
-              <div key={idx} className={`chat-message ${msg.role}`}>
+            {chatMessages.map((msg) => (
+              <div key={msg.id || `msg-${Date.now()}-${Math.random()}`} className={`chat-message ${msg.role}`}>
                 <div className="message-avatar">
                   {msg.role === 'user' ? '👤' : msg.role === 'error' ? '⚠️' : '✦'}
                 </div>
