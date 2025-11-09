@@ -398,20 +398,21 @@ Include ALL 12+ files. NO markdown blocks."""
             logging.info(f"Parsing JSON, length: {len(json_str)}")
             result = json.loads(json_str)
             
-            # Convert to files format if needed
+            # Convert format if needed
             if "html" in result:
-                # Old HTML format - convert
-                steps = result.get("steps", [])
+                # Old single HTML format
                 result = {
                     "files": [{"path": "index.html", "content": result["html"]}],
-                    "summary": result.get("summary", "App generated successfully"),
-                    "steps": steps
+                    "summary": result.get("summary", "App generated"),
+                    "steps": result.get("steps", [])
                 }
             elif "files" in result:
-                # New multi-file format - keep as is
-                result["steps"] = result.get("steps", [])
+                # Multi-file format - ensure steps exist
+                if "steps" not in result:
+                    result["steps"] = []
             
-            logging.info(f"✅ Success: {len(result.get('files', []))} files, {len(result.get('steps', []))} steps")
+            logging.info(f"✅ Success: {len(result.get('files', []))} files")
+            logging.info(f"📝 File list: {[f['path'] for f in result.get('files', [])]}")
             return {"success": True, "result": result}
         else:
             raise ValueError("No JSON in response")
