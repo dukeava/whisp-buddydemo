@@ -828,12 +828,12 @@
 
 .share-copy-btn {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
   border: none;
   border-radius: 8px;
   padding: 14px;
-  color: white;
-  font-family: 'Instrument Serif', serif;
+  color: black;
+  font-family: 'Host Grotesk', sans-serif;
   font-size: 16px;
   font-weight: 400;
   cursor: pointer;
@@ -846,7 +846,7 @@
 
 .share-copy-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .share-copy-btn:active {
