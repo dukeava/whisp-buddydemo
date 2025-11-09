@@ -49,7 +49,9 @@ const FeaturesPage = () => {
               <div className="feature-image-container">
                 <img src={feature.image} alt={feature.title} className="feature-image" />
               </div>
-              <h3 className="feature-title">{feature.title}</h3>
+              <h3 className="feature-title">
+                {feature.title} <em>{feature.titleItalic}</em>
+              </h3>
               <p className="feature-description">{feature.description}</p>
               <button className="feature-button" onClick={() => navigate('/workspace')}>
                 <span>Start speaking</span>
