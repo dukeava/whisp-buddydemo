@@ -78,14 +78,15 @@ const DictationalEditor = () => {
         
         console.log('✅ Transcribed text:', transcribedText);
         
-        // Remove transcribing message
-        setChatMessages(prev => prev.filter(m => m.content !== 'Transcribing your voice...'));
-        
-        // Add user message to chat
-        setChatMessages(prev => [...prev, {
-          role: 'user',
-          content: transcribedText
-        }]);
+        // Remove transcribing message and add user message in one update
+        setChatMessages(prev => {
+          const filtered = prev.filter(m => m.content !== 'Transcribing your voice...');
+          return [...filtered, {
+            id: `user-${Date.now()}`,
+            role: 'user',
+            content: transcribedText
+          }];
+        });
         
         // Start code generation
         handleGenerateCode(transcribedText);
