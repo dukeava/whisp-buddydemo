@@ -67,8 +67,8 @@ const DictationalEditor = () => {
   }, [chatMessages]);
   
   useEffect(() => {
-    // Render preview when files are generated and iframe is ready
-    if (generatedFiles.length > 0 && !showCode && iframeRef.current) {
+    // Render preview when files are generated
+    if (generatedFiles.length > 0 && !showCode) {
       console.log('🎯 useEffect triggered - rendering preview');
       renderPreview(generatedFiles);
     }
