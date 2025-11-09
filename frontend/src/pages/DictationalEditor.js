@@ -394,7 +394,7 @@ const DictationalEditor = () => {
           project,
           {
             openFile: hasViteConfig ? 'src/App.tsx' : 'index.html',
-            view: showCode ? 'editor' : 'preview',
+            view: 'preview',  // Always start with preview
             height: '100%',
             hideNavigation: true,
             terminalHeight: 0
