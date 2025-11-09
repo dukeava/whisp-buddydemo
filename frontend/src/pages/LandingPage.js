@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Mic, MicOff, ArrowUp, Plus } from 'lucide-react';
+import { Sun, Moon, Mic, MicOff, ArrowUp, Plus, Settings } from 'lucide-react';
 import RealtimeAudioChat from '@/services/RealtimeAudioChat';
 import '../styles/LandingPage.css';
 
