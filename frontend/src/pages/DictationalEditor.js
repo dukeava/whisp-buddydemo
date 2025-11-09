@@ -186,16 +186,19 @@ const DictationalEditor = () => {
               console.log(`📨 Stream data #${messageCount}:`, data);
               
               if (data.type === 'progress') {
+                console.log('➡️ Adding/updating progress message:', data.message);
                 // Update or add progress message
                 setChatMessages(prev => {
                   const existing = prev.find(m => m.id === currentMessageId);
                   if (existing) {
+                    console.log('  Updating existing progress message');
                     return prev.map(m => 
                       m.id === currentMessageId 
                         ? { ...m, content: data.message }
                         : m
                     );
                   } else {
+                    console.log('  Adding new progress message with id:', currentMessageId);
                     return [...prev, {
                       id: currentMessageId,
                       role: 'assistant',
