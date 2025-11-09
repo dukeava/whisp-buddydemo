@@ -374,7 +374,7 @@ const LandingPage = () => {
             onClick={handleTransitionToEditor}
             data-testid="transition-to-editor-btn"
             aria-label="Go to editor"
-            disabled={conversationHistory.length === 0}
+            disabled={!isConnected}
           >
             <ArrowUp size={20} />
           </button>
