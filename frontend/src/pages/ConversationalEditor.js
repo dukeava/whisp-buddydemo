@@ -431,14 +431,14 @@ const ConversationalEditor = () => {
   };
   
   return (
-    <div className={`dictational-editor ${theme}`}>
+    <div className={`conversational-editor ${theme}`}>
       {/* Header */}
-      <header className="dict-editor-header">
+      <header className="conv-editor-header">
         <div className="header-left">
           <button className="logo-btn" onClick={() => navigate('/')}>
             <span>Whisp</span>
           </button>
-          <span className="mode-badge">Dictational</span>
+          <span className="mode-badge">Conversational</span>
         </div>
         
         <div className="header-right">
