@@ -139,6 +139,8 @@ const DictationalEditor = () => {
     setIsGenerating(true);
     
     try {
+      console.log('📡 Calling API:', `${API}/dictational/generate`);
+      
       // Use fetch with streaming
       const response = await fetch(`${API}/dictational/generate`, {
         method: 'POST',
@@ -151,16 +153,24 @@ const DictationalEditor = () => {
         })
       });
       
-      console.log('📡 Streaming response received');
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      console.log('📡 Streaming response received, status:', response.status);
       
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let currentMessageId = Date.now();
       let buffer = '';
+      let messageCount = 0;
       
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          console.log('✅ Stream finished, total messages:', messageCount);
+          break;
+        }
         
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split('\n');
@@ -170,7 +180,8 @@ const DictationalEditor = () => {
           if (line.startsWith('data: ')) {
             try {
               const data = JSON.parse(line.slice(6));
-              console.log('📨 Stream data:', data);
+              messageCount++;
+              console.log(`📨 Stream data #${messageCount}:`, data);
               
               if (data.type === 'progress') {
                 // Update or add progress message
@@ -193,6 +204,10 @@ const DictationalEditor = () => {
                 });
               } else if (data.type === 'complete') {
                 console.log('✅ Generation complete:', data.result);
+                console.log('📂 Files received:', data.result.files);
+                console.log('📝 Summary:', data.result.summary);
+                
+                const result = data.result;
                 
                 // Single state update: remove progress and add summary
                 setChatMessages(prev => {
@@ -205,7 +220,6 @@ const DictationalEditor = () => {
                   }];
                 });
                 
-                const result = data.result;
                 setGeneratedFiles(result.files || []);
                 
                 // Don't call renderPreview here - useEffect will handle it
@@ -213,7 +227,7 @@ const DictationalEditor = () => {
                 setIsGenerating(false);
               }
             } catch (parseError) {
-              console.error('Failed to parse stream data:', parseError, line);
+              console.error('❌ Failed to parse stream data:', parseError, 'Line:', line);
             }
           }
         }
@@ -221,11 +235,12 @@ const DictationalEditor = () => {
       
     } catch (error) {
       console.error('❌ Generation error:', error);
+      console.error('Error details:', error.message, error.stack);
       setIsGenerating(false);
       setChatMessages(prev => [...prev, {
         id: `error-${Date.now()}`,
         role: 'error',
-        content: 'Failed to generate code. Please try again.'
+        content: `Failed to generate code: ${error.message}`
       }]);
     }
   };
