@@ -4,13 +4,13 @@
   align-items: center;
   justify-content: center;
   gap: 3px;
-  height: 40px;
+  height: 24px;
   width: 100%;
 }
 
 .visualizer-bar {
   width: 3px;
-  height: 8px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.3);
   border-radius: 2px;
   transition: all 0.1s ease;
@@ -23,11 +23,11 @@
 
 @keyframes pulse {
   0%, 100% {
-    height: 8px;
+    height: 6px;
     background: rgba(255, 255, 255, 0.5);
   }
   50% {
-    height: 32px;
+    height: 20px;
     background: rgba(255, 255, 255, 0.9);
   }
 }
@@ -44,11 +44,11 @@
 
 @keyframes pulseGrey {
   0%, 100% {
-    height: 8px;
+    height: 6px;
     background: rgba(128, 128, 128, 0.5);
   }
   50% {
-    height: 32px;
+    height: 20px;
     background: rgba(128, 128, 128, 0.9);
   }
 }
