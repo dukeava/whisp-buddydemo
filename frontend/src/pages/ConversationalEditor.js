@@ -117,9 +117,9 @@ const ConversationalEditor = () => {
     console.log('💬 Conversation:', conversationText);
     
     try {
-      console.log('📡 Calling API:', `${API}/dictational/generate-simple`);
+      console.log('📡 Calling API:', `${API}/conversational/generate`);
       
-      const response = await axios.post(`${API}/dictational/generate-simple`, {
+      const response = await axios.post(`${API}/conversational/generate`, {
         prompt: conversationText,
         session_id: sessionId,
         previous_code: currentAppCode || null,
