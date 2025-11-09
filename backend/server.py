@@ -289,35 +289,42 @@ NO separate files. Keep under 15000 chars."""
         logging.info(f"GPT-4o response length: {len(response_text)}")
         logging.info(f"First 300 chars: {response_text[:300]}")
         
-        # Clean and parse
-        cleaned = response_text
-        while "```" in cleaned:
-            parts = cleaned.split("```", 2)
-            cleaned = parts[0] + (parts[2] if len(parts) > 2 else "")
+        # AGGRESSIVE cleaning
+        cleaned = response_text.strip()
         
-        # Extract ONLY the JSON object (nothing after closing brace)
+        # Remove explanation text before JSON
+        if "```json" in cleaned:
+            # Take everything after ```json
+            cleaned = cleaned.split("```json", 1)[1]
+            # Remove closing ```
+            if "```" in cleaned:
+                cleaned = cleaned.split("```", 1)[0]
+        elif "```" in cleaned:
+            # Generic code block
+            parts = cleaned.split("```")
+            for part in parts:
+                if part.strip().startswith("{"):
+                    cleaned = part
+                    break
+        
+        # Find JSON object
         if "{" in cleaned:
             start = cleaned.find("{")
-            end = cleaned.rfind("}") + 1
-            json_str = cleaned[start:end]
-            
-            # Remove any trailing content after the JSON
-            # Count braces to find true end
+            # Count braces to find end
             brace_count = 0
-            actual_end = 0
-            for i, char in enumerate(json_str):
-                if char == '{':
+            end = start
+            for i in range(start, len(cleaned)):
+                if cleaned[i] == '{':
                     brace_count += 1
-                elif char == '}':
+                elif cleaned[i] == '}':
                     brace_count -= 1
                     if brace_count == 0:
-                        actual_end = i + 1
+                        end = i + 1
                         break
             
-            if actual_end > 0:
-                json_str = json_str[:actual_end]
+            json_str = cleaned[start:end]
             
-            logging.info(f"Parsing JSON, length: {len(json_str)}")
+            logging.info(f"Parsing JSON, length: {len(json_str)}, first 200: {json_str[:200]}")
             result = json.loads(json_str)
             
             # Convert format if needed
