@@ -132,6 +132,14 @@ const DictationalEditor = () => {
     setIsGenerating(true);
     setGenerationCancelled(false);
     
+    // Add "Thinking..." shimmer message
+    const thinkingId = `thinking-${Date.now()}`;
+    setChatMessages(prev => [...prev, {
+      id: thinkingId,
+      role: 'thinking',
+      content: 'Thinking...'
+    }]);
+    
     try {
       console.log('📡 Calling API:', `${API}/dictational/generate-simple`);
       
@@ -143,25 +151,52 @@ const DictationalEditor = () => {
       
       console.log('📥 Response received:', response.data);
       
+      // Remove "Thinking..." message
+      setChatMessages(prev => prev.filter(m => m.id !== thinkingId));
+      
       if (response.data.success && !generationCancelled) {
         const result = response.data.result;
-        const steps = result.steps || [
-          'Analyzing requirements',
-          'Setting up structure',
-          'Designing components',
-          'Adding styling',
-          'Finalizing build'
-        ];
+        const steps = result.steps || [];
         
-        console.log('✅ Generation complete with steps:', steps);
+        // Parse summary to extract intro and features/conclusion
+        const summaryLines = result.summary.split('\n');
+        let intro = '';
+        let featuresAndConclusion = '';
+        let foundHeader = false;
         
-        // Add step messages one by one with loading then checkmark
+        for (const line of summaryLines) {
+          if (line.startsWith('## ')) {
+            foundHeader = true;
+          }
+          
+          if (!foundHeader && line.trim()) {
+            intro += line + '\n';
+          } else if (foundHeader || line.startsWith('-') || line.startsWith('##')) {
+            featuresAndConclusion += line + '\n';
+          }
+        }
+        
+        console.log('📝 Intro:', intro);
+        console.log('📝 Features:', featuresAndConclusion);
+        
+        // Add intro message first
+        if (intro.trim()) {
+          setChatMessages(prev => [...prev, {
+            id: `intro-${Date.now()}`,
+            role: 'assistant',
+            content: intro.trim()
+          }]);
+          
+          await new Promise(resolve => setTimeout(resolve, 800));
+        }
+        
+        // Add step messages with loading animation
         for (let i = 0; i < steps.length; i++) {
           if (generationCancelled) break;
           
           const stepId = `step-${Date.now()}-${i}`;
           
-          // Add with loading icon first
+          // Add with loading spinner
           setChatMessages(prev => [...prev, {
             id: stepId,
             role: 'step',
@@ -169,8 +204,8 @@ const DictationalEditor = () => {
             isLoading: true
           }]);
           
-          // Wait then mark as completed
-          await new Promise(resolve => setTimeout(resolve, 600));
+          // Wait then mark as completed with checkmark
+          await new Promise(resolve => setTimeout(resolve, 700));
           
           if (generationCancelled) break;
           
@@ -186,22 +221,27 @@ const DictationalEditor = () => {
           return;
         }
         
-        // Wait a bit before showing summary
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Wait before showing features/conclusion
+        await new Promise(resolve => setTimeout(resolve, 600));
         
-        // Add summary message
-        setChatMessages(prev => [...prev, {
-          id: `assistant-${Date.now()}`,
-          role: 'assistant',
-          content: result.summary,
-          showPreviewButton: true
-        }]);
+        // Add features and conclusion
+        if (featuresAndConclusion.trim()) {
+          setChatMessages(prev => [...prev, {
+            id: `features-${Date.now()}`,
+            role: 'assistant',
+            content: featuresAndConclusion.trim(),
+            showPreviewButton: true
+          }]);
+        }
         
         setGeneratedFiles(result.files || []);
         setIsGenerating(false);
       }
       
     } catch (error) {
+      // Remove "Thinking..." on error
+      setChatMessages(prev => prev.filter(m => m.id !== thinkingId));
+      
       console.error('❌ Generation error:', error);
       setIsGenerating(false);
       
