@@ -12,6 +12,8 @@ const DictationalPage = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
+  const [attachedImages, setAttachedImages] = useState([]);
+  const fileInputRef = React.useRef(null);
   
   const phrases = ['build', 'imagine', 'create', 'design'];
 
