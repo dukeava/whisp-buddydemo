@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Mic, ArrowUp } from 'lucide-react';
+import { Plus, Mic, ArrowUp, Settings } from 'lucide-react';
+import ModeSelectionModal from '../components/ModeSelectionModal';
 import '../styles/DictationalPage.css';
 
 const DictationalPage = () => {
@@ -8,6 +9,8 @@ const DictationalPage = () => {
   const [typedText, setTypedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isModeModalOpen, setIsModeModalOpen] = useState(false);
   
   const phrases = ['build', 'imagine', 'create', 'design'];
 
@@ -38,6 +41,26 @@ const DictationalPage = () => {
     console.log('Starting dictational mode...');
   };
 
+  const handleModeSelect = (mode) => {
+    setIsModeModalOpen(false);
+    setIsSettingsOpen(false);
+    if (mode === 'conversational') {
+      navigate('/workspace');
+    }
+    // Stay on dictational if dictational selected
+  };
+
+  const handleHome = () => {
+    setIsSettingsOpen(false);
+    navigate('/');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('whispUser');
+    setIsSettingsOpen(false);
+    navigate('/');
+  };
+
   return (
     <div className="dictational-page">
       {/* Background Image */}
@@ -57,6 +80,31 @@ const DictationalPage = () => {
       <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
         <span>Whisp</span>
         <span className="beta-badge">BETA</span>
+      </div>
+
+      {/* Settings Icon - Top Right */}
+      <div className="settings-container">
+        <button 
+          className="settings-toggle"
+          onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+          aria-label="Settings"
+        >
+          <Settings size={20} />
+        </button>
+
+        {isSettingsOpen && (
+          <div className="settings-dropdown">
+            <button className="settings-item" onClick={() => setIsModeModalOpen(true)}>
+              Change mode
+            </button>
+            <button className="settings-item" onClick={handleHome}>
+              Home
+            </button>
+            <button className="settings-item" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Hero Content */}
@@ -87,6 +135,13 @@ const DictationalPage = () => {
           </button>
         </div>
       </div>
+
+      {/* Mode Selection Modal */}
+      <ModeSelectionModal
+        isOpen={isModeModalOpen}
+        onClose={() => setIsModeModalOpen(false)}
+        onSelectMode={handleModeSelect}
+      />
     </div>
   );
 };
