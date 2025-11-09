@@ -262,6 +262,18 @@ frontend:
         agent: "main"
         comment: "Implemented ZIP export using JSZip library. Export button now creates 'whisp-app.zip' containing all generated files instead of single file download. Added jszip package to dependencies."
 
+  - task: "Conversational Voice System Prompts"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/services/RealtimeAudioChat.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Updated system prompts to use ONLY user-provided prompts. Landing page: Removed old Dan greeting and WHEN READY TO BUILD section, uses clean prompt for initial ideas asking 5-7+ questions with READY_TO_BUILD flag. Editor: Added proper change request prompt with clarifying questions and READY_TO_BUILD flag. Both prompts follow exact user specifications with casual tone, natural fillers, and short responses."
+
   - task: "Conversational Voice UX - Single Click"
     implemented: true
     working: "needs_testing"
