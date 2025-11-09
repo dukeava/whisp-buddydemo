@@ -192,31 +192,44 @@ const DictationalEditor = () => {
   };
   
   const renderPreview = (files) => {
+    console.log('🖼️ Rendering preview with files:', files);
+    
     // Find the main file (App.tsx, index.html, etc.)
     const mainFile = files.find(f => 
       f.path.includes('App.tsx') || 
       f.path.includes('index.html') ||
-      f.path.includes('App.jsx')
+      f.path.includes('App.jsx') ||
+      f.path.includes('app.tsx') ||
+      f.path.includes('app.jsx')
     ) || files[0];
     
-    if (!mainFile) return;
+    if (!mainFile) {
+      console.error('❌ No main file found in:', files);
+      return;
+    }
     
-    // Create HTML content with all files
+    console.log('📄 Main file:', mainFile.path);
+    
+    // Create HTML content
     let htmlContent = '';
     
     if (mainFile.path.endsWith('.tsx') || mainFile.path.endsWith('.jsx')) {
       // React component - wrap in HTML
       const styleFile = files.find(f => f.path.endsWith('.css'));
+      const styles = styleFile ? styleFile.content : '';
+      
       htmlContent = `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Preview</title>
             <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
             <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
             <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-            ${styleFile ? `<style>${styleFile.content}</style>` : ''}
+            <script src="https://cdn.tailwindcss.com"></script>
+            <style>${styles}</style>
           </head>
           <body>
             <div id="root"></div>
@@ -229,19 +242,42 @@ const DictationalEditor = () => {
           </body>
         </html>
       `;
-    } else {
+    } else if (mainFile.path.endsWith('.html')) {
       // HTML file
       htmlContent = mainFile.content;
+    } else {
+      // Default - wrap content in HTML
+      htmlContent = `
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Preview</title>
+          </head>
+          <body>
+            <pre>${mainFile.content}</pre>
+          </body>
+        </html>
+      `;
     }
     
+    console.log('📝 HTML content generated, length:', htmlContent.length);
     setPreviewContent(htmlContent);
     
     // Render in iframe
     if (iframeRef.current) {
-      const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
-      iframeDoc.open();
-      iframeDoc.write(htmlContent);
-      iframeDoc.close();
+      try {
+        const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(htmlContent);
+        iframeDoc.close();
+        console.log('✅ Preview rendered in iframe');
+      } catch (iframeError) {
+        console.error('❌ Iframe error:', iframeError);
+      }
+    } else {
+      console.error('❌ Iframe ref is null');
     }
   };
   
