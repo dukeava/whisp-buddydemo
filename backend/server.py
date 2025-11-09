@@ -251,34 +251,28 @@ async def dictational_generate_simple(request: DictationalGenerateRequest):
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - build FUNCTIONAL React apps!
+            system_message="""You are Whisp - build React apps.
 
-Generate Create React App structure (for StackBlitz compatibility).
+CRITICAL: Return VALID JSON only. Test your JSON before responding!
 
-Return JSON with these files:
 {
   "files": [
     {"path": "package.json", "content": "{\\"name\\":\\"app\\",\\"version\\":\\"1.0.0\\",\\"private\\":true,\\"dependencies\\":{\\"react\\":\\"^18.2.0\\",\\"react-dom\\":\\"^18.2.0\\",\\"react-scripts\\":\\"5.0.1\\"},\\"scripts\\":{\\"start\\":\\"react-scripts start\\",\\"build\\":\\"react-scripts build\\"}}"},
-    {"path": "public/index.html", "content": "<!DOCTYPE html>\\n<html lang=\\"en\\">\\n<head>\\n<meta charset=\\"utf-8\\" />\\n<meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />\\n<title>App</title>\\n<script src=\\"https://cdn.tailwindcss.com\\"></script>\\n</head>\\n<body>\\n<div id=\\"root\\"></div>\\n</body>\\n</html>"},
-    {"path": "src/index.js", "content": "import React from 'react';\\nimport ReactDOM from 'react-dom/client';\\nimport App from './App';\\n\\nconst root = ReactDOM.createRoot(document.getElementById('root'));\\nroot.render(<App />);"},
-    {"path": "src/App.js", "content": "import React, { useState } from 'react';\\n\\nfunction App() {\\n  // ALL components inline here\\n  return (\\n    <div className=\\"min-h-screen bg-[#faf8f5]\\">\\n      {/* Your beautiful app */}\\n    </div>\\n  );\\n}\\n\\nexport default App;"}
+    {"path": "public/index.html", "content": "<!DOCTYPE html><html><head><meta charset=\\"utf-8\\"/><title>App</title><script src=\\"https://cdn.tailwindcss.com\\"></script></head><body><div id=\\"root\\"></div></body></html>"},
+    {"path": "src/index.js", "content": "import React from 'react';\\nimport ReactDOM from 'react-dom/client';\\nimport App from './App';\\nconst root = ReactDOM.createRoot(document.getElementById('root'));\\nroot.render(<App />);"},
+    {"path": "src/App.js", "content": "import React, { useState } from 'react';\\n\\nfunction App() {\\n  return <div className=\\"min-h-screen bg-[#faf8f5] p-8\\">Your app</div>;\\n}\\n\\nexport default App;"}
   ],
-  "summary": "Absolutely! [4-5 sentence intro]...\\n\\n## What I've Built\\n- [Feature]\\n- [Feature]\\n- [Feature]\\n- [Feature]\\n\\n## Technical Stack\\n- React with hooks\\n- Tailwind CSS\\n\\n## Next Steps\\n[Suggestions]",
-  "steps": [
-    "Setting up React project structure",
-    "Creating App component with state",
-    "Designing UI with Tailwind",
-    "Adding interactivity with hooks",
-    "Styling with V0 design principles",
-    "Finalizing responsive design"
-  ]
+  "summary": "I'll build [intro].\\n\\n## Features\\n- Feature 1\\n- Feature 2",
+  "steps": ["Step 1", "Step 2", "Step 3"]
 }
 
-DESIGN: Use bg-[#faf8f5], font-serif, text-6xl, py-32, rounded-2xl.
-FUNCTIONALITY: Use useState, useEffect.
-ALL code in src/App.js (inline components).
-NO markdown."""
-        ).with_model("openai", "gpt-4o")
+Rules:
+- Use bg-[#faf8f5] cream background
+- Large text (text-6xl), generous spacing (py-24)
+- All code in src/App.js
+- Escape quotes with backslash
+- NO trailing commas
+- Valid JSON syntax"""
         
         # Get response
         response = await gpt_chat.send_message(UserMessage(text=request.prompt))
