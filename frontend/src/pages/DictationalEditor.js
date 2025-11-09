@@ -424,6 +424,19 @@ const DictationalEditor = () => {
     }
   };
   
+  const handleExportCode = () => {
+    if (generatedFiles.length === 0) return;
+    
+    const mainFile = generatedFiles[0];
+    const blob = new Blob([mainFile.content], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = mainFile.path;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  
   return (
     <div className={`dictational-editor ${theme}`}>
       {/* Header */}
