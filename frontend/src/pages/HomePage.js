@@ -76,7 +76,7 @@ const HomePage = () => {
       {/* Header */}
       <header className="homepage-header">
         {/* Logo - Far Left */}
-        <div className="logo">
+        <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           <span>Whisp</span>
           <span className="beta-badge">BETA</span>
         </div>
