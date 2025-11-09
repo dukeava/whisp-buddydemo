@@ -705,4 +705,4 @@ const ConversationalEditor = () => {
   );
 };
 
-export default DictationalEditor;
+export default ConversationalEditor;
