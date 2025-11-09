@@ -248,25 +248,6 @@ const DictationalPage = () => {
         </p>
 
         {/* Pill Bar - Wide with typing effect or visualizer */}
-        {/* Show attached images above pill bar */}
-        {attachedImages.length > 0 && (
-          <div className="attached-images-tags">
-            {attachedImages.map((img, index) => (
-              <div key={index} className="image-tag">
-                <img src={img.data} alt={img.name} />
-                <span className="image-name">{img.name}</span>
-                <button 
-                  className="remove-tag-btn" 
-                  onClick={() => handleRemoveImage(index)}
-                  title="Remove"
-                >
-                  <X size={14} />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        
         <div className="pill-bar">
           {/* Hidden file input */}
           <input 
@@ -281,6 +262,26 @@ const DictationalPage = () => {
           <button className="pill-button" onClick={handleAttachImage} title="Attach images">
             <Plus size={20} />
           </button>
+          
+          {/* Tiny attached images inside pill bar */}
+          {attachedImages.length > 0 && (
+            <div className="tiny-images-inline">
+              {attachedImages.map((img, index) => (
+                <div key={index} className="tiny-image">
+                  <img src={img.data} alt={img.name} />
+                  <button 
+                    className="tiny-remove-btn" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveImage(index);
+                    }}
+                  >
+                    <X size={10} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
           
           {isRecording ? (
             <div className="pill-input-area">
