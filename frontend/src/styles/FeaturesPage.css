@@ -105,6 +105,11 @@
   color: white;
 }
 
+.feature-title em {
+  font-style: italic;
+  color: white;
+}
+
 .feature-description {
   font-family: 'Host Grotesk', sans-serif;
   font-size: 16px;
