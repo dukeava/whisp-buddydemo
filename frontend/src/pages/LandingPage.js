@@ -116,77 +116,39 @@ const LandingPage = () => {
     }
   };
   
-  const startAdaptiveConversation = () => {
-    // Process audio every 8 seconds to respond to user
+  const fakeConversationLines = [
+    "Oh nice! Umm, what kind of vibe are you going for?",
+    "Cool! So who's this for? Like for yourself or?",
+    "Hmm that's actually not bad! What features are you thinking?",
+    "Wait that's sick! Uhh, how should it look?",
+    "Okay okay, I'm seeing the vision! Any specific colors or style?",
+    "Alright hit go AND lets GET this rolling"
+  ];
+  
+  const startFakeConversation = () => {
+    let step = 0;
+    
     const conversationInterval = setInterval(async () => {
-      console.log('💬 Checking for user speech...');
-      
-      if (isWhispTalking || isProcessing || audioChunksRef.current.length === 0) {
-        return; // Skip if Whisp talking or already processing
+      if (step >= fakeConversationLines.length) {
+        clearInterval(conversationInterval);
+        return;
       }
       
-      // Get recorded audio
-      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-      audioChunksRef.current = []; // Clear for next batch
+      // Speak next line
+      console.log('🗣️ Speaking:', fakeConversationLines[step]);
+      setIsWhispTalking(true);
+      await speakWithElevenLabs(fakeConversationLines[step]);
+      setIsWhispTalking(false);
       
-      if (audioBlob.size < 5000) return; // Skip if too small
-      
-      setIsProcessing(true);
-      
-      try {
-        // Transcribe what user said
-        const formData = new FormData();
-        formData.append('file', audioBlob, 'audio.webm');
-        
-        const transcribeResponse = await axios.post(`${API}/dictational/transcribe`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-        
-        if (!transcribeResponse.data.success || !transcribeResponse.data.text.trim()) {
-          setIsProcessing(false);
-          return;
-        }
-        
-        const userText = transcribeResponse.data.text.trim();
-        console.log('📝 User said:', userText);
-        
-        // Get adaptive response from GPT-4o
-        const chatResponse = await axios.post(`${API}/conversational/chat`, {
-          message: userText,
-          session_id: sessionId,
-          conversation_history: conversationHistory
-        });
-        
-        if (chatResponse.data.success) {
-          const aiResponse = chatResponse.data.response;
-          console.log('🤖 Whisp responds:', aiResponse);
-          
-          // Update conversation history
-          setConversationHistory(prev => [
-            ...prev,
-            { role: 'user', content: userText },
-            { role: 'assistant', content: aiResponse }
-          ]);
-          
-          // Speak response
-          setIsWhispTalking(true);
-          await speakWithElevenLabs(aiResponse);
-          setIsWhispTalking(false);
-        }
-        
-        setIsProcessing(false);
-        
-      } catch (error) {
-        console.error('❌ Conversation error:', error);
-        setIsProcessing(false);
-      }
-    }, 8000); // Check every 8 seconds
+      step++;
+      setConversationStep(step);
+    }, 12000); // Every 12 seconds
     
     window.landingConversationInterval = conversationInterval;
-    console.log('✅ Adaptive conversation started');
+    console.log('✅ Fake conversation started');
   };
   
-  const stopAdaptiveConversation = () => {
+  const stopFakeConversation = () => {
     if (window.landingConversationInterval) {
       clearInterval(window.landingConversationInterval);
     }
