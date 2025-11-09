@@ -405,6 +405,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Conversational Editor Implementation"
     - "Dictational Image Attachment"
     - "Dictational Share Modal"
     - "Dictational Export as ZIP"
@@ -412,8 +413,6 @@ test_plan:
     - "Dictational Response Formatting"
     - "Dictational Chat History Persistence"
     - "Dictational Preview Auto-Refresh"
-    - "Sphere Bouncing Animation"
-    - "Speaking State Logic"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
