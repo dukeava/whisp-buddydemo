@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Sun, Moon, Plus, Mic, X, ArrowUp, Eye, Square, Download, RefreshCw, ExternalLink, Share2, MicOff } from 'lucide-react';
 import RealtimeAudioChat from '@/services/RealtimeAudioChat';
+import AudioVisualizer from '../components/AudioVisualizer';
 import sdk from '@stackblitz/sdk';
 import axios from 'axios';
 import JSZip from 'jszip';
