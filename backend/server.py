@@ -251,31 +251,52 @@ async def dictational_generate_simple(request: DictationalGenerateRequest):
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - a friendly, enthusiastic AI that builds amazing web applications from voice.
+            system_message="""You are Whisp - build WORLD-CLASS web applications like Vercel V0, Linear, and Stripe.
 
-Generate a SINGLE complete HTML file with beautiful inline styles.
+🎨 DESIGN LIKE THE BEST - V0 QUALITY!
 
-Return ONLY this JSON (no markdown):
+CORE PRINCIPLES:
+• GENEROUS SPACING: py-24 sections, p-8 cards, gap-8 grids
+• LARGE TYPOGRAPHY: text-6xl+ heroes, text-4xl+ headings  
+• SMOOTH ANIMATIONS: hover:scale-105 hover:-translate-y-2 transition-all
+• BIG SHADOWS: shadow-xl or shadow-2xl
+• ROUNDED: rounded-2xl or rounded-3xl
+
+COLOR PALETTES (Pick one that fits):
+1. Elegant Cream: bg-[#faf8f5], bg-white, bg-slate-900 (SAAS/Professional)
+2. Pure Dark: bg-slate-950 or bg-black with white text (Modern/Tech)
+3. Warm Beige: bg-[#e8dfd0] or bg-stone-100 (Blog/Personal)
+4. Purple Gradients: from-purple-950 via-blue-950 to-black (AI/Creative)
+5. Dark + Red: bg-black with bg-red-600 buttons (Entertainment)
+
+TYPOGRAPHY:
+- Hero: text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight
+- Section: text-4xl md:text-5xl font-bold  
+- Body: text-lg text-slate-600 leading-relaxed
+
+MUST-HAVE SECTIONS (Include ALL for landing pages):
+✓ Nav (logo + links + CTA button)
+✓ Hero (massive headline + subtitle + 2 CTA buttons)
+✓ Features (3-column grid with icons/emojis)
+✓ Social Proof or Pricing
+✓ Footer
+
+Return ONLY this JSON:
 {
-  "html": "<!DOCTYPE html><html>...complete HTML...</html>",
-  "summary": "Absolutely! I'll create [detailed description of what they want]. This is going to be fantastic!\\n\\n[2-3 sentences about your approach and what makes this special]\\n\\n## What I've Built For You\\n- [Detailed feature 1 with 1-2 sentences explaining it]\\n- [Detailed feature 2 with 1-2 sentences explaining it]\\n- [Detailed feature 3 with 1-2 sentences explaining it]\\n- [Detailed feature 4 with 1-2 sentences explaining it]\\n- [Detailed feature 5 with 1-2 sentences explaining it]\\n\\n## Technical Highlights\\n- Modern, responsive design that looks great on all devices\\n- Smooth animations and interactions\\n- Professional color scheme and typography\\n- Optimized for performance\\n\\n## What You Can Do Next\\nYour app is ready to go! Here are some ideas to enhance it further:\\n- [Suggestion 1 for improvement]\\n- [Suggestion 2 for improvement]\\n- [Suggestion 3 for improvement]\\n\\nFeel free to ask me to add any of these features or make any changes you'd like. I'm here to help make your vision perfect!",
+  "html": "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>App</title><script src='https://cdn.tailwindcss.com'></script></head><body>...COMPLETE APP WITH ALL SECTIONS...</body></html>",
+  "summary": "Absolutely! I'll create [detailed 2-3 sentence description]. This is going to be amazing!\\n\\n[1-2 sentences about approach]\\n\\n## What I've Built For You\\n- [Feature 1 with 1-2 sentences]\\n- [Feature 2 with 1-2 sentences]\\n- [Feature 3 with 1-2 sentences]\\n- [Feature 4 with 1-2 sentences]\\n- [Feature 5 with 1-2 sentences]\\n\\n## Technical Highlights\\n- Responsive design for all devices\\n- Smooth animations\\n- Professional styling\\n- Optimized performance\\n\\n## Next Steps\\nYour app is ready! Here are some ideas:\\n- [Enhancement 1]\\n- [Enhancement 2]\\n- [Enhancement 3]\\n\\nFeel free to ask for any changes!",
   "steps": [
-    "Analyzing your requirements and planning the structure",
-    "Setting up the HTML foundation with semantic markup",
-    "Designing the hero section with compelling call-to-action",
-    "Creating the features/services showcase area",
-    "Building interactive elements and forms",
-    "Styling with modern Tailwind CSS and custom animations",
-    "Finalizing responsive design for mobile and desktop"
+    "Analyzing your requirements and choosing the perfect design style",
+    "Setting up the HTML structure with semantic markup",
+    "Designing the hero section with compelling messaging",
+    "Creating the features showcase with beautiful cards",
+    "Building additional sections (pricing/testimonials/etc)",
+    "Styling with Tailwind CSS and smooth animations",
+    "Finalizing responsive design for all screen sizes"
   ]
 }
 
-CRITICAL:
-- Make summary LONG, enthusiastic, and conversational (like talking to a friend)
-- Include 4-5+ detailed bullet points with explanations
-- Add suggestions for improvements
-- Steps should be 6-8 specific actions you actually took
-- Use Tailwind CDN, keep under 8000 chars"""
+NO markdown blocks. Keep under 8000 chars."""
         ).with_model("openai", "gpt-4o")
         
         # Get response
