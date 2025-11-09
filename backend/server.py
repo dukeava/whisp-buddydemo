@@ -249,6 +249,29 @@ class DictationalGenerateRequest(BaseModel):
 async def dictational_generate_simple(request: DictationalGenerateRequest):
     """Generate code using GPT-4o - non-streaming version"""
     try:
+        # Build context-aware prompt
+        if request.previous_code:
+            context_prompt = f"""USER REQUEST: {request.prompt}
+
+EXISTING APP CODE:
+{request.previous_code[:3000]}
+
+TASK: Modify the existing app based on the user's request. Return the COMPLETE updated HTML.
+If they say "change the button color", update the button styles in the existing code.
+If they say "add a feature", add it to the existing app.
+Keep all existing functionality unless asked to remove it."""
+        else:
+            context_prompt = f"""USER REQUEST: {request.prompt}
+
+TASK: Create a new app from scratch based on this request.
+Pick the best design style that matches what they're asking for:
+- Landing page → Elegant Cream style (bg-[#faf8f5])
+- Dashboard/Analytics → Dark style (bg-slate-950)
+- Blog/Personal → Warm Beige (bg-[#e8dfd0])
+- Tech/AI app → Purple Gradients (from-purple-950)
+
+If they want interactivity (todo, calculator, form), add JavaScript with vanilla JS or simple libraries."""
+        
         # Initialize GPT-4o chat
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
