@@ -595,13 +595,37 @@ const DictationalEditor = () => {
               </div>
             ) : generatedFiles.length > 0 ? (
               showCode ? (
-                <div className="code-display">
-                  {generatedFiles.map((file) => (
-                    <div key={file.path} className="code-file">
-                      <div className="file-name">{file.path}</div>
-                      <pre><code>{file.content}</code></pre>
+                <div className="monaco-editor-container">
+                  {/* File tabs */}
+                  {generatedFiles.length > 1 && (
+                    <div className="file-tabs">
+                      {generatedFiles.map((file, idx) => (
+                        <button
+                          key={idx}
+                          className={`file-tab ${selectedFile === idx ? 'active' : ''}`}
+                          onClick={() => setSelectedFile(idx)}
+                        >
+                          {file.path}
+                        </button>
+                      ))}
                     </div>
-                  ))}
+                  )}
+                  {/* Monaco Editor */}
+                  <Editor
+                    height="100%"
+                    language={generatedFiles[selectedFile]?.path.endsWith('.css') ? 'css' : 
+                             generatedFiles[selectedFile]?.path.endsWith('.html') ? 'html' : 'typescript'}
+                    theme={theme === 'dark' ? 'vs-dark' : 'light'}
+                    value={generatedFiles[selectedFile]?.content || ''}
+                    options={{
+                      readOnly: false,
+                      minimap: { enabled: true },
+                      fontSize: 14,
+                      lineNumbers: 'on',
+                      scrollBeyondLastLine: false,
+                      automaticLayout: true
+                    }}
+                  />
                 </div>
               ) : (
                 <div 
