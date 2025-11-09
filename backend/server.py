@@ -307,32 +307,32 @@ Important:
                 # Remove ALL markdown code blocks
                 response_text = response_text.strip()
                 
-                # Remove ```json and ``` markers
-                if "```json" in response_text.lower():
-                    # Find the json block
+                # Remove ```json and ``` markers - IMPROVED
+                if "```" in response_text:
+                    # Split by ``` and find the JSON content
                     parts = response_text.split("```")
-                    for i, part in enumerate(parts):
-                        if "json" in part.lower():
-                            # Take the next part which should be the JSON
-                            if i + 1 < len(parts):
-                                response_text = parts[i + 1].strip()
-                                break
-                elif "```" in response_text:
-                    # Generic code block
-                    parts = response_text.split("```")
-                    # Find the part with JSON
                     for part in parts:
                         part = part.strip()
-                        if part.startswith("{") and part.endswith("}"):
+                        # Skip labels like "json", "tsx", etc
+                        if part.lower() in ['json', 'tsx', 'jsx', 'javascript', 'js']:
+                            continue
+                        # Check if this part is valid JSON
+                        if part.startswith("{") and "}" in part:
                             response_text = part
                             break
                 
-                # Now extract JSON
+                # Extract JSON object
                 response_text = response_text.strip()
                 
-                if response_text.startswith("{") and response_text.endswith("}"):
-                    logging.info(f"Parsing JSON (first 200 chars): {response_text[:200]}")
-                    result = json.loads(response_text)
+                # Find the first { and last }
+                if "{" in response_text and "}" in response_text:
+                    start_idx = response_text.find("{")
+                    end_idx = response_text.rfind("}") + 1
+                    json_str = response_text[start_idx:end_idx]
+                    
+                    logging.info(f"Extracted JSON (first 200 chars): {json_str[:200]}")
+                    
+                    result = json.loads(json_str)
                     
                     # Validate structure
                     if "files" not in result or not isinstance(result.get("files"), list):
@@ -342,7 +342,11 @@ Important:
                     for file in result.get("files", []):
                         if "content" in file:
                             # Remove any ``` markers from content
-                            file["content"] = file["content"].replace("```tsx", "").replace("```jsx", "").replace("```css", "").replace("```", "").strip()
+                            content = file["content"]
+                            content = content.replace("```tsx", "").replace("```jsx", "").replace("```css", "").replace("```javascript", "").replace("```", "").strip()
+                            file["content"] = content
+                    
+                    logging.info(f"✅ Successfully parsed JSON with {len(result.get('files', []))} files")
                     
                 else:
                     # Fallback: create default structure
