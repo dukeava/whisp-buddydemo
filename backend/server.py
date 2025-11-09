@@ -300,12 +300,14 @@ IMPORTANT:
             
             # Convert to files format
             if "html" in result:
+                steps = result.get("steps", [])
                 result = {
                     "files": [{"path": "index.html", "content": result["html"]}],
-                    "summary": result.get("summary", "App generated successfully")
+                    "summary": result.get("summary", "App generated successfully"),
+                    "steps": steps
                 }
             
-            logging.info(f"✅ Success: {len(result.get('files', []))} files")
+            logging.info(f"✅ Success: {len(result.get('files', []))} files, {len(result.get('steps', []))} steps")
             return {"success": True, "result": result}
         else:
             raise ValueError("No JSON in response")
