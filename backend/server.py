@@ -313,6 +313,7 @@ DESIGN RULES (Follow exactly):
         
         # Get response
         user_message = UserMessage(text=context_prompt)
+        response = await gpt_chat.send_message(user_message)
         response_text = str(response).strip()
         
         logging.info(f"GPT-4o response length: {len(response_text)}")
