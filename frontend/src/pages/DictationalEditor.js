@@ -29,8 +29,15 @@ const DictationalEditor = () => {
   useEffect(() => {
     // Handle initial audio if coming from dictational page
     const audioBlob = location.state?.audioBlob;
+    console.log('🎬 DictationalEditor mounted');
+    console.log('📦 Location state:', location.state);
+    console.log('🎤 Audio blob:', audioBlob);
+    
     if (audioBlob) {
+      console.log('✅ Audio blob found, starting transcription');
       handleAudioTranscription(audioBlob);
+    } else {
+      console.log('❌ No audio blob in location state!');
     }
   }, []);
   
