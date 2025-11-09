@@ -744,7 +744,11 @@ const ConversationalEditor = () => {
                 <AudioVisualizer isActive={isUserSpeaking || isWhispTalking} isDark={theme === 'dark'} />
               </div>
             ) : (
-              <div className="pill-spacer"></div>
+              <div className="pill-input-area">
+                <span className="pill-placeholder">
+                  Continue speaking to {typedText}<span className="cursor">|</span>
+                </span>
+              </div>
             )}
             
             <button 
