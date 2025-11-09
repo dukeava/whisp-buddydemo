@@ -297,18 +297,42 @@ Return ONLY this JSON (no markdown, no explanation):
 }
 
 DESIGN RULES (Follow exactly):
-- bg-[#faf8f5] for main background
+- bg-[#faf8f5] for main background (landing pages)
+- bg-slate-50 with white cards (dashboards)
 - bg-white for alternating sections
 - bg-slate-900 for dark sections/cards
-- font-serif for all headings
+- font-serif for all headings (landing pages)
 - text-6xl or text-7xl for hero headlines
 - py-32 for section spacing
 - p-8 for card padding
 - rounded-2xl for cards and buttons
 - shadow-lg or shadow-xl for depth
-- Include: Navigation + Hero + Features (3-column grid) + Pricing (3 tiers) + Footer
-- Add JavaScript for interactivity if needed (todo lists, calculators, forms, etc.)
-- Keep under 12000 characters"""
+- Include: Navigation + Hero + Features (3-column grid) + Pricing (3 tiers) + Footer (landing pages)
+- Include: Sidebar + Stats cards + Tables + Charts (dashboards)
+- Add JavaScript for interactive elements (todos, calculators, forms, etc.)
+- Keep under 15000 characters
+
+DASHBOARD EXAMPLES - Use these for data/analytics apps:
+
+COMMAND CENTER (Light Blue Sidebar):
+- bg-slate-50 main, bg-blue-50 sidebar
+- Colorful stat cards with icons
+- Professional spacing
+- Tables with data
+
+CRM DASHBOARD (Professional):
+- Sidebar navigation
+- 4 stat cards at top (Revenue, Leads, Deals, Conversion)
+- Data table with Name, Company, Email, Status badges, Value
+- Charts and progress bars
+
+MATERIAL DASHBOARD (Blue Header):
+- Blue gradient header (from-blue-600 to-indigo-600)
+- bg-slate-50 background
+- White stat cards
+- Charts with multiple series
+
+When user asks for dashboard/analytics/CRM, use these patterns with realistic data!"""
         ).with_model("openai", "gpt-4o")
         
         # Get response
