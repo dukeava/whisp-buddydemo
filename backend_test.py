@@ -522,6 +522,7 @@ def main():
     print("🎤 Testing Dictational Mode Endpoints...")
     print("=" * 50)
     tester.test_dictational_transcribe()
+    tester.test_dictational_generate_simple()
     tester.test_dictational_generate()
     
     # Print final results
