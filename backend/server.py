@@ -330,47 +330,30 @@ Rules:
                     
                     try:
                         result = json.loads(json_str)
-                        logging.info(f"✅ JSON parsed successfully! Keys: {result.keys()}")
+                        logging.info(f"✅ JSON parsed successfully! Keys: {list(result.keys())}")
                     except json.JSONDecodeError as je:
                         logging.error(f"❌ JSON decode error: {je}")
-                        logging.error(f"Problem at position {je.pos}: {json_str[max(0,je.pos-50):je.pos+50]}")
+                        logging.error(f"Problem at position {je.pos}")
+                        logging.error(f"Context: ...{json_str[max(0,je.pos-100):min(len(json_str),je.pos+100)]}...")
                         raise
                     
-                    # Check if new format (html + summary) or old format (files array)
-                    if "html" in result:
-                        # New single HTML format
-                        logging.info(f"✅ New format detected - single HTML file")
-                        converted_result = {
-                            "files": [{"path": "index.html", "content": result["html"]}],
-                            "summary": result.get("summary", "Generated application")
-                        }
-                        result = converted_result
-                    elif "files" in result:
-                        # Old multi-file format
-                        logging.info(f"✅ Old format detected - multiple files")
-                        
-                        if not isinstance(result.get("files"), list):
-                            logging.error(f"❌ 'files' is not a list, it's: {type(result.get('files'))}")
-                            raise ValueError("Invalid response structure - files must be array")
-                        
-                        # Clean markdown from file contents
-                        for file in result.get("files", []):
-                            if "content" in file:
-                                content = file["content"]
-                                content = content.replace("```tsx", "").replace("```jsx", "").replace("```css", "").replace("```javascript", "").replace("```html", "").replace("```", "").strip()
-                                file["content"] = content
-                    else:
-                        logging.error(f"❌ Missing both 'html' and 'files'. Keys: {result.keys()}")
-                        raise ValueError("Invalid response - must have 'html' or 'files'")
+                    # Validate structure
+                    if "files" not in result:
+                        logging.error(f"❌ Missing 'files'. Keys: {list(result.keys())}")
+                        raise ValueError("Missing files key")
                     
-                    logging.info(f"✅ Final: {len(result.get('files', []))} files, summary length: {len(result.get('summary', ''))}")
+                    if not isinstance(result.get("files"), list):
+                        logging.error(f"❌ 'files' is not list: {type(result.get('files'))}")
+                        raise ValueError("files must be array")
+                    
+                    logging.info(f"✅ Valid structure with {len(result.get('files', []))} files")
+                    logging.info(f"✅ Summary: {result.get('summary', 'NO SUMMARY')[:200]}...")
                     
                 else:
-                    # Fallback
-                    logging.warning("❌ No curly braces found, using fallback")
+                    logging.warning("❌ No JSON braces found")
                     result = {
                         "files": [{"path": "index.html", "content": response_text}],
-                        "summary": "Generated application based on your description"
+                        "summary": "Generated application"
                     }
                 
                 logging.info(f"Final result: {len(result.get('files', []))} files")
