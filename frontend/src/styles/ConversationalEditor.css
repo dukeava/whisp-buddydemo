@@ -1087,3 +1087,26 @@
 .pill-spacer {
   flex: 1;
 }
+
+/* Main content layout */
+.conv-editor-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .conv-editor-content {
+    flex-direction: column;
+  }
+  
+  .sphere-panel-conv {
+    height: 50%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .preview-panel-dict {
+    height: 50%;
+  }
+}
