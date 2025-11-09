@@ -546,7 +546,7 @@ const ConversationalEditor = () => {
               onClick={toggleVoice}
               disabled={isGenerating}
             >
-              {isVoiceConnected && isUserSpeaking ? <MicOff size={20} /> : <Mic size={20} />}
+              {isVoiceConnected ? <X size={20} /> : <Mic size={20} />}
             </button>
             
             <button 
