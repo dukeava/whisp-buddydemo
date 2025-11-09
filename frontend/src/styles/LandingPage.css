@@ -146,8 +146,8 @@
 /* Sphere Container */
 .sphere-container {
   position: relative;
-  width: 320px;
-  height: 320px;
+  width: 260px;
+  height: 260px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,8 +155,8 @@
 
 /* Sphere - THICK blue bottom half + white and light blue top */
 .sphere {
-  width: 280px;
-  height: 280px;
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
   position: relative;
   overflow: hidden;
