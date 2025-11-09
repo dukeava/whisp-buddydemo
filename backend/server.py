@@ -443,7 +443,7 @@ Return ONLY this JSON (no markdown, no explanation):
   "steps": ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5", "Step 6"]
 }
 
-SUMMARY RULES: Pure conversational flow, NO bullet points, NO headers, use natural fillers like "umm", "like", "you know""""
+SUMMARY RULES: Pure conversational flow, NO bullet points, NO headers, use natural fillers like "umm", "like", "you know\""""
         ).with_model("openai", "gpt-4o")
         
         # Get response
