@@ -130,6 +130,7 @@ const DictationalEditor = () => {
   const handleGenerateCode = async (prompt) => {
     console.log('🚀 Starting code generation with prompt:', prompt);
     setIsGenerating(true);
+    setGenerationCancelled(false);
     
     try {
       console.log('📡 Calling API:', `${API}/dictational/generate-simple`);
@@ -142,7 +143,7 @@ const DictationalEditor = () => {
       
       console.log('📥 Response received:', response.data);
       
-      if (response.data.success) {
+      if (response.data.success && !generationCancelled) {
         const result = response.data.result;
         const steps = result.steps || [
           'Analyzing requirements',
@@ -156,6 +157,8 @@ const DictationalEditor = () => {
         
         // Add step messages one by one with loading then checkmark
         for (let i = 0; i < steps.length; i++) {
+          if (generationCancelled) break;
+          
           const stepId = `step-${Date.now()}-${i}`;
           
           // Add with loading icon first
@@ -169,11 +172,18 @@ const DictationalEditor = () => {
           // Wait then mark as completed
           await new Promise(resolve => setTimeout(resolve, 600));
           
+          if (generationCancelled) break;
+          
           setChatMessages(prev => prev.map(m =>
             m.id === stepId
               ? { ...m, isLoading: false, isCompleted: true }
               : m
           ));
+        }
+        
+        if (generationCancelled) {
+          setIsGenerating(false);
+          return;
         }
         
         // Wait a bit before showing summary
