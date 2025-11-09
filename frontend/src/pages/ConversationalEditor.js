@@ -88,29 +88,6 @@ const ConversationalEditor = () => {
     }
   };
   
-  // Typing effect for pill bar
-  useEffect(() => {
-    const currentPhrase = phrases[phraseIndex];
-    const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        if (typedText.length < currentPhrase.length) {
-          setTypedText(currentPhrase.slice(0, typedText.length + 1));
-        } else {
-          setTimeout(() => setIsDeleting(true), 2000);
-        }
-      } else {
-        if (typedText.length > 0) {
-          setTypedText(currentPhrase.slice(0, typedText.length - 1));
-        } else {
-          setIsDeleting(false);
-          setPhraseIndex((phraseIndex + 1) % phrases.length);
-        }
-      }
-    }, isDeleting ? 50 : 150);
-
-    return () => clearTimeout(timeout);
-  }, [typedText, isDeleting, phraseIndex]);
-  
   useEffect(() => {
     // Auto-reload preview when app code updates
     if (currentAppCode && generatedFiles.length > 0 && !previewCollapsed) {
@@ -125,9 +102,9 @@ const ConversationalEditor = () => {
       console.log('🎯 useEffect triggered - rendering/reloading preview');
       renderPreview(generatedFiles);
     }
-  }, [generatedFiles, showCode, previewCollapsed]);
+  }, [generatedFiles, previewCollapsed]);
   
-  const handleAudioTranscription = async (audioBlob) => {
+  const handleGenerateFromConversation = async () => {
     console.log('🎤 Starting transcription...', audioBlob);
     setIsTranscribing(true);
     
