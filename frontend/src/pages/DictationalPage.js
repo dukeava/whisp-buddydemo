@@ -83,41 +83,47 @@ const DictationalPage = () => {
   };
 
   const handleGoToEditor = async () => {
-    if (isRecording) {
-      // Stop recording and navigate to editor
+    console.log('🚀 Arrow clicked - isRecording:', isRecording, 'recordedAudio:', !!recordedAudio);
+    
+    if (isRecording && window.dictationalMediaRecorder) {
+      // Stop recording and navigate
       return new Promise((resolve) => {
-        if (window.dictationalMediaRecorder && window.dictationalMediaRecorder.state === 'recording') {
-          // Set up one-time handler for when recording stops
-          window.dictationalMediaRecorder.addEventListener('stop', () => {
-            const audioChunks = window.dictationalAudioChunks || [];
-            if (audioChunks.length > 0) {
-              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-              
-              // Stop stream
-              if (window.dictationalStream) {
-                window.dictationalStream.getTracks().forEach(track => track.stop());
-                window.dictationalStream = null;
-              }
-              
-              // Navigate with audio
-              navigate('/dictational-editor', { 
-                state: { audioBlob }
-              });
+        window.dictationalMediaRecorder.addEventListener('stop', () => {
+          const audioChunks = window.dictationalAudioChunks || [];
+          if (audioChunks.length > 0) {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            
+            // Stop stream
+            if (window.dictationalStream) {
+              window.dictationalStream.getTracks().forEach(track => track.stop());
+              window.dictationalStream = null;
             }
-            resolve();
-          }, { once: true });
-          
-          // Stop the recorder
-          window.dictationalMediaRecorder.stop();
-        }
+            
+            console.log('✅ Audio saved, navigating to editor');
+            navigate('/dictational-editor', { 
+              state: { audioBlob }
+            });
+          }
+          resolve();
+        }, { once: true });
+        
+        window.dictationalMediaRecorder.stop();
       });
     } else if (recordedAudio) {
-      // Already have recorded audio, navigate to editor
+      // Already have audio
+      console.log('✅ Using previously recorded audio');
       navigate('/dictational-editor', { 
         state: { audioBlob: recordedAudio }
       });
     } else {
-      alert('Please record your voice first');
+      // No audio - for testing, create a dummy blob with text
+      console.log('⚠️ No audio recorded - creating test prompt');
+      const testPrompt = "create a simple hello world button app";
+      
+      // Navigate directly with test text
+      navigate('/dictational-editor', { 
+        state: { testPrompt }
+      });
     }
   };
 
