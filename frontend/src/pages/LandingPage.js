@@ -55,49 +55,63 @@ const LandingPage = () => {
 
   const toggleMic = async () => {
     if (!isConnected) {
-      // First click - greet and start recording
+      // Start conversation
       setIsRecording(true);
       setIsConnected(true);
       
-      // Greet with ElevenLabs
+      // Greet
       setTimeout(async () => {
         setIsWhispTalking(true);
         await speakWithElevenLabs("Hey I'm Dan, um what will you like to build or imagine today");
         setIsWhispTalking(false);
         setHasGreeted(true);
         
-        // Start recording after greeting
-        startRecording();
+        // Start continuous recording
+        await startContinuousRecording();
       }, 300);
     } else {
-      // X button - Stop everything
-      stopRecording();
+      // Stop conversation
+      stopContinuousRecording();
       setIsRecording(false);
       setIsWhispTalking(false);
       setIsConnected(false);
     }
   };
   
-  const startRecording = async () => {
+  const startContinuousRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
       
-      mediaRecorder.ondataavailable = async (event) => {
-        if (event.data.size > 1000) {
-          // Process this chunk immediately without stopping recording
-          const audioBlob = new Blob([event.data], { type: 'audio/webm' });
-          await handleConversation(audioBlob);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
         }
       };
       
-      window.landingRecorder = mediaRecorder;
+      // Start recording - no time limit, just continuous
+      mediaRecorder.start();
+      console.log('🎤 Recording started');
+      
+      // Process audio every 3 seconds
+      const processInterval = setInterval(async () => {
+        if (!isConnected || isWhispTalking || isProcessing) return;
+        
+        if (audioChunksRef.current.length > 0) {
+          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          audioChunksRef.current = []; // Clear chunks
+          
+          if (audioBlob.size > 5000) { // Only process if meaningful audio
+            await handleConversation(audioBlob);
+          }
+        }
+      }, 3000);
+      
+      window.landingProcessInterval = processInterval;
       window.landingStream = stream;
-      
-      // Start continuous recording with 5-second chunks
-      mediaRecorder.start(5000);
-      
-      console.log('🎤 Continuous recording started');
       
     } catch (error) {
       console.error('❌ Recording error:', error);
@@ -105,13 +119,17 @@ const LandingPage = () => {
     }
   };
   
-  const stopRecording = () => {
-    if (window.landingRecorder && window.landingRecorder.state === 'recording') {
-      window.landingRecorder.stop();
+  const stopContinuousRecording = () => {
+    if (window.landingProcessInterval) {
+      clearInterval(window.landingProcessInterval);
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
     }
     if (window.landingStream) {
       window.landingStream.getTracks().forEach(track => track.stop());
     }
+    audioChunksRef.current = [];
   };
   
   const handleConversation = async (audioBlob) => {
