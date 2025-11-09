@@ -209,7 +209,7 @@ const LandingPage = () => {
 
           <div className="pill-input-area">
             <span className="pill-placeholder">
-              {typedText}<span className="cursor">|</span>
+              Start speaking to {typedText}<span className="cursor">|</span>
             </span>
           </div>
 
