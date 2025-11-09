@@ -563,12 +563,7 @@ const DictationalEditor = () => {
         <div className="header-right">
           <button 
             className="header-btn"
-            onClick={() => {
-              console.log('Code button clicked');
-              setShowCode(true);
-              setShowPreview(false);
-              if (generatedFiles.length > 0) renderPreview(generatedFiles);
-            }}
+            onClick={handleShowCode}
             disabled={!generatedFiles.length}
           >
             <Code size={18} />
@@ -576,13 +571,7 @@ const DictationalEditor = () => {
           </button>
           <button 
             className="header-btn"
-            onClick={() => {
-              console.log('Preview button clicked');
-              setShowCode(false);
-              setShowPreview(true);
-              setPreviewCollapsed(false);
-              if (generatedFiles.length > 0) renderPreview(generatedFiles);
-            }}
+            onClick={handleShowPreview}
             disabled={!generatedFiles.length}
           >
             <Eye size={18} />
