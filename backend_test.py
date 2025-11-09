@@ -260,6 +260,112 @@ class WhispAPITester:
             })
             return False
 
+    def test_dictational_generate_simple(self):
+        """Test dictational generate-simple endpoint (non-streaming GPT-4o)"""
+        url = f"{self.api_url}/dictational/generate-simple"
+        self.tests_run += 1
+        print(f"\n🔍 Testing Dictational Generate Simple...")
+        print(f"   URL: {url}")
+        
+        try:
+            # Prepare request data
+            request_data = {
+                "prompt": "create a simple landing page with a hero section",
+                "session_id": "test-session-simple-123"
+            }
+            
+            # Send request
+            response = requests.post(
+                url, 
+                json=request_data, 
+                headers={'Content-Type': 'application/json'},
+                timeout=60
+            )
+            
+            print(f"   Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                print(f"   Response keys: {response_data.keys()}")
+                
+                # Check for success field
+                if response_data.get('success') == True:
+                    result = response_data.get('result', {})
+                    
+                    # Validate result structure
+                    if 'files' in result and 'summary' in result:
+                        files = result['files']
+                        if isinstance(files, list) and len(files) > 0:
+                            # Check first file has path and content
+                            first_file = files[0]
+                            if 'path' in first_file and 'content' in first_file:
+                                self.tests_passed += 1
+                                print(f"✅ Passed - Generate Simple endpoint working correctly")
+                                print(f"   Files generated: {len(files)}")
+                                print(f"   File paths: {[f['path'] for f in files]}")
+                                print(f"   Summary length: {len(result.get('summary', ''))}")
+                                self.test_results.append({
+                                    "name": "Dictational Generate Simple",
+                                    "success": True,
+                                    "status_code": 200,
+                                    "files_count": len(files)
+                                })
+                                return True
+                            else:
+                                print(f"❌ Failed - Files missing path or content fields")
+                                self.test_results.append({
+                                    "name": "Dictational Generate Simple",
+                                    "success": False,
+                                    "error": "Files missing required fields"
+                                })
+                                return False
+                        else:
+                            print(f"❌ Failed - Files array is empty or invalid")
+                            self.test_results.append({
+                                "name": "Dictational Generate Simple",
+                                "success": False,
+                                "error": "Files array is empty"
+                            })
+                            return False
+                    else:
+                        print(f"❌ Failed - Missing files or summary in result")
+                        self.test_results.append({
+                            "name": "Dictational Generate Simple",
+                            "success": False,
+                            "error": "Missing files or summary"
+                        })
+                        return False
+                else:
+                    print(f"❌ Failed - success field is not True")
+                    print(f"   Response: {json.dumps(response_data, indent=2)[:300]}")
+                    self.test_results.append({
+                        "name": "Dictational Generate Simple",
+                        "success": False,
+                        "error": "success field is not True"
+                    })
+                    return False
+            else:
+                print(f"❌ Failed - Expected 200, got {response.status_code}")
+                print(f"   Response: {response.text[:300]}")
+                self.test_results.append({
+                    "name": "Dictational Generate Simple",
+                    "success": False,
+                    "status_code": response.status_code,
+                    "response": response.text[:200]
+                })
+                return False
+                
+        except Exception as e:
+            print(f"❌ Failed - Error: {str(e)}")
+            import traceback
+            print(f"   Traceback: {traceback.format_exc()}")
+            self.test_results.append({
+                "name": "Dictational Generate Simple",
+                "success": False,
+                "error": str(e)
+            })
+            return False
+
     def test_dictational_generate(self):
         """Test dictational generate endpoint with streaming response"""
         url = f"{self.api_url}/dictational/generate"
