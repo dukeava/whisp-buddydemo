@@ -23,11 +23,24 @@ const ModeSelectionModal = ({ isOpen, onClose, onSelectMode }) => {
               />
             </div>
             <div className="mode-card-content">
-              <h3 className="mode-card-title">Dictational</h3>
-              <p className="mode-card-description">
+              <h3 className="mode-card-title" style={{ color: 'white', fontSize: '32px', marginBottom: '16px' }}>Dictational</h3>
+              <p className="mode-card-description" style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '16px', marginBottom: '24px' }}>
                 Speak your idea to existence
               </p>
-              <button className="mode-choose-btn" onClick={() => handleModeSelect('dictational')}>
+              <button 
+                className="mode-choose-btn" 
+                onClick={() => handleModeSelect('dictational')}
+                style={{ 
+                  width: '100%', 
+                  padding: '14px', 
+                  background: 'rgba(255, 255, 255, 0.1)', 
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '16px',
+                  cursor: 'pointer'
+                }}
+              >
                 Choose
               </button>
             </div>
@@ -43,11 +56,24 @@ const ModeSelectionModal = ({ isOpen, onClose, onSelectMode }) => {
               />
             </div>
             <div className="mode-card-content">
-              <h3 className="mode-card-title">Conversational</h3>
-              <p className="mode-card-description">
+              <h3 className="mode-card-title" style={{ color: 'white', fontSize: '32px', marginBottom: '16px' }}>Conversational</h3>
+              <p className="mode-card-description" style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '16px', marginBottom: '24px' }}>
                 The future of ideation to creation
               </p>
-              <button className="mode-choose-btn" onClick={() => handleModeSelect('conversational')}>
+              <button 
+                className="mode-choose-btn" 
+                onClick={() => handleModeSelect('conversational')}
+                style={{ 
+                  width: '100%', 
+                  padding: '14px', 
+                  background: 'rgba(255, 255, 255, 0.1)', 
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '16px',
+                  cursor: 'pointer'
+                }}
+              >
                 Choose
               </button>
             </div>
