@@ -60,8 +60,8 @@ const DictationalEditor = () => {
       handleAudioTranscription(audioBlob);
     } else if (testPrompt) {
       console.log('✅ Test prompt found, using directly');
-      // Add user message directly
-      setChatMessages([{
+      // Add user message to EXISTING chat (don't replace)
+      setChatMessages(prev => [...prev, {
         id: `user-${Date.now()}`,
         role: 'user',
         content: testPrompt
