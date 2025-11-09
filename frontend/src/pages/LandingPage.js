@@ -278,7 +278,7 @@ const LandingPage = () => {
     return () => {
       // Cleanup recording on unmount
       stopSimpleRecording();
-      stopFakeConversation();
+      stopAdaptiveConversation();
     };
   }, []);
 
