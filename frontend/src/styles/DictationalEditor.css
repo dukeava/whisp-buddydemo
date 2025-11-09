@@ -550,6 +550,46 @@
   line-height: 1.6;
 }
 
+.monaco-editor-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+}
+
+.file-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+
+.file-tab {
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.file-tab:hover {
+  background: var(--border-color);
+  color: var(--text-primary);
+}
+
+.file-tab.active {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 /* Scrollbar */
 .chat-messages::-webkit-scrollbar,
 .code-display::-webkit-scrollbar {
