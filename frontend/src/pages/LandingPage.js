@@ -82,35 +82,30 @@ const LandingPage = () => {
       const audioChunks = [];
       
       mediaRecorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
+        if (event.data.size > 0) {
+          audioChunks.push(event.data);
+        }
       };
       
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        stream.getTracks().forEach(track => track.stop());
-        
-        // Process if has audio
-        if (audioBlob.size > 0) {
+        if (audioChunks.length > 0) {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          
+          // Process this chunk
           await handleConversation(audioBlob);
         }
         
-        // Restart recording if still connected
-        if (isConnected) {
-          setTimeout(() => startRecording(), 100);
-        }
+        stream.getTracks().forEach(track => track.stop());
       };
       
       window.landingRecorder = mediaRecorder;
       window.landingStream = stream;
+      window.landingAudioChunks = audioChunks;
       
-      mediaRecorder.start();
+      // Start continuous recording with 5-second chunks
+      mediaRecorder.start(5000); // 5-second timeslices
       
-      // Auto-stop after 10 seconds to process
-      setTimeout(() => {
-        if (mediaRecorder.state === 'recording') {
-          mediaRecorder.stop();
-        }
-      }, 10000);
+      console.log('🎤 Continuous recording started');
       
     } catch (error) {
       console.error('❌ Recording error:', error);
