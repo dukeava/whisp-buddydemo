@@ -446,20 +446,30 @@ const DictationalEditor = () => {
                   {msg.role === 'thinking' ? (
                     <div className="thinking-shimmer">{msg.content}</div>
                   ) : msg.role === 'assistant' ? (
-                    /* Render summary with proper formatting */
-                    <div className="assistant-summary">
-                      {msg.content.split('\n').map((line, i) => (
-                        <div key={i}>
-                          {line.startsWith('## ') ? (
-                            <h3 className="summary-header">{line.replace('## ', '')}</h3>
-                          ) : line.startsWith('- ') ? (
-                            <div className="summary-bullet">• {line.replace('- ', '')}</div>
-                          ) : line ? (
-                            <div className="summary-text">{line}</div>
-                          ) : <div style={{ height: '8px' }} />}
-                        </div>
-                      ))}
-                    </div>
+                    <>
+                      {/* Render summary with proper formatting */}
+                      <div className="assistant-summary">
+                        {msg.content.split('\n').map((line, i) => (
+                          <div key={i}>
+                            {line.startsWith('## ') ? (
+                              <h3 className="summary-header">{line.replace('## ', '')}</h3>
+                            ) : line.startsWith('- ') ? (
+                              <div className="summary-bullet">• {line.replace('- ', '')}</div>
+                            ) : line ? (
+                              <div className="summary-text">{line}</div>
+                            ) : <div style={{ height: '8px' }} />}
+                          </div>
+                        ))}
+                      </div>
+                      {/* Copy button */}
+                      <button 
+                        className="copy-btn" 
+                        onClick={() => handleCopyResponse(msg.id, msg.content)}
+                      >
+                        {copiedMessageId === msg.id ? <Check size={16} /> : <Copy size={16} />}
+                        {copiedMessageId === msg.id ? 'Copied!' : 'Copy'}
+                      </button>
+                    </>
                   ) : (
                     msg.content
                   )}
