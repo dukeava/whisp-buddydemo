@@ -173,21 +173,9 @@ const ConversationalEditor = () => {
   const handleVoiceSummary = async (summary) => {
     if (!realtimeChatRef.current) return;
     
-    // Strip ALL formatting for conversational speaking
-    let cleanSummary = summary
-      .replace(/##\s*/g, '') // Remove headers
-      .replace(/\n-\s*/g, '. ') // Replace bullet points with periods
-      .replace(/\*\*/g, '') // Remove bold
-      .replace(/\n\n/g, ' ') // Replace double newlines with space
-      .replace(/\n/g, ' ') // Replace single newlines with space
-      .trim();
-    
-    // Take first 3-4 sentences for conversational summary
-    const sentences = cleanSummary.split('. ').filter(s => s.trim());
-    const conversationalSummary = sentences.slice(0, 4).join('. ') + '.';
-    
-    console.log('🗣️ Speaking summary:', conversationalSummary);
-    await realtimeChatRef.current.playElevenLabsAudio(conversationalSummary);
+    // Summary is already conversational from backend - just speak it!
+    console.log('🗣️ Speaking summary:', summary);
+    await realtimeChatRef.current.playElevenLabsAudio(summary);
   };
   
   const toggleVoice = async () => {
