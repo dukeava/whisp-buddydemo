@@ -250,6 +250,30 @@ backend:
         comment: "This is a frontend/UI integration task that requires manual user testing with voice interaction. Cannot be tested via automated backend API tests. The backend realtime endpoints are working correctly. User needs to test the conversational AI personality and naturalness through the UI."
 
 frontend:
+  - task: "Dictational Chat History Persistence"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/DictationalEditor.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Fixed chat messages to append to existing conversation instead of replacing. Changed setChatMessages([...]) to setChatMessages(prev => [...prev, ...]) in initial prompt handling and error cases. Now conversations accumulate like ChatGPT."
+  
+  - task: "Dictational Preview Auto-Refresh"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/DictationalEditor.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Preview already has auto-refresh logic via useEffect hooks on lines 104-118. Preview re-renders when currentAppCode or generatedFiles change. User needs to verify this is working as expected."
+
   - task: "Sphere Bouncing Animation"
     implemented: true
     working: "needs_testing"
