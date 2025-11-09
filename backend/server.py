@@ -327,22 +327,32 @@ Make sure the JSON is valid and contains NO markdown formatting."""
                             response_text = part
                             break
                 
-                # Extract JSON object
+                # Now extract JSON
                 response_text = response_text.strip()
                 
-                # Find the first { and last }
                 if "{" in response_text and "}" in response_text:
                     start_idx = response_text.find("{")
                     end_idx = response_text.rfind("}") + 1
                     json_str = response_text[start_idx:end_idx]
                     
-                    logging.info(f"Extracted JSON (first 200 chars): {json_str[:200]}")
+                    logging.info(f"Attempting to parse JSON (length: {len(json_str)}, first 300 chars): {json_str[:300]}")
                     
-                    result = json.loads(json_str)
+                    try:
+                        result = json.loads(json_str)
+                        logging.info(f"✅ JSON parsed successfully!")
+                    except json.JSONDecodeError as je:
+                        logging.error(f"❌ JSON decode error: {je}")
+                        logging.error(f"Problem at position {je.pos}: {json_str[max(0,je.pos-50):je.pos+50]}")
+                        raise
                     
                     # Validate structure
-                    if "files" not in result or not isinstance(result.get("files"), list):
-                        raise ValueError("Invalid response structure - missing files array")
+                    if "files" not in result:
+                        logging.error(f"❌ Missing 'files' in result. Keys: {result.keys()}")
+                        raise ValueError("Invalid response structure - missing files key")
+                    
+                    if not isinstance(result.get("files"), list):
+                        logging.error(f"❌ 'files' is not a list, it's: {type(result.get('files'))}")
+                        raise ValueError("Invalid response structure - files must be array")
                     
                     # Clean any remaining markdown from file contents
                     for file in result.get("files", []):
@@ -353,10 +363,11 @@ Make sure the JSON is valid and contains NO markdown formatting."""
                             file["content"] = content
                     
                     logging.info(f"✅ Successfully parsed JSON with {len(result.get('files', []))} files")
+                    logging.info(f"✅ Summary: {result.get('summary', 'NO SUMMARY')[:100]}")
                     
                 else:
                     # Fallback: create default structure
-                    logging.warning("No valid JSON found in response, using fallback")
+                    logging.warning("❌ No curly braces found in response, using fallback")
                     result = {
                         "files": [{"path": "index.html", "content": response_text}],
                         "summary": "Generated application based on your description"
