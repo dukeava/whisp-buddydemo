@@ -211,15 +211,24 @@ class TranscribeRequest(BaseModel):
 async def transcribe_audio(file: UploadFile = File(...)):
     """Transcribe audio using OpenAI Whisper"""
     try:
-        # Read audio file
-        audio_content = await file.read()
+        # Save audio to temporary file
+        import tempfile
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.webm') as temp_file:
+            content = await file.read()
+            temp_file.write(content)
+            temp_path = temp_file.name
         
         # Transcribe using Whisper
-        response = await stt_client.transcribe(
-            file=audio_content,
-            model="whisper-1",
-            response_format="json"
-        )
+        with open(temp_path, 'rb') as audio_file:
+            response = await stt_client.transcribe(
+                file=audio_file,
+                model="whisper-1",
+                response_format="json"
+            )
+        
+        # Clean up temp file
+        import os as os_module
+        os_module.unlink(temp_path)
         
         return {
             "success": True,
