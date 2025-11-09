@@ -117,6 +117,22 @@ const LandingPage = () => {
     });
   };
 
+  const handleDictational = () => {
+    setIsSettingsOpen(false);
+    navigate('/dictational');
+  };
+
+  const handleHome = () => {
+    setIsSettingsOpen(false);
+    navigate('/');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('whispUser');
+    setIsSettingsOpen(false);
+    navigate('/');
+  };
+
   useEffect(() => {
     return () => {
       if (realtimeChatRef.current) {
