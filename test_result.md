@@ -250,6 +250,18 @@ backend:
         comment: "This is a frontend/UI integration task that requires manual user testing with voice interaction. Cannot be tested via automated backend API tests. The backend realtime endpoints are working correctly. User needs to test the conversational AI personality and naturalness through the UI."
 
 frontend:
+  - task: "Dictational Code/Preview Toggle Buttons"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/DictationalEditor.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Implemented Code and Preview button functionality. Code button opens the file in StackBlitz editor (shows editor view). Preview button keeps preview-only view. Uses vm.editor.openFile() to trigger StackBlitz's built-in editor without re-embedding."
+
   - task: "Dictational Response Formatting"
     implemented: true
     working: "needs_testing"
