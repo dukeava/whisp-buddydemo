@@ -575,15 +575,7 @@ const DictationalEditor = () => {
         <div className="header-right">
           <button 
             className="header-btn"
-            onClick={handleShowCode}
-            disabled={!generatedFiles.length}
-          >
-            <Code size={18} />
-            <span>Code</span>
-          </button>
-          <button 
-            className="header-btn"
-            onClick={handleShowPreview}
+            onClick={() => setPreviewCollapsed(false)}
             disabled={!generatedFiles.length}
           >
             <Eye size={18} />
