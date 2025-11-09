@@ -203,6 +203,125 @@ class TTSRequest(BaseModel):
     text: str
     voice_id: Optional[str] = None
 
+# Dictational Mode Endpoints
+class TranscribeRequest(BaseModel):
+    audio_data: str  # base64 encoded audio
+
+@api_router.post("/dictational/transcribe")
+async def transcribe_audio(file: UploadFile = File(...)):
+    """Transcribe audio using OpenAI Whisper"""
+    try:
+        # Read audio file
+        audio_content = await file.read()
+        
+        # Transcribe using Whisper
+        response = await stt_client.transcribe(
+            file=audio_content,
+            model="whisper-1",
+            response_format="json"
+        )
+        
+        return {
+            "success": True,
+            "text": response.text
+        }
+    
+    except Exception as e:
+        logging.error(f"Transcription error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+class DictationalGenerateRequest(BaseModel):
+    prompt: str
+    session_id: str
+
+@api_router.post("/dictational/generate")
+async def dictational_generate(request: DictationalGenerateRequest):
+    """Generate code using Claude Sonnet 4.5 with streaming"""
+    try:
+        async def generate_stream():
+            # Initialize Claude chat
+            claude_chat = LlmChat(
+                api_key=CLAUDE_API_KEY,
+                session_id=request.session_id,
+                system_message="""You are Whisp's dictational mode - an AI that generates beautiful, functional web applications from voice descriptions.
+
+Your task:
+1. Generate complete, production-ready React/TypeScript applications
+2. Create multiple files (components, styles, utilities as needed)
+3. Make designs modern, beautiful, and responsive
+4. Follow best practices and clean code principles
+
+File structure format:
+Return your response in this exact JSON format:
+{
+  "files": [
+    {"path": "App.tsx", "content": "... tsx code here ..."},
+    {"path": "styles.css", "content": "... css code here ..."}
+  ],
+  "summary": "Brief description of what was created"
+}
+
+Important:
+- Always include all imports
+- Make sure code is complete and runnable
+- Use Tailwind CSS classes when possible
+- Include proper TypeScript types"""
+            ).with_model("anthropic", "claude-sonnet-4-20250514")
+            
+            # Send message with progress updates
+            progress_messages = [
+                "🎨 Analyzing your idea...",
+                "⚙️ Creating app structure...",
+                "✨ Generating components...",
+                "🎯 Adding styles and interactions...",
+                "🔧 Finalizing the build..."
+            ]
+            
+            # Stream progress messages
+            for msg in progress_messages:
+                yield f"data: {json.dumps({'type': 'progress', 'message': msg})}\n\n"
+                await asyncio.sleep(0.5)
+            
+            # Create user message
+            user_message = UserMessage(text=request.prompt)
+            
+            # Get response from Claude
+            response = await claude_chat.send_message(user_message)
+            
+            # Parse the response
+            try:
+                # Try to extract JSON from response
+                response_text = response if isinstance(response, str) else str(response)
+                
+                # Find JSON in the response
+                if "{" in response_text and "}" in response_text:
+                    start_idx = response_text.find("{")
+                    end_idx = response_text.rfind("}") + 1
+                    json_str = response_text[start_idx:end_idx]
+                    result = json.loads(json_str)
+                else:
+                    # Fallback: create default structure
+                    result = {
+                        "files": [{"path": "App.tsx", "content": response_text}],
+                        "summary": "Generated application based on your description"
+                    }
+                
+                # Send completion with files
+                yield f"data: {json.dumps({'type': 'complete', 'result': result})}\n\n"
+            
+            except json.JSONDecodeError:
+                # Fallback response
+                yield f"data: {json.dumps({'type': 'complete', 'result': {
+                    'files': [{'path': 'App.tsx', 'content': response}],
+                    'summary': 'Generated application based on your description'
+                }})}\n\n"
+        
+        return StreamingResponse(generate_stream(), media_type="text/event-stream")
+    
+    except Exception as e:
+        logging.error(f"Dictational generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.post("/elevenlabs/tts")
 async def generate_elevenlabs_tts(request: TTSRequest):
     """Generate speech using ElevenLabs with the configured voice"""
