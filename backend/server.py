@@ -252,26 +252,29 @@ async def dictational_generate(request: DictationalGenerateRequest):
             claude_chat = LlmChat(
                 api_key=CLAUDE_API_KEY,
                 session_id=request.session_id,
-                system_message="""You are Whisp's dictational mode - an AI that generates beautiful, functional web applications.
+                system_message="""You are Whisp - generate beautiful, functional web applications.
 
-Generate complete React/TypeScript applications with proper file structure.
+IMPORTANT: Keep responses under 8000 characters total.
 
-CRITICAL - Return ONLY valid JSON in this EXACT format:
+Generate React apps with these files ONLY:
+- App.tsx (main component, import all others here)
+- styles.css (all styles in ONE file)
+
+Return ONLY this JSON format:
 {
   "files": [
-    {"path": "App.tsx", "content": "import React from 'react';\\n\\nfunction App() {\\n  return <div>Hello</div>;\\n}\\n\\nexport default App;"},
+    {"path": "App.tsx", "content": "import React from 'react';\\n\\nfunction App() {\\n  return <div className=\\"p-8\\">Your app here</div>;\\n}\\n\\nexport default App;"},
     {"path": "styles.css", "content": "body { margin: 0; }"}
   ],
-  "summary": "## What I Built\\n\\n- Created a landing page with hero section\\n- Added navigation bar\\n- Implemented contact form\\n\\n## Key Features\\n- Responsive design\\n- Modern UI with Tailwind"
+  "summary": "## What I Built\\n- Feature list\\n\\n## Details\\n- More info"
 }
 
 Rules:
-- Use proper imports and exports  
-- Include ALL necessary files (components, styles, etc.)
-- Make summary detailed with headers (##) and bullet points (-)
-- Escape newlines as \\n in JSON strings
-- Use Tailwind CSS for styling
-- Make designs modern and beautiful"""
+- Keep code CONCISE but functional
+- Use Tailwind classes (no custom CSS unless needed)
+- NO markdown code blocks around the JSON
+- Make summary detailed with ## headers and - bullets
+- Escape all quotes and newlines properly"""
             ).with_model("anthropic", "claude-sonnet-4-20250514")
             
             # Send progress messages
