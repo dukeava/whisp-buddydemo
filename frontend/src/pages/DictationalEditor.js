@@ -416,6 +416,15 @@ const DictationalEditor = () => {
               </div>
             )}
             
+            {isGenerating && chatMessages.filter(m => !m.showPreviewButton).length <= 1 && (
+              <div className="chat-message system">
+                <div className="message-avatar">⚙️</div>
+                <div className="message-content">
+                  <div className="loading-dots">Generating your app...</div>
+                </div>
+              </div>
+            )}
+            
             {chatMessages.map((msg) => (
               <div key={msg.id || `msg-${Date.now()}-${Math.random()}`} className={`chat-message ${msg.role}`}>
                 <div className="message-avatar">
