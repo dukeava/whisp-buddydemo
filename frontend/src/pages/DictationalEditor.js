@@ -23,6 +23,8 @@ const DictationalEditor = () => {
   const [generatedFiles, setGeneratedFiles] = useState([]);
   const [previewContent, setPreviewContent] = useState('');
   const [showCode, setShowCode] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
+  const [previewCollapsed, setPreviewCollapsed] = useState(false);
   const [sessionId] = useState(() => `session-${Date.now()}`);
   const [generationCancelled, setGenerationCancelled] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
