@@ -113,18 +113,26 @@ const DictationalPage = () => {
           Voice to app in seconds
         </p>
 
-        {/* Pill Bar - Wide with typing effect */}
+        {/* Pill Bar - Wide with typing effect or visualizer */}
         <div className="pill-bar">
           <button className="pill-button" title="Attach file">
             <Plus size={20} />
           </button>
-          <div className="pill-input-area" onClick={handleGetStarted}>
-            <span className="pill-placeholder">
-              Start speaking to {typedText}<span className="cursor">|</span>
-            </span>
-          </div>
-          <button className="pill-button mic-button" onClick={handleGetStarted} title="Start voice">
-            <Mic size={20} />
+          
+          {isRecording ? (
+            <div className="pill-input-area">
+              <AudioVisualizer isActive={isRecording} />
+            </div>
+          ) : (
+            <div className="pill-input-area" onClick={handleGetStarted}>
+              <span className="pill-placeholder">
+                Start speaking to {typedText}<span className="cursor">|</span>
+              </span>
+            </div>
+          )}
+          
+          <button className="pill-button mic-button" onClick={handleGetStarted} title={isRecording ? "Stop recording" : "Start voice"}>
+            {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
           </button>
           <button className="pill-button" title="Submit">
             <ArrowUp size={20} />
