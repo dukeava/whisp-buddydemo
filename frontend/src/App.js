@@ -19,6 +19,7 @@ function App() {
             <Route path="/workspace" element={<LandingPage />} />
             <Route path="/dictational" element={<DictationalPage />} />
             <Route path="/dictational-editor" element={<DictationalEditor />} />
+            <Route path="/conversational-editor" element={<ConversationalEditor />} />
             <Route path="/editor" element={<EditorPage />} />
           </Routes>
         </BrowserRouter>
