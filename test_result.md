@@ -276,6 +276,9 @@ frontend:
       - working: "needs_testing"
         agent: "main"
         comment: "Updated share modal styling: Changed font to Instrument Serif for title and button (added font import to App.css), changed button font-weight from 600 to 400 (not bold), button text already white. Modal now has elegant serif typography."
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Final styling updates: Title now bigger (36px) and all white (including italic 'world'), Button changed to white background with black text using Host Grotesk font. Clean, modern contrast with white title on dark modal and white button."
 
   - task: "Dictational Preview Controls"
     implemented: true
