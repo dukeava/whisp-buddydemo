@@ -262,6 +262,18 @@ frontend:
         agent: "main"
         comment: "Implemented ZIP export using JSZip library. Export button now creates 'whisp-app.zip' containing all generated files instead of single file download. Added jszip package to dependencies."
 
+  - task: "Dictational Share Modal"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/DictationalEditor.js, /app/frontend/src/styles/DictationalEditor.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Removed X collapse button. Added Share button (Share2 icon) to preview controls. Implemented beautiful share modal with: image at top, 'Share to the world' title (world in italic), blob URL link input, and 'Copy Link' button with success state. Modal has overlay, close button, animations, and proper dark mode support."
+
   - task: "Dictational Preview Controls"
     implemented: true
     working: "needs_testing"
@@ -273,6 +285,9 @@ frontend:
       - working: "needs_testing"
         agent: "main"
         comment: "Removed Code button. Implemented functional preview controls: Reload icon clears and re-embeds preview for fresh reload, External link icon opens preview in new tab using blob URL, X button collapses preview, Preview button (header and collapsed state) expands preview back."
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Removed X collapse button, replaced with Share button. Preview controls now: Reload (fresh reload), External link (open in new tab), Share (open share modal with link)."
 
   - task: "Dictational Code/Preview Toggle Buttons"
     implemented: false
