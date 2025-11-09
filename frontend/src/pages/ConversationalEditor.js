@@ -61,31 +61,89 @@ const ConversationalEditor = () => {
   
   const initializeVoice = async () => {
     try {
-      realtimeChatRef.current = new RealtimeAudioChat();
-      
-      realtimeChatRef.current.onTranscript = (transcript, role) => {
-        console.log(`📝 ${role}: ${transcript}`);
-        setConversationHistory(prev => [...prev, { role, content: transcript }]);
-      };
-      
-      realtimeChatRef.current.onSpeakingStateChange = (state) => {
-        console.log('🗣️ Speaking state:', state);
-        if (state === 'user_speaking') {
-          setIsUserSpeaking(true);
-        } else if (state === 'user_stopped') {
-          setIsUserSpeaking(false);
-        } else if (state === 'assistant_speaking') {
-          setIsWhispTalking(true);
-        } else if (state === 'assistant_stopped') {
-          setIsWhispTalking(false);
-        }
-      };
-      
-      await realtimeChatRef.current.init('editor');
+      console.log('✅ Voice ready for use (Whisper + GPT-4o + ElevenLabs)');
       setIsVoiceConnected(true);
-      console.log('✅ Voice initialized');
     } catch (error) {
       console.error('❌ Voice initialization failed:', error);
+    }
+  };
+  
+  const handleVoiceChat = async (audioBlob) => {
+    try {
+      // Transcribe with Whisper
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'audio.webm');
+      
+      const transcribeResponse = await axios.post(`${API}/dictational/transcribe`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      
+      if (!transcribeResponse.data.success) {
+        throw new Error('Transcription failed');
+      }
+      
+      const userText = transcribeResponse.data.text;
+      console.log('📝 User said:', userText);
+      
+      // Add to conversation history
+      setConversationHistory(prev => [...prev, { role: 'user', content: userText }]);
+      
+      // Get GPT-4o response
+      const chatResponse = await axios.post(`${API}/conversational/chat`, {
+        message: userText,
+        session_id: sessionId,
+        conversation_history: conversationHistory
+      });
+      
+      if (chatResponse.data.success) {
+        const aiResponse = chatResponse.data.response;
+        console.log('🤖 Whisp says:', aiResponse);
+        
+        // Add to conversation history
+        setConversationHistory(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+        
+        // Speak with ElevenLabs
+        setIsWhispTalking(true);
+        await speakWithElevenLabs(aiResponse);
+        setIsWhispTalking(false);
+      }
+      
+    } catch (error) {
+      console.error('❌ Voice chat error:', error);
+      setIsWhispTalking(true);
+      await speakWithElevenLabs("Hmm, I didn't quite catch that. Uhh, can you say that again?");
+      setIsWhispTalking(false);
+    }
+  };
+  
+  const speakWithElevenLabs = async (text) => {
+    try {
+      const response = await axios.post(`${API}/elevenlabs/tts`, {
+        text: text
+      });
+      
+      if (response.data.success && response.data.audio) {
+        // Decode base64 to binary
+        const binaryString = atob(response.data.audio);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and play
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        const audioUrl = URL.createObjectURL(blob);
+        
+        const audio = new Audio(audioUrl);
+        await new Promise((resolve) => {
+          audio.onended = resolve;
+          audio.play();
+        });
+        
+        URL.revokeObjectURL(audioUrl);
+      }
+    } catch (error) {
+      console.error('❌ ElevenLabs error:', error);
     }
   };
   
