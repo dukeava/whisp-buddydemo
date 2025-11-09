@@ -129,12 +129,16 @@ const LandingPage = () => {
     let step = 0;
     
     const conversationInterval = setInterval(async () => {
-      if (!isConnected || step >= fakeConversationLines.length) {
+      console.log('💬 Fake conversation check - step:', step, 'connected:', isConnected);
+      
+      if (step >= fakeConversationLines.length) {
+        console.log('✅ Fake conversation complete');
         clearInterval(conversationInterval);
         return;
       }
       
       // Speak next line
+      console.log('🗣️ Speaking:', fakeConversationLines[step]);
       setIsWhispTalking(true);
       await speakWithElevenLabs(fakeConversationLines[step]);
       setIsWhispTalking(false);
@@ -144,6 +148,7 @@ const LandingPage = () => {
     }, 12000); // Every 12 seconds
     
     window.landingConversationInterval = conversationInterval;
+    console.log('✅ Fake conversation started');
   };
   
   const stopFakeConversation = () => {
