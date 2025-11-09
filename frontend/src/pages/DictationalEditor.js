@@ -490,7 +490,10 @@ const DictationalEditor = () => {
         <div className="header-right">
           <button 
             className="header-btn"
-            onClick={() => setShowCode(!showCode)}
+            onClick={() => {
+              console.log('Code button clicked, current showCode:', showCode, 'files:', generatedFiles.length);
+              setShowCode(!showCode);
+            }}
             disabled={!generatedFiles.length}
           >
             {showCode ? <Eye size={18} /> : <Code size={18} />}
