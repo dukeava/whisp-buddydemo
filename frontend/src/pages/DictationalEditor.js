@@ -524,13 +524,14 @@ const DictationalEditor = () => {
             
             {chatMessages.map((msg) => (
               <div key={msg.id || `msg-${Date.now()}-${Math.random()}`} className={`chat-message ${msg.role}`}>
-                <div className="message-avatar">
-                  {msg.role === 'user' ? '👤' : 
-                   msg.role === 'error' ? '⚠️' : 
-                   msg.role === 'thinking' ? '✦' :
-                   msg.role === 'step' ? (msg.isLoading ? <div className="spinner">⚙️</div> : '✓') : '✦'}
-                </div>
-                <div className="message-content">
+                {msg.role !== 'thinking' && (
+                  <div className="message-avatar">
+                    {msg.role === 'user' ? '👤' : 
+                     msg.role === 'error' ? '⚠️' : 
+                     msg.role === 'step' ? (msg.isLoading ? <div className="loading-spinner-small"></div> : '✓') : '✦'}
+                  </div>
+                )}
+                <div className="message-content" style={msg.role === 'thinking' ? { paddingLeft: 0 } : {}}>
                   {msg.role === 'thinking' ? (
                     <div className="thinking-shimmer">{msg.content}</div>
                   ) : msg.role === 'assistant' ? (
