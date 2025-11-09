@@ -754,8 +754,8 @@ const DictationalEditor = () => {
                 <button className="preview-control-btn" onClick={handleOpenInNewTab} title="Open in new tab">
                   <ExternalLink size={16} />
                 </button>
-                <button className="preview-control-btn" onClick={() => setPreviewCollapsed(true)} title="Collapse">
-                  <X size={16} />
+                <button className="preview-control-btn" onClick={handleShare} title="Share">
+                  <Share2 size={16} />
                 </button>
               </div>
             )}
