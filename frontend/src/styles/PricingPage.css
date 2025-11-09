@@ -151,18 +151,18 @@
 .pricing-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 32px 0;
+  margin: 0 0 24px 0;
   width: 100%;
 }
 
 .pricing-feature {
   font-family: 'Host Grotesk', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   color: rgba(255, 255, 255, 0.8);
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 0;
+  gap: 10px;
+  padding: 10px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
