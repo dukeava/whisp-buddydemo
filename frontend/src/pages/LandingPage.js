@@ -229,9 +229,8 @@ const LandingPage = () => {
 
   useEffect(() => {
     return () => {
-      if (realtimeChatRef.current) {
-        realtimeChatRef.current.disconnect();
-      }
+      // Cleanup recording on unmount
+      stopRecording();
     };
   }, []);
 
