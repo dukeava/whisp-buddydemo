@@ -205,9 +205,10 @@ const DictationalEditor = () => {
       if (response.data.success && !generationCancelled) {
         const result = response.data.result;
         const steps = result.steps || [];
+        const summary = result.summary || 'Great! I\'ve updated your app with the changes you requested.';
         
         // Parse summary to extract intro and features/conclusion
-        const summaryLines = result.summary.split('\n');
+        const summaryLines = summary.split('\n');
         let intro = '';
         let featuresAndConclusion = '';
         let foundHeader = false;
@@ -222,6 +223,11 @@ const DictationalEditor = () => {
           } else if (foundHeader || line.startsWith('-') || line.startsWith('##')) {
             featuresAndConclusion += line + '\n';
           }
+        }
+        
+        // Fallback if no proper summary structure
+        if (!intro.trim() && !featuresAndConclusion.trim() && summary) {
+          intro = summary;
         }
         
         console.log('📝 Intro:', intro);
@@ -243,33 +249,35 @@ const DictationalEditor = () => {
         console.log('📊 Steps length:', steps.length);
         
         // Add step messages one by one with loading animation
-        for (let i = 0; i < steps.length; i++) {
-          if (generationCancelled) break;
-          
-          const stepId = `step-${Date.now()}-${i}`;
-          
-          console.log(`➕ Adding step ${i + 1}/${steps.length}: ${steps[i]}`);
-          
-          // Add with loading spinner
-          setChatMessages(prev => [...prev, {
-            id: stepId,
-            role: 'step',
-            content: steps[i],
-            isLoading: true
-          }]);
-          
-          // Wait then mark as completed with checkmark
-          await new Promise(resolve => setTimeout(resolve, 700));
-          
-          if (generationCancelled) break;
-          
-          console.log(`✅ Completing step ${i + 1}: ${steps[i]}`);
-          
-          setChatMessages(prev => prev.map(m =>
-            m.id === stepId
-              ? { ...m, isLoading: false, isCompleted: true }
-              : m
-          ));
+        if (steps.length > 0) {
+          for (let i = 0; i < steps.length; i++) {
+            if (generationCancelled) break;
+            
+            const stepId = `step-${Date.now()}-${i}`;
+            
+            console.log(`➕ Adding step ${i + 1}/${steps.length}: ${steps[i]}`);
+            
+            // Add with loading spinner
+            setChatMessages(prev => [...prev, {
+              id: stepId,
+              role: 'step',
+              content: steps[i],
+              isLoading: true
+            }]);
+            
+            // Wait then mark as completed with checkmark
+            await new Promise(resolve => setTimeout(resolve, 700));
+            
+            if (generationCancelled) break;
+            
+            console.log(`✅ Completing step ${i + 1}: ${steps[i]}`);
+            
+            setChatMessages(prev => prev.map(m =>
+              m.id === stepId
+                ? { ...m, isLoading: false, isCompleted: true }
+                : m
+            ));
+          }
         }
         
         if (generationCancelled) {
