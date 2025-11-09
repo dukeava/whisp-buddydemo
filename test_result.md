@@ -487,4 +487,6 @@ agent_communication:
   - agent: "main"
     message: "Updated conversational landing page image attachments to show tiny thumbnails (32x32px) inside pill bar. Removed file count text display. Images appear between Plus button and input with red X remove buttons. Matches dictational design. Both conversational pages now have consistent tiny thumbnail display."
   - agent: "main"
-    message: "Added AudioVisualizer to conversational pages. When mic is active, visualizer replaces placeholder text in pill bar. Imported AudioVisualizer component in both LandingPage and ConversationalEditor. Visualizer shows during isRecording (landing) and isUserSpeaking (editor). Matches dictational behavior."te (11/11 tests passed). Backend is production-ready."
+    message: "Added AudioVisualizer to conversational pages. When mic is active, visualizer replaces placeholder text in pill bar. Imported AudioVisualizer component in both LandingPage and ConversationalEditor. Visualizer shows during isRecording (landing) and isUserSpeaking (editor). Matches dictational behavior."
+  - agent: "main"
+    message: "Improved voice UX for single-click experience. Landing page: Click mic → setIsRecording(true) → init voice → greet, Mic becomes X, Click X → disconnect. Editor: Click mic → setIsUserSpeaking(true) → init voice → greet 'Hey! Umm, are you looking to change anything?', Mic becomes X. No double-clicking needed, visualizer shows immediately."te (11/11 tests passed). Backend is production-ready."
