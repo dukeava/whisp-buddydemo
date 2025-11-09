@@ -532,21 +532,33 @@ const DictationalEditor = () => {
     setShowPreview(false);
     
     // If StackBlitz VM exists, toggle to editor view
-    if (window.stackblitzVM) {
+    if (window.stackblitzVM && generatedFiles.length > 0) {
       console.log('📝 Switching StackBlitz to editor view');
       // StackBlitz will show split view with editor on left, preview on right
       window.stackblitzVM.editor.openFile(generatedFiles[0]?.path || 'index.html');
     }
   };
   
-  const handleShowPreview = () => {
+  const handleShowPreview = async () => {
     console.log('Preview button clicked');
     setShowCode(false);
     setShowPreview(true);
     setPreviewCollapsed(false);
     
-    // Keep the StackBlitz preview as-is, it's already showing preview
-    console.log('👁️ Preview mode active');
+    // Re-embed to switch back to preview-only mode
+    if (generatedFiles.length > 0 && window.stackblitzVM) {
+      console.log('👁️ Switching StackBlitz back to preview-only mode');
+      
+      // Clear and re-embed with preview mode
+      stackblitzRef.current.innerHTML = '';
+      window.stackblitzVM = null;
+      
+      // Small delay to ensure clean state
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Re-embed with preview mode
+      await renderPreview(generatedFiles);
+    }
   };
   
   return (
