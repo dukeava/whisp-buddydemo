@@ -244,6 +244,7 @@ class DictationalGenerateRequest(BaseModel):
     session_id: str
     previous_code: Optional[str] = None
     conversation_history: Optional[List[dict]] = None
+    attached_images: Optional[List[dict]] = None
 
 @api_router.post("/dictational/generate-simple")
 async def dictational_generate_simple(request: DictationalGenerateRequest):
