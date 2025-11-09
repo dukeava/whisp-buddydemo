@@ -336,11 +336,9 @@ const ConversationalEditor = () => {
       console.error('❌ Generation error:', error);
       setIsGenerating(false);
       
-      if (realtimeChatRef.current) {
-        realtimeChatRef.current.playElevenLabsAudio(
-          "Hmm, something went wrong with generating that. Uhh, wanna try again?"
-        );
-      }
+      setIsWhispTalking(true);
+      await speakWithElevenLabs("Hmm, something went wrong with generating that. Uhh, wanna try again?");
+      setIsWhispTalking(false);
     }
   };
   
