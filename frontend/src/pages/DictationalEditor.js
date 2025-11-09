@@ -197,6 +197,7 @@ const DictationalEditor = () => {
         prompt: prompt,
         session_id: sessionId,
         previous_code: currentAppCode || null,
+        attached_images: attachedImages,
         conversation_history: chatMessages.map(m => ({
           role: m.role === 'user' ? 'user' : 'assistant',
           content: m.content
@@ -204,6 +205,9 @@ const DictationalEditor = () => {
       });
       
       console.log('📥 Response received:', response.data);
+      
+      // Clear attached images after sending
+      setAttachedImages([]);
       
       // Remove "Thinking..." message
       setChatMessages(prev => prev.filter(m => m.id !== thinkingId));
