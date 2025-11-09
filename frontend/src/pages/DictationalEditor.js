@@ -282,6 +282,13 @@ const DictationalEditor = () => {
         }
         
         setGeneratedFiles(result.files || []);
+        
+        // Store current app code for future iterations
+        const htmlFile = result.files?.find(f => f.path === 'index.html');
+        if (htmlFile) {
+          setCurrentAppCode(htmlFile.content);
+        }
+        
         setIsGenerating(false);
       }
       
