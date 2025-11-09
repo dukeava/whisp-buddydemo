@@ -15,15 +15,25 @@ const EditorPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  
+  // Check if we're in dictational mode
+  const searchParams = new URLSearchParams(location.search);
+  const mode = searchParams.get('mode');
+  const isDictationalMode = mode === 'dictational';
+  
   const [isListening, setIsListening] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [statusText, setStatusText] = useState('Alright! Let me build this for you...');
   const [generatedCode, setGeneratedCode] = useState('');
+  const [generatedFiles, setGeneratedFiles] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [projectName, setProjectName] = useState('Untitled Project');
   const [showCode, setShowCode] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState(location.state?.attachedFiles || []);
   const [conversationHistory, setConversationHistory] = useState(location.state?.conversationHistory || []);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [audioBlob, setAudioBlob] = useState(location.state?.audioBlob || null);
+  
   const realtimeChatRef = useRef(null);
   const iframeRef = useRef(null);
   const fileInputRef = useRef(null);
