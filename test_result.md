@@ -265,7 +265,7 @@ frontend:
   - task: "Dictational Share Modal"
     implemented: true
     working: "needs_testing"
-    file: "/app/frontend/src/pages/DictationalEditor.js, /app/frontend/src/styles/DictationalEditor.css"
+    file: "/app/frontend/src/pages/DictationalEditor.js, /app/frontend/src/styles/DictationalEditor.css, /app/frontend/src/App.css"
     stuck_count: 0
     priority: "medium"
     needs_retesting: true
@@ -273,6 +273,9 @@ frontend:
       - working: "needs_testing"
         agent: "main"
         comment: "Removed X collapse button. Added Share button (Share2 icon) to preview controls. Implemented beautiful share modal with: image at top, 'Share to the world' title (world in italic), blob URL link input, and 'Copy Link' button with success state. Modal has overlay, close button, animations, and proper dark mode support."
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Updated share modal styling: Changed font to Instrument Serif for title and button (added font import to App.css), changed button font-weight from 600 to 400 (not bold), button text already white. Modal now has elegant serif typography."
 
   - task: "Dictational Preview Controls"
     implemented: true
