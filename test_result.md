@@ -262,6 +262,18 @@ frontend:
         agent: "main"
         comment: "Implemented ZIP export using JSZip library. Export button now creates 'whisp-app.zip' containing all generated files instead of single file download. Added jszip package to dependencies."
 
+  - task: "Conversational Landing Page Image Attachments"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/LandingPage.js, /app/frontend/src/styles/LandingPage.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Updated image attachment display to show tiny thumbnails (32x32px) inside pill bar between Plus button and input. Removed text file count display. Shows up to 5 images with circular thumbnails and red X remove buttons. Matches dictational page design."
+
   - task: "Conversational Editor Implementation"
     implemented: true
     working: "needs_testing"
