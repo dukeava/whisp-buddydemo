@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Mic, ArrowUp, Settings } from 'lucide-react';
-import ModeSelectionModal from '../components/ModeSelectionModal';
 import '../styles/DictationalPage.css';
 
 const DictationalPage = () => {
@@ -10,7 +9,6 @@ const DictationalPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isModeModalOpen, setIsModeModalOpen] = useState(false);
   
   const phrases = ['build', 'imagine', 'create', 'design'];
 
@@ -41,13 +39,9 @@ const DictationalPage = () => {
     console.log('Starting dictational mode...');
   };
 
-  const handleModeSelect = (mode) => {
-    setIsModeModalOpen(false);
+  const handleConversational = () => {
     setIsSettingsOpen(false);
-    if (mode === 'conversational') {
-      navigate('/workspace');
-    }
-    // Stay on dictational if dictational selected
+    navigate('/workspace');
   };
 
   const handleHome = () => {
@@ -94,8 +88,8 @@ const DictationalPage = () => {
 
         {isSettingsOpen && (
           <div className="settings-dropdown">
-            <button className="settings-item" onClick={() => setIsModeModalOpen(true)}>
-              Change mode
+            <button className="settings-item" onClick={handleConversational}>
+              Conversational
             </button>
             <button className="settings-item" onClick={handleHome}>
               Home
@@ -135,13 +129,6 @@ const DictationalPage = () => {
           </button>
         </div>
       </div>
-
-      {/* Mode Selection Modal */}
-      <ModeSelectionModal
-        isOpen={isModeModalOpen}
-        onClose={() => setIsModeModalOpen(false)}
-        onSelectMode={handleModeSelect}
-      />
     </div>
   );
 };
