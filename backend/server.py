@@ -243,6 +243,62 @@ class DictationalGenerateRequest(BaseModel):
     prompt: str
     session_id: str
 
+@api_router.post("/dictational/generate-simple")
+async def dictational_generate_simple(request: DictationalGenerateRequest):
+    """Generate code using Claude - non-streaming version"""
+    try:
+        # Initialize Claude
+        claude_chat = LlmChat(
+            api_key=CLAUDE_API_KEY,
+            session_id=request.session_id,
+            system_message="""You are Whisp - generate beautiful web applications.
+
+Generate a SINGLE complete HTML file with inline styles and JavaScript.
+
+Return ONLY this JSON:
+{
+  "html": "<!DOCTYPE html><html>...complete working HTML...</html>",
+  "summary": "## What I Built\\n- Feature 1\\n- Feature 2"
+}
+
+Make it beautiful with Tailwind CDN. NO markdown blocks around JSON."""
+        ).with_model("anthropic", "claude-sonnet-4-20250514")
+        
+        # Get response
+        response = await claude_chat.send_message(UserMessage(text=request.prompt))
+        response_text = str(response).strip()
+        
+        logging.info(f"Response length: {len(response_text)}")
+        
+        # Clean and parse
+        cleaned = response_text
+        while "```" in cleaned:
+            parts = cleaned.split("```", 2)
+            cleaned = parts[0] + (parts[2] if len(parts) > 2 else "")
+        
+        # Extract JSON
+        if "{" in cleaned:
+            start = cleaned.find("{")
+            end = cleaned.rfind("}") + 1
+            json_str = cleaned[start:end]
+            result = json.loads(json_str)
+            
+            # Convert to files format if needed
+            if "html" in result:
+                result = {
+                    "files": [{"path": "index.html", "content": result["html"]}],
+                    "summary": result.get("summary", "App generated successfully")
+                }
+            
+            logging.info(f"✅ Parsed: {len(result.get('files', []))} files")
+            return {"success": True, "result": result}
+        else:
+            raise ValueError("No JSON in response")
+            
+    except Exception as e:
+        logging.error(f"Generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.post("/dictational/generate")
 async def dictational_generate(request: DictationalGenerateRequest):
     """Generate code using Claude Sonnet 4.5 with streaming"""
