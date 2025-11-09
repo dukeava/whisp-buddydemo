@@ -1,0 +1,183 @@
+/* Dictational Page - Similar to HomePage but simplified */
+.dictational-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Background Image */
+.dictational-page .w-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.dictational-page img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%);
+  z-index: 1;
+}
+
+/* Logo - Top Left Only */
+.dictational-page .logo {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+  z-index: 100;
+}
+
+.dictational-page .beta-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: white;
+}
+
+/* Hero Content */
+.dictational-page .hero-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 24px;
+  margin-top: 140px;
+}
+
+.dictational-page .hero-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 96px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: white;
+  margin: 0 0 8px 0;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.dictational-page .title-regular {
+  font-style: normal;
+}
+
+.dictational-page .title-italic {
+  font-style: italic;
+}
+
+.dictational-page .hero-subtitle {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 64px 0;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Pill Bar - Same as homepage */
+.dictational-page .pill-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px;
+  width: 520px;
+  max-width: 90vw;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 48px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.dictational-page .pill-button {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dictational-page .pill-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.dictational-page .pill-button.mic-button {
+  background: white;
+  color: #000;
+}
+
+.dictational-page .pill-button.mic-button:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.dictational-page .pill-input-area {
+  flex: 1;
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.dictational-page .pill-placeholder {
+  font-family: 'Host Grotesk', sans-serif;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dictational-page .cursor {
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dictational-page .hero-title {
+    font-size: 56px;
+  }
+
+  .dictational-page .hero-subtitle {
+    font-size: 18px;
+  }
+}
