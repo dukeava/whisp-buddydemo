@@ -264,8 +264,19 @@ Return ONLY this JSON:
 Make it beautiful with Tailwind CDN. NO markdown blocks around JSON."""
         ).with_model("anthropic", "claude-sonnet-4-20250514")
         
-        # Get response
-        response = await claude_chat.send_message(UserMessage(text=request.prompt))
+        # Get response with retry
+        max_retries = 2
+        for attempt in range(max_retries):
+            try:
+                response = await claude_chat.send_message(UserMessage(text=request.prompt))
+                break
+            except Exception as e:
+                if "overloaded" in str(e).lower() and attempt < max_retries - 1:
+                    logging.warning(f"Claude overloaded, retrying in 2s... (attempt {attempt + 1})")
+                    await asyncio.sleep(2)
+                    continue
+                raise
+        
         response_text = str(response).strip()
         
         logging.info(f"Response length: {len(response_text)}")
@@ -296,8 +307,11 @@ Make it beautiful with Tailwind CDN. NO markdown blocks around JSON."""
             raise ValueError("No JSON in response")
             
     except Exception as e:
-        logging.error(f"Generation error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        error_msg = str(e)
+        if "overloaded" in error_msg.lower():
+            error_msg = "Claude API is currently overloaded. Please wait a moment and try again."
+        logging.error(f"Generation error: {error_msg}")
+        raise HTTPException(status_code=500, detail=error_msg)
 
 @api_router.post("/dictational/generate")
 async def dictational_generate(request: DictationalGenerateRequest):
