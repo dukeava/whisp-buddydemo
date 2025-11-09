@@ -359,23 +359,29 @@ const DictationalEditor = () => {
             {chatMessages.map((msg) => (
               <div key={msg.id || `msg-${Date.now()}-${Math.random()}`} className={`chat-message ${msg.role}`}>
                 <div className="message-avatar">
-                  {msg.role === 'user' ? '👤' : msg.role === 'error' ? '⚠️' : '✦'}
+                  {msg.role === 'user' ? '👤' : 
+                   msg.role === 'error' ? '⚠️' : 
+                   msg.role === 'step' ? '✓' : '✦'}
                 </div>
                 <div className="message-content">
-                  {/* Render summary with proper formatting */}
-                  {msg.content.split('\n').map((line, i) => (
-                    <div key={i}>
-                      {line.startsWith('## ') ? (
-                        <h3 style={{ fontSize: '16px', fontWeight: '600', marginTop: i > 0 ? '12px' : '0', marginBottom: '8px' }}>
-                          {line.replace('## ', '')}
-                        </h3>
-                      ) : line.startsWith('- ') ? (
-                        <div style={{ marginLeft: '16px', marginBottom: '4px' }}>• {line.replace('- ', '')}</div>
-                      ) : line ? (
-                        <div style={{ marginBottom: '4px' }}>{line}</div>
-                      ) : null}
-                    </div>
-                  ))}
+                  {msg.role === 'assistant' ? (
+                    /* Render summary with proper formatting */
+                    msg.content.split('\n').map((line, i) => (
+                      <div key={i}>
+                        {line.startsWith('## ') ? (
+                          <h3 style={{ fontSize: '16px', fontWeight: '600', marginTop: i > 0 ? '12px' : '0', marginBottom: '8px' }}>
+                            {line.replace('## ', '')}
+                          </h3>
+                        ) : line.startsWith('- ') ? (
+                          <div style={{ marginLeft: '16px', marginBottom: '4px' }}>• {line.replace('- ', '')}</div>
+                        ) : line ? (
+                          <div style={{ marginBottom: '4px' }}>{line}</div>
+                        ) : null}
+                      </div>
+                    ))
+                  ) : (
+                    msg.content
+                  )}
                 </div>
               </div>
             ))}
