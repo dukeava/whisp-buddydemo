@@ -242,23 +242,73 @@ const ConversationalEditor = () => {
       setIsUserSpeaking(true); // Show visualizer immediately
       await initializeVoice();
       
-      // Greet after initialization
-      if (realtimeChatRef.current) {
-        setTimeout(async () => {
-          await realtimeChatRef.current.playElevenLabsAudio(
-            "Hey! Umm, are you looking to change anything?"
-          );
-          setHasGreeted(true);
-        }, 800);
-      }
+      // Greet with ElevenLabs
+      setTimeout(async () => {
+        setIsWhispTalking(true);
+        await speakWithElevenLabs("Hey! Umm, are you looking to change anything?");
+        setIsWhispTalking(false);
+        setHasGreeted(true);
+        
+        // Start recording after greeting
+        startRecording();
+      }, 500);
     } else {
-      // X button - Stop and disconnect
+      // X button - Stop recording and disconnect
+      stopRecording();
       setIsUserSpeaking(false);
       setIsWhispTalking(false);
       setIsVoiceConnected(false);
-      if (realtimeChatRef.current) {
-        realtimeChatRef.current.disconnect();
-      }
+    }
+  };
+  
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      const audioChunks = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        stream.getTracks().forEach(track => track.stop());
+        
+        // Process the audio
+        if (audioBlob.size > 0) {
+          await handleVoiceChat(audioBlob);
+        }
+        
+        // Restart recording if still connected
+        if (isVoiceConnected) {
+          setTimeout(() => startRecording(), 100);
+        }
+      };
+      
+      window.convEditorRecorder = mediaRecorder;
+      window.convEditorStream = stream;
+      
+      mediaRecorder.start();
+      
+      // Auto-stop after 10 seconds to process
+      setTimeout(() => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        }
+      }, 10000);
+      
+    } catch (error) {
+      console.error('❌ Recording error:', error);
+    }
+  };
+  
+  const stopRecording = () => {
+    if (window.convEditorRecorder && window.convEditorRecorder.state === 'recording') {
+      window.convEditorRecorder.stop();
+    }
+    if (window.convEditorStream) {
+      window.convEditorStream.getTracks().forEach(track => track.stop());
     }
   };
   
