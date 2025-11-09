@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Plus, Mic, X, ArrowUp, Code, Eye, Square, Copy, Check, Download, RefreshCw, ExternalLink } from 'lucide-react';
+import { Sun, Moon, Plus, Mic, X, ArrowUp, Eye, Square, Copy, Check, Download, RefreshCw, ExternalLink } from 'lucide-react';
 import AudioVisualizer from '../components/AudioVisualizer';
 import Editor from '@monaco-editor/react';
 import sdk from '@stackblitz/sdk';
 import axios from 'axios';
+import JSZip from 'jszip';
 import '../styles/DictationalEditor.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
