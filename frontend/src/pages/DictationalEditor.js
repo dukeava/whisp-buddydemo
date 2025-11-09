@@ -379,6 +379,7 @@ const DictationalEditor = () => {
   
   const handleVoiceInput = async () => {
     if (!isRecording) {
+      // Start recording
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const mediaRecorder = new MediaRecorder(stream);
@@ -388,13 +389,11 @@ const DictationalEditor = () => {
           audioChunks.push(event.data);
         };
         
-        mediaRecorder.onstop = async () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          await handleAudioTranscription(audioBlob);
-          stream.getTracks().forEach(track => track.stop());
-        };
-        
+        // Store for later use
         window.dictationalEditorRecorder = mediaRecorder;
+        window.dictationalEditorAudioChunks = audioChunks;
+        window.dictationalEditorStream = stream;
+        
         mediaRecorder.start();
         setIsRecording(true);
       } catch (error) {
@@ -402,11 +401,49 @@ const DictationalEditor = () => {
         alert('Microphone access required');
       }
     } else {
+      // X button - Cancel recording, don't submit
+      console.log('❌ Canceling recording...');
       if (window.dictationalEditorRecorder) {
         window.dictationalEditorRecorder.stop();
         window.dictationalEditorRecorder = null;
       }
+      if (window.dictationalEditorStream) {
+        window.dictationalEditorStream.getTracks().forEach(track => track.stop());
+        window.dictationalEditorStream = null;
+      }
+      window.dictationalEditorAudioChunks = [];
       setIsRecording(false);
+    }
+  };
+  
+  const handleSubmitVoice = async () => {
+    if (isRecording) {
+      // Stop recording and submit
+      console.log('✅ Stopping recording and submitting...');
+      
+      return new Promise((resolve) => {
+        if (window.dictationalEditorRecorder) {
+          window.dictationalEditorRecorder.addEventListener('stop', async () => {
+            const audioChunks = window.dictationalEditorAudioChunks || [];
+            if (audioChunks.length > 0) {
+              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+              
+              // Stop stream
+              if (window.dictationalEditorStream) {
+                window.dictationalEditorStream.getTracks().forEach(track => track.stop());
+                window.dictationalEditorStream = null;
+              }
+              
+              // Transcribe and generate
+              await handleAudioTranscription(audioBlob);
+            }
+            resolve();
+          }, { once: true });
+          
+          window.dictationalEditorRecorder.stop();
+          setIsRecording(false);
+        }
+      });
     }
   };
   
