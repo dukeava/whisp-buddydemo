@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Sun, Moon, Mic, MicOff, ArrowUp, Plus, Settings, X } from 'lucide-react';
 import RealtimeAudioChat from '@/services/RealtimeAudioChat';
+import AudioVisualizer from '../components/AudioVisualizer';
 import '../styles/LandingPage.css';
 
 const LandingPage = () => {
