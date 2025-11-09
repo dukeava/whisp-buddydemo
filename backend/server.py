@@ -328,35 +328,44 @@ Make the summary detailed and formatted nicely with headers and bullet points.""
                     
                     try:
                         result = json.loads(json_str)
-                        logging.info(f"✅ JSON parsed successfully!")
+                        logging.info(f"✅ JSON parsed successfully! Keys: {result.keys()}")
                     except json.JSONDecodeError as je:
                         logging.error(f"❌ JSON decode error: {je}")
                         logging.error(f"Problem at position {je.pos}: {json_str[max(0,je.pos-50):je.pos+50]}")
                         raise
                     
-                    # Validate structure
-                    if "files" not in result:
-                        logging.error(f"❌ Missing 'files' in result. Keys: {result.keys()}")
-                        raise ValueError("Invalid response structure - missing files key")
+                    # Check if new format (html + summary) or old format (files array)
+                    if "html" in result:
+                        # New single HTML format
+                        logging.info(f"✅ New format detected - single HTML file")
+                        converted_result = {
+                            "files": [{"path": "index.html", "content": result["html"]}],
+                            "summary": result.get("summary", "Generated application")
+                        }
+                        result = converted_result
+                    elif "files" in result:
+                        # Old multi-file format
+                        logging.info(f"✅ Old format detected - multiple files")
+                        
+                        if not isinstance(result.get("files"), list):
+                            logging.error(f"❌ 'files' is not a list, it's: {type(result.get('files'))}")
+                            raise ValueError("Invalid response structure - files must be array")
+                        
+                        # Clean markdown from file contents
+                        for file in result.get("files", []):
+                            if "content" in file:
+                                content = file["content"]
+                                content = content.replace("```tsx", "").replace("```jsx", "").replace("```css", "").replace("```javascript", "").replace("```html", "").replace("```", "").strip()
+                                file["content"] = content
+                    else:
+                        logging.error(f"❌ Missing both 'html' and 'files'. Keys: {result.keys()}")
+                        raise ValueError("Invalid response - must have 'html' or 'files'")
                     
-                    if not isinstance(result.get("files"), list):
-                        logging.error(f"❌ 'files' is not a list, it's: {type(result.get('files'))}")
-                        raise ValueError("Invalid response structure - files must be array")
-                    
-                    # Clean any remaining markdown from file contents
-                    for file in result.get("files", []):
-                        if "content" in file:
-                            # Remove any ``` markers from content
-                            content = file["content"]
-                            content = content.replace("```tsx", "").replace("```jsx", "").replace("```css", "").replace("```javascript", "").replace("```", "").strip()
-                            file["content"] = content
-                    
-                    logging.info(f"✅ Successfully parsed JSON with {len(result.get('files', []))} files")
-                    logging.info(f"✅ Summary: {result.get('summary', 'NO SUMMARY')[:100]}")
+                    logging.info(f"✅ Final: {len(result.get('files', []))} files, summary length: {len(result.get('summary', ''))}")
                     
                 else:
-                    # Fallback: create default structure
-                    logging.warning("❌ No curly braces found in response, using fallback")
+                    # Fallback
+                    logging.warning("❌ No curly braces found, using fallback")
                     result = {
                         "files": [{"path": "index.html", "content": response_text}],
                         "summary": "Generated application based on your description"
