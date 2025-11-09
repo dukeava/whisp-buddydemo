@@ -262,6 +262,18 @@ frontend:
         agent: "main"
         comment: "Implemented ZIP export using JSZip library. Export button now creates 'whisp-app.zip' containing all generated files instead of single file download. Added jszip package to dependencies."
 
+  - task: "Conversational Audio Visualizer"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/LandingPage.js, /app/frontend/src/pages/ConversationalEditor.js, /app/frontend/src/styles/ConversationalEditor.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Added AudioVisualizer to both conversational pages. When mic is active (isRecording/isUserSpeaking), visualizer shows in pill bar instead of placeholder text. Same as dictational pages. Works in both conversational landing and editor."
+
   - task: "Conversational Landing Page Image Attachments"
     implemented: true
     working: "needs_testing"
