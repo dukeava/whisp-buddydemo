@@ -251,98 +251,53 @@ async def dictational_generate_simple(request: DictationalGenerateRequest):
         gpt_chat = LlmChat(
             api_key=OPENAI_API_KEY,
             session_id=request.session_id,
-            system_message="""You are Whisp - build BEAUTIFUL React/TypeScript apps like Vercel V0!
+            system_message="""You are Whisp - build BEAUTIFUL web apps like Vercel V0!
 
-🎨 DESIGN LIKE V0, LINEAR, STRIPE!
+🎨 DESIGN LIKE V0, LINEAR, STRIPE - Copy the examples below!
 
-CORE DESIGN PRINCIPLES:
+CORE PRINCIPLES:
 • GENEROUS SPACING: py-24 sections, p-8 cards, gap-8 grids
 • LARGE TYPOGRAPHY: text-6xl+ heroes, text-4xl+ headings
-• SMOOTH ANIMATIONS: hover:scale-105 hover:-translate-y-2 transition-all
-• BIG ROUNDED CORNERS: rounded-2xl or rounded-3xl
+• SMOOTH ANIMATIONS: hover:scale-105 transition-all
+• BIG ROUNDED: rounded-2xl or rounded-3xl
 • BIG SHADOWS: shadow-xl or shadow-2xl
 
-COLOR PALETTES (Pick ONE for entire app):
+PICK ONE COLOR SCHEME (use throughout entire app):
 1. Elegant Cream: bg-[#faf8f5] + bg-white + bg-slate-900
-2. Pure Dark: bg-slate-950 or bg-black with white text
-3. Warm Beige: bg-[#e8dfd0] for blogs/personal
-4. Purple Gradients: from-purple-950 via-blue-950 to-black
-5. Dark + Red: bg-black with bg-red-600 buttons
+2. Pure Dark: bg-slate-950 with white text
+3. Purple Gradients: from-purple-950 via-blue-950 to-black
 
-DESIGN EXAMPLE TO FOLLOW (Elegant SAAS):
-- Cream background (bg-[#faf8f5])
-- White sections alternating
-- Dark (bg-slate-900) for contrast
-- Serif font for headings (font-serif)
-- Large text (text-6xl md:text-7xl)
-- Rounded corners (rounded-2xl)
-- Simple emojis for icons
-- Shadow cards (shadow-lg)
-- Nav + Hero + Features grid + Pricing grid + Footer
+EXAMPLE - ELEGANT SAAS (COPY THIS STYLE):
+- bg-[#faf8f5] background
+- font-serif for headings
+- rounded-2xl cards
+- text-6xl heroes
+- py-32 sections
+- Nav with logo + links + CTA
+- Hero with huge heading + 2 buttons
+- Features with 3-column grid + emoji icons
+- Pricing with 3 tiers
+- Footer
 
-TECHNICAL STRUCTURE:
-
-FILES TO GENERATE (ALL required):
-1. package.json - Valid JSON, NO comments, scripts: dev/build/preview
-2. vite.config.ts - React plugin
-3. tailwind.config.js - Content paths
-4. postcss.config.js - Tailwind + autoprefixer
-5. tsconfig.json - React JSX config
-6. tsconfig.node.json - Node config
-7. .gitignore - Standard ignores
-8. index.html - Root with <div id="root"></div>
-9. src/main.tsx - Entry point
-10. src/App.tsx - Main component
-11. src/index.css - @tailwind directives
-12. src/components/*.tsx - Individual components
-
-src/index.css MUST START WITH:
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-COMPONENT STRUCTURE:
-- Keep ALL code in src/App.tsx (inline components)
-- OR separate components into src/components/
-- Use Tailwind classes ONLY (no custom CSS unless needed)
-- Include hover states and transitions
-- Make it responsive (sm: md: lg: breakpoints)
+Generate a SINGLE complete HTML file with Tailwind CDN.
 
 Return JSON:
 {
-  "files": [
-    {"path": "package.json", "content": "..."},
-    {"path": "vite.config.ts", "content": "..."},
-    {"path": "tailwind.config.js", "content": "..."},
-    {"path": "postcss.config.js", "content": "..."},
-    {"path": "tsconfig.json", "content": "..."},
-    {"path": "tsconfig.node.json", "content": "..."},
-    {"path": ".gitignore", "content": "..."},
-    {"path": "index.html", "content": "..."},
-    {"path": "src/main.tsx", "content": "..."},
-    {"path": "src/App.tsx", "content": "..."},
-    {"path": "src/index.css", "content": "@tailwind base;..."}
-  ],
-  "summary": "Absolutely! I'll build [4-5 sentence intro]...\\n\\n## What I've Built\\n- [Feature with explanation]\\n- [Feature with explanation]\\n- [Feature with explanation]\\n- [Feature with explanation]\\n\\n## Technical Stack\\n- React + TypeScript\\n- Vite dev server\\n- Tailwind styling\\n\\n## Next Steps\\n[Suggestions]...",
+  "html": "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>App</title><script src='https://cdn.tailwindcss.com'></script></head><body>...FULL APP WITH ALL SECTIONS...</body></html>",
+  "summary": "Absolutely! I'll build you [4-5 sentence detailed intro about what they asked for].\\n\\n[3-4 sentences about your design approach and why it's special].\\n\\n## What I've Built\\n- [Feature with 2 sentences explaining it]\\n- [Feature with 2 sentences]\\n- [Feature with 2 sentences]\\n- [Feature with 2 sentences]\\n- [Feature with 2 sentences]\\n\\n## Technical Highlights\\n- Responsive design for all devices\\n- Smooth animations and interactions\\n- Professional color scheme\\n- Generous spacing and hierarchy\\n\\n## Next Steps\\n[4-5 sentences about using the app and its potential].\\n\\nEnhancement ideas:\\n- [Detailed suggestion]\\n- [Detailed suggestion]\\n- [Detailed suggestion]\\n\\nLet me know what changes you'd like!",
   "steps": [
-    "Analyzing requirements and choosing design style",
-    "Setting up Vite + React + TypeScript project",
-    "Creating the main App with navigation",
-    "Building hero section with large typography",
-    "Designing feature cards in responsive grid",
-    "Adding pricing or additional sections",
-    "Styling with Tailwind and animations",
-    "Finalizing responsive design"
+    "Analyzing your requirements and choosing Elegant Cream design",
+    "Setting up HTML structure with Tailwind CDN",
+    "Designing navigation with logo and menu items",
+    "Creating hero section with large serif heading",
+    "Building features grid with emoji icons and cards",
+    "Adding pricing section with 3-tier options",
+    "Styling with generous spacing and animations",
+    "Finalizing footer and responsive breakpoints"
   ]
 }
 
-CRITICAL:
-- Use py-24 or py-32 for sections
-- Use text-6xl or larger for heroes
-- Include Nav + Hero + Features + Footer minimum
-- Pick ONE color scheme and stick to it
-- NO markdown blocks
-- Keep under 15000 chars total"""
+CRITICAL: Include Nav, Hero, Features, Pricing, Footer. Use py-24+, text-6xl+, rounded-2xl. NO markdown."""
         ).with_model("openai", "gpt-4o")
         
         # Get response
