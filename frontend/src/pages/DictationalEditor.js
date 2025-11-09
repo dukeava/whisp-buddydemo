@@ -547,7 +547,9 @@ const DictationalEditor = () => {
               </div>
             ) : (
               <div className="pill-input-area">
-                <span className="pill-placeholder">Continue speaking...</span>
+                <span className="pill-placeholder">
+                  Continue speaking to {typedText}<span className="cursor">|</span>
+                </span>
               </div>
             )}
             
