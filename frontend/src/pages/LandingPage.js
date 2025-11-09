@@ -237,7 +237,8 @@ const LandingPage = () => {
   useEffect(() => {
     return () => {
       // Cleanup recording on unmount
-      stopContinuousRecording();
+      stopSimpleRecording();
+      stopFakeConversation();
     };
   }, []);
 
