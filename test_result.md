@@ -354,7 +354,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Dictational Code/Preview Toggle Buttons"
+    - "Dictational Export as ZIP"
+    - "Dictational Preview Controls"
     - "Dictational Response Formatting"
     - "Dictational Chat History Persistence"
     - "Dictational Preview Auto-Refresh"
