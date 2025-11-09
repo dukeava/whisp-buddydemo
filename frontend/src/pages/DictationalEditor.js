@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Plus, Mic, X, ArrowUp, Eye, Square, Copy, Check, Download, RefreshCw, ExternalLink } from 'lucide-react';
+import { Sun, Moon, Plus, Mic, X, ArrowUp, Eye, Square, Copy, Check, Download, RefreshCw, ExternalLink, Share2 } from 'lucide-react';
 import AudioVisualizer from '../components/AudioVisualizer';
 import Editor from '@monaco-editor/react';
 import sdk from '@stackblitz/sdk';
