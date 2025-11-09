@@ -356,6 +356,7 @@ const DictationalEditor = () => {
           <div className="chat-messages">
             {isTranscribing && (
               <div className="chat-message system">
+                <div className="message-avatar">⏳</div>
                 <div className="message-content">Transcribing your voice...</div>
               </div>
             )}
