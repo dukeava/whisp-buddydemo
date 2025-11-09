@@ -94,6 +94,7 @@ const DictationalEditor = () => {
   };
   
   const handleGenerateCode = async (prompt) => {
+    console.log('🚀 Starting code generation with prompt:', prompt);
     setIsGenerating(true);
     
     try {
@@ -109,67 +110,79 @@ const DictationalEditor = () => {
         })
       });
       
+      console.log('📡 Streaming response received');
+      
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let currentMessageId = Date.now();
+      let buffer = '';
       
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
         
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            const data = JSON.parse(line.slice(6));
-            
-            if (data.type === 'progress') {
-              // Update or add progress message
-              setChatMessages(prev => {
-                const existing = prev.find(m => m.id === currentMessageId);
-                if (existing) {
-                  return prev.map(m => 
-                    m.id === currentMessageId 
-                      ? { ...m, content: data.message }
-                      : m
-                  );
-                } else {
-                  return [...prev, {
-                    id: currentMessageId,
-                    role: 'assistant',
-                    content: data.message,
-                    isProgress: true
-                  }];
+            try {
+              const data = JSON.parse(line.slice(6));
+              console.log('📨 Stream data:', data);
+              
+              if (data.type === 'progress') {
+                // Update or add progress message
+                setChatMessages(prev => {
+                  const existing = prev.find(m => m.id === currentMessageId);
+                  if (existing) {
+                    return prev.map(m => 
+                      m.id === currentMessageId 
+                        ? { ...m, content: data.message }
+                        : m
+                    );
+                  } else {
+                    return [...prev, {
+                      id: currentMessageId,
+                      role: 'assistant',
+                      content: data.message,
+                      isProgress: true
+                    }];
+                  }
+                });
+              } else if (data.type === 'complete') {
+                console.log('✅ Generation complete:', data.result);
+                
+                // Remove progress message
+                setChatMessages(prev => prev.filter(m => m.id !== currentMessageId));
+                
+                const result = data.result;
+                setGeneratedFiles(result.files || []);
+                
+                // Add summary message
+                setChatMessages(prev => [...prev, {
+                  role: 'assistant',
+                  content: result.summary,
+                  showPreviewButton: true
+                }]);
+                
+                // Render preview immediately
+                if (result.files && result.files.length > 0) {
+                  console.log('🎨 Rendering preview with files:', result.files);
+                  renderPreview(result.files);
                 }
-              });
-            } else if (data.type === 'complete') {
-              // Remove progress message and add final response
-              setChatMessages(prev => prev.filter(m => m.id !== currentMessageId));
-              
-              const result = data.result;
-              setGeneratedFiles(result.files || []);
-              
-              // Add summary message
-              setChatMessages(prev => [...prev, {
-                role: 'assistant',
-                content: result.summary,
-                showPreviewButton: true
-              }]);
-              
-              // Render preview
-              if (result.files && result.files.length > 0) {
-                renderPreview(result.files);
+                
+                setIsGenerating(false);
               }
-              
-              setIsGenerating(false);
+            } catch (parseError) {
+              console.error('Failed to parse stream data:', parseError, line);
             }
           }
         }
       }
       
     } catch (error) {
-      console.error('Generation error:', error);
+      console.error('❌ Generation error:', error);
       setIsGenerating(false);
       setChatMessages(prev => [...prev, {
         role: 'error',
