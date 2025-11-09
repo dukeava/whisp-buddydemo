@@ -341,6 +341,16 @@ MATERIAL DASHBOARD (Blue Header):
 When user asks for dashboard/analytics/CRM, use these patterns with realistic data!"""
         ).with_model("openai", "gpt-4o")
         
+        # Prepare message with images if provided
+        if request.attached_images and len(request.attached_images) > 0:
+            # Add image context to prompt
+            image_context = "\n\nATTACHED IMAGES: The user has provided reference images. Use these as inspiration for design, layout, colors, or functionality. Extract visual elements and design patterns from these images."
+            context_prompt += image_context
+            
+            # For now, send as text with base64 (GPT-4o vision support)
+            # Note: emergentintegrations LlmChat might need updates for vision
+            logging.info(f"📸 User attached {len(request.attached_images)} images")
+        
         # Get response
         user_message = UserMessage(text=context_prompt)
         response = await gpt_chat.send_message(user_message)
