@@ -184,7 +184,7 @@ const DictationalPage = () => {
           <button className="pill-button mic-button" onClick={handleGetStarted} title={isRecording ? "Stop recording" : "Start voice"}>
             {isRecording ? <X size={20} /> : <Mic size={20} />}
           </button>
-          <button className="pill-button" title="Submit" onClick={handleGoToEditor}>
+          <button className="pill-button" title="Submit" onClick={handleGoToEditor} disabled={!recordedAudio}>
             <ArrowUp size={20} />
           </button>
         </div>
