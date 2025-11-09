@@ -11,40 +11,31 @@ import '../styles/ConversationalEditor.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const DictationalEditor = () => {
+const ConversationalEditor = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   
-  const [chatMessages, setChatMessages] = useState([]);
-  const [isRecording, setIsRecording] = useState(false);
-  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [isVoiceConnected, setIsVoiceConnected] = useState(false);
+  const [isWhispTalking, setIsWhispTalking] = useState(false);
+  const [isUserSpeaking, setIsUserSpeaking] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedFiles, setGeneratedFiles] = useState([]);
   const [currentAppCode, setCurrentAppCode] = useState('');
-  const [previewContent, setPreviewContent] = useState('');
-  const [showCode, setShowCode] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const [previewCollapsed, setPreviewCollapsed] = useState(false);
   const [sessionId] = useState(() => `session-${Date.now()}`);
-  const [generationCancelled, setGenerationCancelled] = useState(false);
-  const [copiedMessageId, setCopiedMessageId] = useState(null);
-  const [typedText, setTypedText] = useState('');
-  const [phraseIndex, setPhraseIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(0);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [linkCopied, setLinkCopied] = useState(false);
   const [attachedImages, setAttachedImages] = useState([]);
+  const [conversationHistory, setConversationHistory] = useState(location.state?.conversationHistory || []);
+  const [hasGreeted, setHasGreeted] = useState(false);
   
-  const phrases = ['build', 'imagine', 'create', 'design'];
-  
-  const iframeRef = useRef(null);
   const stackblitzRef = useRef(null);
-  const chatEndRef = useRef(null);
-  const hasInitialized = useRef(false);
   const fileInputRef = useRef(null);
+  const realtimeChatRef = useRef(null);
+  const hasInitialized = useRef(false);
   
   useEffect(() => {
     // Prevent double initialization from React StrictMode
