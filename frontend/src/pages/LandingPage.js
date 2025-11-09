@@ -206,6 +206,34 @@ const LandingPage = () => {
           >
             <Plus size={20} />
           </button>
+          
+          {/* Tiny attached images inside pill bar */}
+          {attachedFiles.length > 0 && (
+            <div className="tiny-images-inline">
+              {attachedFiles.slice(0, 5).map((file, index) => {
+                // Only show images
+                if (!file.type?.startsWith('image/')) return null;
+                
+                // Create preview URL
+                const previewUrl = file.preview || URL.createObjectURL(file);
+                
+                return (
+                  <div key={index} className="tiny-image">
+                    <img src={previewUrl} alt={file.name} />
+                    <button 
+                      className="tiny-remove-btn" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setAttachedFiles(prev => prev.filter((_, i) => i !== index));
+                      }}
+                    >
+                      <X size={10} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           <div className="pill-input-area">
             <span className="pill-placeholder">
