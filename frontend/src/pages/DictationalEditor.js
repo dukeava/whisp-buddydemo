@@ -766,25 +766,6 @@ const DictationalEditor = () => {
           </div>
           
           {/* Bottom Pill Bar */}
-          {/* Show attached images above pill bar */}
-          {attachedImages.length > 0 && (
-            <div className="attached-images-tags-editor">
-              {attachedImages.map((img, index) => (
-                <div key={index} className="image-tag-editor">
-                  <img src={img.data} alt={img.name} />
-                  <span className="image-name-editor">{img.name}</span>
-                  <button 
-                    className="remove-tag-btn-editor" 
-                    onClick={() => handleRemoveImage(index)}
-                    title="Remove"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-          
           <div className="dict-pill-bar">
             {/* Hidden file input */}
             <input 
@@ -799,6 +780,26 @@ const DictationalEditor = () => {
             <button className="pill-button" onClick={handleAttachImage} title="Attach images">
               <Plus size={20} />
             </button>
+            
+            {/* Tiny attached images inside pill bar */}
+            {attachedImages.length > 0 && (
+              <div className="tiny-images-inline-editor">
+                {attachedImages.map((img, index) => (
+                  <div key={index} className="tiny-image-editor">
+                    <img src={img.data} alt={img.name} />
+                    <button 
+                      className="tiny-remove-btn-editor" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveImage(index);
+                      }}
+                    >
+                      <X size={10} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
             
             {isRecording ? (
               <div className="pill-input-area">
