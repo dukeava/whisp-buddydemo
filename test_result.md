@@ -330,6 +330,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Dictational Code/Preview Toggle Buttons"
     - "Dictational Response Formatting"
     - "Dictational Chat History Persistence"
     - "Dictational Preview Auto-Refresh"
