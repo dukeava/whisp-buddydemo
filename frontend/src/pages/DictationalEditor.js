@@ -490,7 +490,7 @@ const DictationalEditor = () => {
                     <>
                       {/* Render summary with proper formatting */}
                       <div className="assistant-summary">
-                        {msg.content.split('\n').map((line, i) => (
+                        {msg.content.replace(/\*\*/g, '').split('\n').map((line, i) => (
                           <div key={i}>
                             {line.startsWith('## ') ? (
                               <h3 className="summary-header">{line.replace('## ', '')}</h3>
