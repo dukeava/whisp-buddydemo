@@ -52,7 +52,7 @@ const DictationalPage = () => {
         };
         
         mediaRecorder.onstop = async () => {
-          // Create audio blob
+          // Create audio blob and store it
           const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
           setRecordedAudio(audioBlob);
         };
@@ -60,6 +60,7 @@ const DictationalPage = () => {
         // Store media recorder and stream
         window.dictationalMediaRecorder = mediaRecorder;
         window.dictationalStream = stream;
+        window.dictationalAudioChunks = audioChunks;
         
         mediaRecorder.start();
         setIsRecording(true);
@@ -68,7 +69,7 @@ const DictationalPage = () => {
         alert('Microphone access is required to use voice input');
       }
     } else {
-      // Stop recording (X button clicked)
+      // X button - just cancel recording, don't save
       if (window.dictationalMediaRecorder) {
         window.dictationalMediaRecorder.stop();
       }
@@ -77,12 +78,36 @@ const DictationalPage = () => {
         window.dictationalStream = null;
       }
       setIsRecording(false);
+      setRecordedAudio(null);
     }
   };
 
   const handleGoToEditor = () => {
-    if (recordedAudio) {
-      // Navigate to dictational editor with audio data
+    if (isRecording) {
+      // Stop recording and navigate to editor
+      if (window.dictationalMediaRecorder && window.dictationalMediaRecorder.state === 'recording') {
+        // Stop the recorder - this will trigger onstop and save the audio
+        window.dictationalMediaRecorder.stop();
+        
+        // Wait a bit for the blob to be created, then navigate
+        setTimeout(() => {
+          if (window.dictationalStream) {
+            window.dictationalStream.getTracks().forEach(track => track.stop());
+            window.dictationalStream = null;
+          }
+          
+          // Get the recorded audio
+          const audioChunks = window.dictationalAudioChunks || [];
+          if (audioChunks.length > 0) {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            navigate('/dictational-editor', { 
+              state: { audioBlob }
+            });
+          }
+        }, 500);
+      }
+    } else if (recordedAudio) {
+      // Already have recorded audio, navigate to editor
       navigate('/dictational-editor', { 
         state: { audioBlob: recordedAudio }
       });
