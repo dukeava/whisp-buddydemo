@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Mic, MicOff, ArrowUp, Settings } from 'lucide-react';
+import { Plus, Mic, X, ArrowUp, Settings } from 'lucide-react';
 import AudioVisualizer from '../components/AudioVisualizer';
 import '../styles/DictationalPage.css';
 
