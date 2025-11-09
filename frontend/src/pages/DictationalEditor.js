@@ -159,7 +159,8 @@ const DictationalEditor = () => {
       
       const errorMessage = error.response?.data?.detail || error.message || 'Failed to transcribe audio. Please try again.';
       
-      setChatMessages([{
+      // Add error message to EXISTING chat (don't replace)
+      setChatMessages(prev => [...prev, {
         id: `error-${Date.now()}`,
         role: 'error',
         content: `Transcription failed: ${errorMessage}`
