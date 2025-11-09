@@ -273,6 +273,9 @@ frontend:
       - working: "needs_testing"
         agent: "main"
         comment: "Improved voice UX: Single mic click now immediately shows visualizer AND greets. Landing page sets isRecording=true immediately, greets after init. Editor sets isUserSpeaking=true, greets after init. Mic button changes to X when connected. Click X to stop/disconnect conversation. No more double-clicking needed."
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Fixed visualizer persistence: Visualizer now stays visible after mic click until X is clicked. Changed condition from isRecording/isUserSpeaking to isConnected/isVoiceConnected. Visualizer shows during user speaking AND Whisp talking, only hides when X clicked. Works on both landing and editor."
 
   - task: "Conversational Audio Visualizer"
     implemented: true
