@@ -262,6 +262,18 @@ frontend:
         agent: "main"
         comment: "Implemented ZIP export using JSZip library. Export button now creates 'whisp-app.zip' containing all generated files instead of single file download. Added jszip package to dependencies."
 
+  - task: "Dictational Image Attachment"
+    implemented: true
+    working: "needs_testing"
+    file: "/app/frontend/src/pages/DictationalEditor.js, /app/backend/server.py, /app/frontend/src/styles/DictationalEditor.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "Implemented image attachment feature. Plus button opens file picker for images, converts to base64, shows thumbnail previews with remove buttons. Images sent to backend with prompt. Backend updated to receive attached_images and add context to GPT-4o prompt. GPT-4o uses images as design inspiration."
+
   - task: "Dictational Share Modal"
     implemented: true
     working: "needs_testing"
