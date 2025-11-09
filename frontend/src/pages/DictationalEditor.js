@@ -357,6 +357,17 @@ const DictationalEditor = () => {
     
     if (stackblitzRef.current) {
       try {
+        // Clear previous preview to force fresh reload
+        if (window.stackblitzVM) {
+          console.log('🗑️ Clearing previous StackBlitz instance');
+          stackblitzRef.current.innerHTML = '';
+          window.stackblitzVM = null;
+        }
+        
+        // Small delay to ensure clean state
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        console.log('🚀 Embedding fresh StackBlitz preview');
         const vm = await sdk.embedProject(
           stackblitzRef.current,
           project,
@@ -365,7 +376,8 @@ const DictationalEditor = () => {
             view: showCode ? 'editor' : 'preview',
             height: '100%',
             hideNavigation: true,
-            terminalHeight: 0
+            terminalHeight: 0,
+            forceEmbedLayout: true  // Force fresh embed
           }
         );
         
