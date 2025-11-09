@@ -136,9 +136,6 @@ const LandingPage = () => {
       </button>
 
       <div className="logo">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-          <path d="M16 4L20 12L28 16L20 20L16 28L12 20L4 16L12 12L16 4Z" fill="currentColor"/>
-        </svg>
         <span>Whisp</span>
         <span className="beta-tag">BETA</span>
       </div>
@@ -160,7 +157,7 @@ const LandingPage = () => {
           {typedText}<span className="cursor">|</span>
         </p>
 
-        <div className="controls">
+        <div className="pill-bar">
           <input
             ref={fileInputRef}
             type="file"
@@ -171,31 +168,31 @@ const LandingPage = () => {
           />
           
           <button 
-            className="control-btn"
+            className="pill-button"
             onClick={() => fileInputRef.current?.click()}
             data-testid="attach-file-btn"
             aria-label="Attach files"
           >
-            <Plus size={24} />
+            <Plus size={20} />
           </button>
 
           <button 
-            className="control-btn"
+            className="pill-button mic-button"
             onClick={toggleMic}
             data-testid="mic-control-btn"
             aria-label={isRecording ? 'Stop recording' : 'Start recording'}
           >
-            {isRecording ? <MicOff size={24} /> : <Mic size={24} />}
+            {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
           </button>
 
           <button 
-            className="control-btn"
+            className="pill-button"
             onClick={handleTransitionToEditor}
             data-testid="transition-to-editor-btn"
             aria-label="Go to editor"
             disabled={conversationHistory.length === 0}
           >
-            <ArrowUp size={24} />
+            <ArrowUp size={20} />
           </button>
         </div>
 
