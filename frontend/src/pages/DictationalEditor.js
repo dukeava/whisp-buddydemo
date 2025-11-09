@@ -102,6 +102,14 @@ const DictationalEditor = () => {
   }, [typedText, isDeleting, phraseIndex]);
   
   useEffect(() => {
+    // Auto-reload preview when app code updates
+    if (currentAppCode && generatedFiles.length > 0 && !previewCollapsed) {
+      console.log('🔄 App code changed - reloading preview');
+      renderPreview(generatedFiles);
+    }
+  }, [currentAppCode]);
+  
+  useEffect(() => {
     // Render/reload preview when files are generated or updated
     if (generatedFiles.length > 0 && !previewCollapsed) {
       console.log('🎯 useEffect triggered - rendering/reloading preview');
